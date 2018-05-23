@@ -1,10 +1,11 @@
 "use strict";
 
-import {TableContext} from "./types-bas-ope"
+import {TableContext,TableDefinition} from "./types-bas-ope"
 
-module.exports = function(context:TableContext){
+export = usuarios
+function usuarios(context:TableContext):TableDefinition{
     var admin = context.user.rol==='admin';
-    return context.be.tableDefAdapt({
+    return {
         name:'usuarios',
         title:'Usuarios de la Aplicación',
         editable:admin,
@@ -25,5 +26,5 @@ module.exports = function(context:TableContext){
         sql:{
             where:admin?'true':"usuario = "+context.be.db.quoteText(context.user.usuario)
         }
-    },context);
+    };
 }

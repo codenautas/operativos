@@ -1,5 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const likeAr = require("like-ar");
+const usuarios = require("./table-usuarios");
+const operativos = require("./table-operativos");
+const clasevar = require("./table-clasevar");
+const tipovar = require("./table-tipovar");
 function emergeAppBasOpe(Base) {
     return class AppBasOpe extends Base {
         constructor(...args) {
@@ -23,13 +28,22 @@ function emergeAppBasOpe(Base) {
                 ] };
             return menu;
         }
+        prepareGetTables() {
+            this.getTableDefinition = {
+                usuarios: usuarios,
+                operativos,
+                clasevar,
+                tipovar,
+            };
+        }
         getTables() {
-            return super.getTables().concat([
-                'usuarios',
-                'operativos',
-                'tipovar',
-                'clasevar',
-            ]);
+            var be = this;
+            this.prepareGetTables();
+            return super.getTables().concat(likeAr(this.getTableDefinition).map(function (tableDef, tableName) {
+                return { name: tableName, tableGenerator: function (context) {
+                        return be.tableDefAdapt(tableDef(context), context);
+                    } };
+            }).array());
         }
     };
 }

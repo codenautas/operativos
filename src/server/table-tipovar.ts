@@ -1,10 +1,10 @@
 "use strict";
 
-import { TableContext } from "./types-bas-ope";
+import {TableContext,TableDefinition} from "./types-bas-ope"
 
-module.exports = function(context:TableContext){
+export = function(context:TableContext):TableDefinition{
     var admin=context.user.rol==='admin';
-    return context.be.tableDefAdapt({
+    return {
         name:'tipovar',
         title:'tipos de variables',
         elementName:'tipo de variable',
@@ -17,5 +17,5 @@ module.exports = function(context:TableContext){
             {name:"radio"     , typeName:'boolean'  },
         ],
         primaryKey:['tipovar']
-    },context);
+    };
 }

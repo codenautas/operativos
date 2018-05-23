@@ -1,10 +1,11 @@
 {
   "name": "bas-ope",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "main": "server/app-bas-ope.js",
+  "types": "server/app-bas-ope.d.ts",
   "files": [
     "client",
     "install",

@@ -1,10 +1,10 @@
 "use strict";
 
-import { TableContext } from "./types-bas-ope";
+import {TableContext,TableDefinition} from "./types-bas-ope"
 
-module.exports = function(context:TableContext){
+export = function(context:TableContext):TableDefinition{
     var admin=context.user.rol==='admin';
-    return context.be.tableDefAdapt({
+    return {
         name:'clasevar',
         title:'clases de variables',
         elementName:'clase de variable',
@@ -14,5 +14,5 @@ module.exports = function(context:TableContext){
             {name:"clasif2011"  , typeName:'text'     },
         ],
         primaryKey:['clase'],
-    },context);
+    };
 }

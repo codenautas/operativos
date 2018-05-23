@@ -1,8 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = function (context) {
     var admin = context.user.rol === 'admin';
-    return context.be.tableDefAdapt({
+    return {
         name: 'operativos',
         elementName: 'operativo',
         editable: admin,
@@ -11,6 +10,6 @@ module.exports = function (context) {
             { name: "nombre", typeName: 'text', },
         ],
         primaryKey: ['operativo']
-    }, context);
+    };
 };
 //# sourceMappingURL=table-operativos.js.map

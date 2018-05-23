@@ -4,11 +4,9 @@ import {AppBackend,Request} from "backend-plus";
 import * as backendPlus from "backend-plus";
 import * as pgPromise from "pg-promise-strict";
 import * as express from "express";
-
-interface Context extends backendPlus.Context{
-    puede:object
-    superuser?:true
-}
+import * as likeAr from "like-ar";
+import {TableDefinitionsGetters,TableContext} from "./types-bas-ope";
+// import "./types-bas-ope";
 
 type MenuInfoMapa = {
     menuType:'mapa'
@@ -16,14 +14,18 @@ type MenuInfoMapa = {
 
 type MenuInfo = backendPlus.MenuInfo | MenuInfoMapa;
 type MenuDefinition = {menu:MenuInfo[]}
-
  // interface MenuDefinition MenuInfoMapa
 
 export type Constructor<T> = new(...args: any[]) => T;
 
+import * as usuarios   from './table-usuarios'
+import * as operativos from './table-operativos'
+import * as clasevar   from './table-clasevar'
+import * as tipovar    from './table-tipovar'
+
 export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
- 
     return class AppBasOpe extends Base{
+        getTableDefinition:TableDefinitionsGetters
         constructor(...args:any[]){
             super(...args);
         }
@@ -47,13 +49,24 @@ export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
             ]}
             return menu;
         }
+        prepareGetTables(){
+            this.getTableDefinition={
+                usuarios  ,    
+                operativos,            
+                clasevar  ,    
+                tipovar   ,
+            }
+        }
         getTables(){
-            return super.getTables().concat([
-                'usuarios',
-                'operativos',
-                'tipovar',
-                'clasevar',
-            ]);
+            var be=this;
+            this.prepareGetTables();
+            return super.getTables().concat(
+                likeAr(this.getTableDefinition).map(function(tableDef, tableName){
+                    return {name:tableName, tableGenerator:function(context:TableContext){
+                        return be.tableDefAdapt(tableDef(context), context);
+                    }};
+                }).array()
+            );
         }
     }
 }

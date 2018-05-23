@@ -1,8 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-module.exports = function (context) {
+function usuarios(context) {
     var admin = context.user.rol === 'admin';
-    return context.be.tableDefAdapt({
+    return {
         name: 'usuarios',
         title: 'Usuarios de la Aplicación',
         editable: admin,
@@ -23,6 +22,7 @@ module.exports = function (context) {
         sql: {
             where: admin ? 'true' : "usuario = " + context.be.db.quoteText(context.user.usuario)
         }
-    }, context);
-};
+    };
+}
+module.exports = usuarios;
 //# sourceMappingURL=table-usuarios.js.map

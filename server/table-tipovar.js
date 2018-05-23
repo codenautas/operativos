@@ -1,8 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = function (context) {
     var admin = context.user.rol === 'admin';
-    return context.be.tableDefAdapt({
+    return {
         name: 'tipovar',
         title: 'tipos de variables',
         elementName: 'tipo de variable',
@@ -15,6 +14,6 @@ module.exports = function (context) {
             { name: "radio", typeName: 'boolean' },
         ],
         primaryKey: ['tipovar']
-    }, context);
+    };
 };
 //# sourceMappingURL=table-tipovar.js.map

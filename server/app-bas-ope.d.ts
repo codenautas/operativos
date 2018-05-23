@@ -5,15 +5,18 @@ import { AppBackend, Request } from "backend-plus";
 import * as backendPlus from "backend-plus";
 import * as pgPromise from "pg-promise-strict";
 import * as express from "express";
+import { TableDefinitionsGetters } from "./types-bas-ope";
 export declare type Constructor<T> = new (...args: any[]) => T;
 export declare function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base: T): {
     new (...args: any[]): {
+        getTableDefinition: TableDefinitionsGetters;
         getProcedures(): Promise<backendPlus.ProcedureDef[]>;
         clientIncludes(req: Request, hideBEPlusInclusions: boolean): backendPlus.ClientModuleDefinition[];
         getMenu(): {
             menu: backendPlus.MenuInfoBase[];
         };
-        getTables(): string[];
+        prepareGetTables(): void;
+        getTables(): backendPlus.TableItemDef[];
         app: express.Express;
         db: typeof pgPromise;
         start(): Promise<void>;
@@ -23,6 +26,6 @@ export declare function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:
         inDbClient<T>(req: Request, doThisWithDbClient: (client: pgPromise.Client) => Promise<T>): Promise<T>;
         inTransaction<T>(req: Request, doThisWithDbTransaction: (client: pgPromise.Client) => Promise<T>): Promise<T>;
         procedureDefCompleter(procedureDef: backendPlus.ProcedureDef): backendPlus.ProcedureDef;
-        tableDefAdapt(tableDef: any, context: backendPlus.Context): any;
+        tableDefAdapt(tableDef: backendPlus.TableDefinition, context: backendPlus.Context): backendPlus.TableDefinition;
     };
 } & T;

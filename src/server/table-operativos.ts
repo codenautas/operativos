@@ -1,10 +1,10 @@
 "use strict";
 
-import {TableContext} from "./types-bas-ope"
+import {TableContext,TableDefinition} from "./types-bas-ope"
 
-module.exports = function(context:TableContext){
+export = function(context:TableContext):TableDefinition{
     var admin=context.user.rol==='admin';
-    return context.be.tableDefAdapt({
+    return {
         name:'operativos',
         elementName:'operativo',
         editable:admin,
@@ -13,5 +13,5 @@ module.exports = function(context:TableContext){
             {name:"nombre"            , typeName:'text'                   ,},
         ],
         primaryKey:['operativo']
-    },context);
+    };
 }
