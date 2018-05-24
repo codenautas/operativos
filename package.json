@@ -1,11 +1,12 @@
 {
   "name": "bas-ope",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "main": "server/app-bas-ope.js",
   "types": "server/app-bas-ope.d.ts",
+  "repository": "codenautas/bas-ope",
   "files": [
     "client",
     "install",
@@ -22,7 +23,7 @@
     "@types/yazl": "~2.4.0",
     "discrepances": "~0.2.2",
     "pg-triggers": "~0.2.1",
-    "types.d.ts": "~0.1.17"
+    "types.d.ts": "~0.1.19"
   },
   "engines": {
     "node": ">= 8.0.0"

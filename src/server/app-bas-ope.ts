@@ -1,12 +1,14 @@
 "use strict";
 
-import {AppBackend,Request} from "backend-plus";
+import {AppBackend,Request,TableDefinition} from "backend-plus";
 import * as backendPlus from "backend-plus";
 import * as pgPromise from "pg-promise-strict";
 import * as express from "express";
 import * as likeAr from "like-ar";
 import {TableDefinitionsGetters,TableContext} from "./types-bas-ope";
 // import "./types-bas-ope";
+
+export type TableContext = TableContext;
 
 type MenuInfoMapa = {
     menuType:'mapa'
@@ -57,6 +59,19 @@ export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
                 tipovar   ,
             }
         }
+        appendToTableDefinition(tableName:string, appenderFunction:(tableDef:TableDefinition, context?:TableContext)=>void):void{
+            var previousDefiniterFunction=this.getTableDefinition[tableName]
+            this.getTableDefinition[tableName]=function(context:TableContext){
+                var defTable=previousDefiniterFunction(context);
+                defTable.fields          =defTable.fields          ||[];
+                defTable.foreignKeys     =defTable.foreignKeys     ||[];
+                defTable.softForeignKeys =defTable.softForeignKeys ||[];
+                defTable.detailTables    =defTable.detailTables    ||[];
+                defTable.sql             =defTable.sql             ||{};
+                appenderFunction(defTable, context)
+                return defTable;
+            }
+        }
         getTables(){
             var be=this;
             this.prepareGetTables();
@@ -70,3 +85,6 @@ export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
         }
     }
 }
+
+export var AppBasOpe = emergeAppBasOpe(AppBackend);
+export type AppBasOpeType = typeof AppBasOpe;

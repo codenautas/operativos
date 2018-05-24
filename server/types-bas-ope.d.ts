@@ -1,6 +1,7 @@
 /// <reference types="backend-plus" />
 import { TableDefinition } from "backend-plus";
 import * as backendPlus from "backend-plus";
+export declare type TableDefinition = TableDefinition;
 export interface TableContext extends backendPlus.TableContext {
     puede: object;
     superuser?: true;
