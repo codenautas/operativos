@@ -7,7 +7,6 @@ var ProceduresOperativos = [
             { name: 'origen', typeName: 'text', references: 'origenes' }
         ],
         coreFunction: async function (context, parameters) {
-            var be = context.be;
             let resultUA = await context.client.query(`select *
                    from operativos
                    where operativo = $1
@@ -20,4 +19,4 @@ var ProceduresOperativos = [
     },
 ];
 module.exports = ProceduresOperativos;
-//# sourceMappingURL=procedures-bas-ope.js.map
+//# sourceMappingURL=procedures-operativos.js.map

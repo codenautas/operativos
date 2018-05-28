@@ -1,3 +1,2 @@
-import { TableContext, TableDefinition } from "./types-bas-ope";
-export = usuarios;
-declare function usuarios(context: TableContext): TableDefinition;
+import { TableContext, TableDefinition } from "./types-operativos";
+export declare function usuarios(context: TableContext): TableDefinition;

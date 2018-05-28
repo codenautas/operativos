@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function (context) {
+Object.defineProperty(exports, "__esModule", { value: true });
+function tipovar(context) {
     var admin = context.user.rol === 'admin';
     return {
         name: 'tipovar',
@@ -15,5 +16,6 @@ module.exports = function (context) {
         ],
         primaryKey: ['tipovar']
     };
-};
+}
+exports.tipovar = tipovar;
 //# sourceMappingURL=table-tipovar.js.map

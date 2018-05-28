@@ -1,9 +1,9 @@
 "use strict";
 
 import {TableDefinition} from "backend-plus"
-import {TableContext} from "./types-datos-ext"
+import {TableContext} from "./types-operativos"
 
-export = variables
+export {variables};
 function variables(context:TableContext):TableDefinition{
     var admin = context.user.rol === 'admin';
     return {
@@ -25,18 +25,22 @@ function variables(context:TableContext):TableDefinition{
             { name: "cerrada"            , typeName: 'boolean' },
             { name: "funcion_agregacion"  , typeName: 'text'    },
             { name: "tabla_agregada"      , typeName: 'text'    },
+            { name: "orden"               , typeName: 'integer'    },
+            { name: "es_pk"               , typeName: 'boolean'    },
+            { name: "es_nombre_unico"     , typeName: 'boolean'    },
         ],
         primaryKey: ['operativo', 'variable'],
         foreignKeys: [
             {references:'operativos'     , fields:['operativo']                  },
             {references:'origenes'       , fields:['operativo','origen']         },
+            {references:'clasevar'       , fields:['clase']         },
+            {references:'tipovar'        , fields:['tipovar']         },
         ],
         detailTables: [
             { table: 'variables_opciones', fields: ['operativo', 'variable'], abr: 'o', label: 'opciones' }
         ],
         constraints: [
-            { constraintType: 'check', expr: "tipovar in ('numero','texto','opciones')" },
-            { constraintType: 'check', expr: "clase   in ('relevamiento','calculada','precalculada','externa')" },
+            { constraintType: 'check', expr: "es_nombre_unico = TRUE" },
         ],
     }
 }

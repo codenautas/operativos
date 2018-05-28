@@ -1,20 +1,20 @@
 server:
   port: 3058
-  base-url: /bas-ope
+  base-url: /operativos
   session-store: memory
 db:
   motor: postgresql
   host: localhost
-  database: bas_ope_db
-  schema: ext
-  user: bas_ope_user
+  database: operativos_db
+  schema: ope
+  user: operativos_user
   password: la_clavasdf93939kdkx.sdlf2342sdaf####109
   search_path: 
-  - ext
+  - ope
 install:
   dump:
     db:
-      owner: bas_ope_owner
+      owner: operativos_owner
     admin-can-create-tables: true
     enances: inline
     skip-content: true

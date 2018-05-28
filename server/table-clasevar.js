@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function (context) {
+Object.defineProperty(exports, "__esModule", { value: true });
+function clasevar(context) {
     var admin = context.user.rol === 'admin';
     return {
         name: 'clasevar',
@@ -12,5 +13,6 @@ module.exports = function (context) {
         ],
         primaryKey: ['clase'],
     };
-};
+}
+exports.clasevar = clasevar;
 //# sourceMappingURL=table-clasevar.js.map

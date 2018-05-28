@@ -1,3 +1,5 @@
+/// <reference types="backend-plus" />
+import { ProcedureContext } from "backend-plus";
 declare var ProceduresOperativos: {
     action: string;
     parameters: {
@@ -5,7 +7,7 @@ declare var ProceduresOperativos: {
         typeName: string;
         references: string;
     }[];
-    coreFunction: (context: any, parameters: {
+    coreFunction: (context: ProcedureContext, parameters: {
         operativo: string;
         origen: string;
     }) => Promise<any>;

@@ -1,10 +1,10 @@
 "use strict";
 
 import {TableDefinition} from "backend-plus"
-import {TableContext} from "./types-datos-ext"
+import {TableContext} from "./types-operativos"
 
 
-export = origenes
+export {origenes};
 function origenes(context:TableContext):TableDefinition{
     var admin=context.user.rol==='admin';
     return {

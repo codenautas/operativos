@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const backend_plus_1 = require("backend-plus");
 const likeAr = require("like-ar");
-const usuarios = require("./table-usuarios");
-const operativos = require("./table-operativos");
-const clasevar = require("./table-clasevar");
-const tipovar = require("./table-tipovar");
-const origenes = require("./table-origenes");
-const variables = require("./table-variables");
-const variables_opciones = require("./table-variables_opciones");
+const table_usuarios_1 = require("./table-usuarios");
+const table_operativos_1 = require("./table-operativos");
+const table_clasevar_1 = require("./table-clasevar");
+const table_tipovar_1 = require("./table-tipovar");
+const table_origenes_1 = require("./table-origenes");
+const table_variables_1 = require("./table-variables");
+const table_variables_opciones_1 = require("./table-variables_opciones");
 function emergeAppOperativos(Base) {
     return class AppOperativos extends Base {
         constructor(...args) {
@@ -29,18 +29,20 @@ function emergeAppOperativos(Base) {
             let menu = { menu: [
                     { menuType: 'table', name: 'operativos' },
                     { menuType: 'table', name: 'usuarios' },
+                    { menuType: 'table', name: 'origenes' },
+                    { menuType: 'table', name: 'variables' },
                 ] };
             return menu;
         }
         prepareGetTables() {
             this.getTableDefinition = {
-                usuarios,
-                operativos,
-                clasevar,
-                tipovar,
-                origenes,
-                variables,
-                variables_opciones
+                usuarios: table_usuarios_1.usuarios,
+                operativos: table_operativos_1.operativos,
+                clasevar: table_clasevar_1.clasevar,
+                tipovar: table_tipovar_1.tipovar,
+                origenes: table_origenes_1.origenes,
+                variables: table_variables_1.variables,
+                variables_opciones: table_variables_opciones_1.variables_opciones
             };
         }
         appendToTableDefinition(tableName, appenderFunction) {
@@ -69,4 +71,4 @@ function emergeAppOperativos(Base) {
 }
 exports.emergeAppOperativos = emergeAppOperativos;
 exports.AppOperativos = emergeAppOperativos(backend_plus_1.AppBackend);
-//# sourceMappingURL=app-bas-ope.js.map
+//# sourceMappingURL=app-operativos.js.map

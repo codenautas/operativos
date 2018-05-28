@@ -1,9 +1,8 @@
 "use strict";
 
-import {TableContext,TableDefinition} from "./types-bas-ope"
+import {TableContext,TableDefinition} from "./types-operativos"
 
-export = usuarios
-function usuarios(context:TableContext):TableDefinition{
+export function usuarios(context:TableContext):TableDefinition{
     var admin = context.user.rol==='admin';
     return {
         name:'usuarios',

@@ -7,7 +7,7 @@ type OrigenesGenerarParameters={
     origen: string
 }
 
-var ProceduresBasOpe = [
+var ProceduresOperativos = [
     {   
         action:'origenes/generar',
         parameters:[
@@ -15,7 +15,6 @@ var ProceduresBasOpe = [
             {name:'origen'   , typeName:'text', references:'origenes'  }
         ],
         coreFunction:async function(context:ProcedureContext, parameters:OrigenesGenerarParameters){
-            var be=context.be;
             let resultUA = await context.client.query(
                 `select *
                    from operativos
@@ -31,4 +30,4 @@ var ProceduresBasOpe = [
     },
 ];
 
-export = ProceduresBasOpe;
+export = ProceduresOperativos;

@@ -1,5 +1,6 @@
 "use strict";
-module.exports = function (context) {
+Object.defineProperty(exports, "__esModule", { value: true });
+function operativos(context) {
     var admin = context.user.rol === 'admin';
     return {
         name: 'operativos',
@@ -11,5 +12,6 @@ module.exports = function (context) {
         ],
         primaryKey: ['operativo']
     };
-};
+}
+exports.operativos = operativos;
 //# sourceMappingURL=table-operativos.js.map

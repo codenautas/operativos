@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function variables_opciones(context) {
     var admin = context.user.rol === 'admin';
     return {
@@ -20,5 +21,5 @@ function variables_opciones(context) {
         ],
     };
 }
-module.exports = variables_opciones;
+exports.variables_opciones = variables_opciones;
 //# sourceMappingURL=table-variables_opciones.js.map

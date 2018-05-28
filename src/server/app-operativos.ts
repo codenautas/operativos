@@ -5,8 +5,8 @@ import * as backendPlus from "backend-plus";
 import * as pgPromise from "pg-promise-strict";
 import * as express from "express";
 import * as likeAr from "like-ar";
-import {TableDefinitionsGetters,TableContext} from "./types-bas-ope";
-// import "./types-bas-ope";
+import {TableDefinitionsGetters,TableContext} from "./types-operativos";
+// import "./types-operativos";
 
 
 export type TableContext = TableContext;
@@ -21,16 +21,16 @@ type MenuDefinition = {menu:MenuInfo[]}
 
 export type Constructor<T> = new(...args: any[]) => T;
 
-import * as usuarios   from './table-usuarios'
-import * as operativos from './table-operativos'
-import * as clasevar   from './table-clasevar'
-import * as tipovar    from './table-tipovar'
-import * as origenes from "./table-origenes";
-import * as variables from "./table-variables";
-import * as variables_opciones from "./table-variables_opciones";
+import {usuarios} from './table-usuarios'
+import {operativos} from './table-operativos'
+import {clasevar}   from './table-clasevar'
+import {tipovar}    from './table-tipovar'
+import {origenes} from "./table-origenes";
+import {variables} from "./table-variables";
+import {variables_opciones} from "./table-variables_opciones";
 
-export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
-    return class AppBasOpe extends Base{
+export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
+    return class AppOperativos extends Base{
         getTableDefinition:TableDefinitionsGetters
         constructor(...args:any[]){
             super(...args);
@@ -39,19 +39,21 @@ export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
             var be = this;
             return super.getProcedures().then(function(procedures){
                 return procedures.concat(
-                    require('./procedures-bas-ope.js').map(be.procedureDefCompleter, be)
+                    require('./procedures-operativos.js').map(be.procedureDefCompleter, be)
                 );
             });
         }    
         clientIncludes(req:Request, hideBEPlusInclusions:boolean){
             return super.clientIncludes(req, hideBEPlusInclusions).concat([
-                {type:'js' , src:'client/bas-ope.js'},
+                {type:'js' , src:'client/operativos.js'},
             ])
         }
         getMenu():{menu:backendPlus.MenuInfoBase[]}{
             let menu:MenuDefinition = {menu:[
                 {menuType:'table'  , name:'operativos' },
                 {menuType:'table'  , name:'usuarios'   },
+                {menuType:'table'  , name:'origenes'   },
+                {menuType:'table'  , name:'variables'   },
             ]}
             return menu;
         }
@@ -93,5 +95,5 @@ export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
     }
 }
 
-export var AppBasOpe = emergeAppBasOpe(AppBackend);
-export type AppBasOpeType = typeof AppBasOpe;
+export var AppOperativos = emergeAppOperativos(AppBackend);
+export type AppOperativosType = typeof AppOperativos;

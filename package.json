@@ -1,12 +1,12 @@
 {
-  "name": "bas-ope",
+  "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
-  "main": "server/app-bas-ope.js",
-  "types": "server/app-bas-ope.d.ts",
-  "repository": "codenautas/bas-ope",
+  "main": "server/app-operativos.js",
+  "types": "server/app-operativos.d.ts",
+  "repository": "codenautas/operativos",
   "files": [
     "client",
     "install",
@@ -31,7 +31,7 @@
   "scripts": {
     "test": "mocha --reporter spec --bail --check-leaks test/",
     "prepublish": "(tsc -p tsconfig-client.json || echo \"continue w/error\") && (tsc -p tsconfig-server.json  || echo \"continue w/error\")",
-    "start": "node server/server-bas-ope.js"
+    "start": "node server/server-operativos.js"
   },
   "qa-control": {
     "package-version": "0.3.0",

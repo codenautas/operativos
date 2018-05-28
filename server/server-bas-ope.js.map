@@ -1,1 +1,1 @@
-{"version":3,"file":"server-bas-ope.js","sourceRoot":"","sources":["../src/server/server-bas-ope.ts"],"names":[],"mappings":"AAAA,YAAY,CAAC;;AAEb,+CAA6C;AAC7C,+CAA0C;AAE1C,IAAI,SAAS,GAAG,6BAAe,CAAC,yBAAU,CAAC,CAAC;AAE5C,IAAI,SAAS,EAAE,CAAC,KAAK,EAAE,CAAC"}
+{"version":3,"file":"server-bas-ope.js","sourceRoot":"","sources":["../src/server/server-bas-ope.ts"],"names":[],"mappings":"AAAA,YAAY,CAAC;;AAEb,qDAAoD;AACpD,+CAA0C;AAE1C,IAAI,aAAa,GAAG,oCAAmB,CAAC,yBAAU,CAAC,CAAC;AAEpD,IAAI,aAAa,EAAE,CAAC,KAAK,EAAE,CAAC"}

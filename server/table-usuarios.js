@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function usuarios(context) {
     var admin = context.user.rol === 'admin';
     return {
@@ -24,5 +25,5 @@ function usuarios(context) {
         }
     };
 }
-module.exports = usuarios;
+exports.usuarios = usuarios;
 //# sourceMappingURL=table-usuarios.js.map

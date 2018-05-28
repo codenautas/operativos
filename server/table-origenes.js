@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 function origenes(context) {
     var admin = context.user.rol === 'admin';
     return {
@@ -18,5 +19,5 @@ function origenes(context) {
         ],
     };
 }
-module.exports = origenes;
+exports.origenes = origenes;
 //# sourceMappingURL=table-origenes.js.map
