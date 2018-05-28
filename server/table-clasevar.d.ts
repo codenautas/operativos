@@ -50,6 +50,12 @@ declare const _default: (context: TableContext) => {
         })[];
         alias?: string;
     }[];
+    constraints?: {
+        constraintType: "check" | "unique" | "not null";
+        expr?: string;
+        fields?: string[];
+        consName?: string;
+    }[];
     detailTables?: {
         table: string;
         fields: (string | {

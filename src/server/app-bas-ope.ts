@@ -8,6 +8,7 @@ import * as likeAr from "like-ar";
 import {TableDefinitionsGetters,TableContext} from "./types-bas-ope";
 // import "./types-bas-ope";
 
+
 export type TableContext = TableContext;
 
 type MenuInfoMapa = {
@@ -16,7 +17,7 @@ type MenuInfoMapa = {
 
 type MenuInfo = backendPlus.MenuInfo | MenuInfoMapa;
 type MenuDefinition = {menu:MenuInfo[]}
- // interface MenuDefinition MenuInfoMapa
+// interface MenuDefinition MenuInfoMapa
 
 export type Constructor<T> = new(...args: any[]) => T;
 
@@ -24,6 +25,9 @@ import * as usuarios   from './table-usuarios'
 import * as operativos from './table-operativos'
 import * as clasevar   from './table-clasevar'
 import * as tipovar    from './table-tipovar'
+import * as origenes from "./table-origenes";
+import * as variables from "./table-variables";
+import * as variables_opciones from "./table-variables_opciones";
 
 export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
     return class AppBasOpe extends Base{
@@ -57,6 +61,9 @@ export function emergeAppBasOpe<T extends Constructor<AppBackend>>(Base:T){
                 operativos,            
                 clasevar  ,    
                 tipovar   ,
+                origenes,
+                variables,
+                variables_opciones
             }
         }
         appendToTableDefinition(tableName:string, appenderFunction:(tableDef:TableDefinition, context?:TableContext)=>void):void{

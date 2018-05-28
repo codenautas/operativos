@@ -1,8 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-module.exports = function (context) {
+function variables(context) {
     var admin = context.user.rol === 'admin';
-    return context.be.tableDefAdapt({
+    return {
         name: 'variables',
         elementName: 'variable',
         editable: admin,
@@ -34,6 +33,7 @@ module.exports = function (context) {
             { constraintType: 'check', expr: "tipovar in ('numero','texto','opciones')" },
             { constraintType: 'check', expr: "clase   in ('relevamiento','calculada','precalculada','externa')" },
         ],
-    }, context);
-};
+    };
+}
+module.exports = variables;
 //# sourceMappingURL=table-variables.js.map

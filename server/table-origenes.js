@@ -1,8 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-module.exports = function (context) {
+function origenes(context) {
     var admin = context.user.rol === 'admin';
-    return context.be.tableDefAdapt({
+    return {
         name: 'origenes',
         elementName: 'origen',
         editable: admin,
@@ -17,6 +16,7 @@ module.exports = function (context) {
         detailTables: [
             { table: 'variables', fields: ['operativo', 'origen'], abr: 'V' },
         ],
-    }, context);
-};
+    };
+}
+module.exports = origenes;
 //# sourceMappingURL=table-origenes.js.map

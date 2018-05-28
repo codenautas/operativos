@@ -1,8 +1,7 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-module.exports = function (context) {
+function variables_opciones(context) {
     var admin = context.user.rol === 'admin';
-    return context.be.tableDefAdapt({
+    return {
         name: 'variables_opciones',
         elementName: 'opción de variable',
         editable: admin,
@@ -19,7 +18,7 @@ module.exports = function (context) {
         foreignKeys: [
             { references: 'variables', fields: ['operativo', 'variable'] },
         ],
-        constraints: [],
-    }, context);
-};
+    };
+}
+module.exports = variables_opciones;
 //# sourceMappingURL=table-variables_opciones.js.map
