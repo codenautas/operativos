@@ -21,12 +21,13 @@ type MenuDefinition = {menu:MenuInfo[]}
 
 export type Constructor<T> = new(...args: any[]) => T;
 
-import {usuarios} from './table-usuarios'
-import {operativos} from './table-operativos'
-import {clasevar}   from './table-clasevar'
-import {tipovar}    from './table-tipovar'
-import {origenes} from "./table-origenes";
-import {variables} from "./table-variables";
+import {usuarios}        from './table-usuarios'
+import {operativos}      from './table-operativos'
+import {clasevar}        from './table-clasevar'
+import {tipovar}         from './table-tipovar'
+import {tabla_datos}     from "./table-tabla_datos";
+import {unidad_analisis} from "./table-unidad_analisis";
+import {variables}       from "./table-variables";
 import {variables_opciones} from "./table-variables_opciones";
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
@@ -52,7 +53,8 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             let menu:MenuDefinition = {menu:[
                 {menuType:'table'  , name:'operativos' },
                 {menuType:'table'  , name:'usuarios'   },
-                {menuType:'table'  , name:'origenes'   },
+                {menuType:'table'  , name:'tabla_datos'   },
+                {menuType:'table'  , name:'unidad_analisis'   },
                 {menuType:'table'  , name:'variables'   },
             ]}
             return menu;
@@ -63,7 +65,8 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 operativos,            
                 clasevar  ,    
                 tipovar   ,
-                origenes,
+                tabla_datos,
+                unidad_analisis,
                 variables,
                 variables_opciones
             }

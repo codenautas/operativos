@@ -1,10 +1,10 @@
 "use strict";
 var ProceduresOperativos = [
     {
-        action: 'origenes/generar',
+        action: 'tabla_datos/generar',
         parameters: [
             { name: 'operativo', typeName: 'text', references: 'operativos' },
-            { name: 'origen', typeName: 'text', references: 'origenes' }
+            { name: 'tabla_datos', typeName: 'text', references: 'tabla_datos' }
         ],
         coreFunction: async function (context, parameters) {
             let resultUA = await context.client.query(`select *

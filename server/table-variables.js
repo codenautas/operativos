@@ -8,7 +8,7 @@ function variables(context) {
         editable: admin,
         fields: [
             { name: "operativo", typeName: 'text' },
-            { name: "origen", typeName: 'text' },
+            { name: "tabla_datos", typeName: 'text' },
             { name: "variable", typeName: 'text' },
             { name: "abr", typeName: 'text' },
             { name: "nombre", typeName: 'text' },
@@ -28,7 +28,7 @@ function variables(context) {
         primaryKey: ['operativo', 'variable'],
         foreignKeys: [
             { references: 'operativos', fields: ['operativo'] },
-            { references: 'origenes', fields: ['operativo', 'origen'] },
+            { references: 'tabla_datos', fields: ['operativo', 'tabla_datos'] },
             { references: 'clasevar', fields: ['clase'] },
             { references: 'tipovar', fields: ['tipovar'] },
         ],

@@ -6,7 +6,8 @@ const table_usuarios_1 = require("./table-usuarios");
 const table_operativos_1 = require("./table-operativos");
 const table_clasevar_1 = require("./table-clasevar");
 const table_tipovar_1 = require("./table-tipovar");
-const table_origenes_1 = require("./table-origenes");
+const table_tabla_datos_1 = require("./table-tabla_datos");
+const table_unidad_analisis_1 = require("./table-unidad_analisis");
 const table_variables_1 = require("./table-variables");
 const table_variables_opciones_1 = require("./table-variables_opciones");
 function emergeAppOperativos(Base) {
@@ -29,7 +30,8 @@ function emergeAppOperativos(Base) {
             let menu = { menu: [
                     { menuType: 'table', name: 'operativos' },
                     { menuType: 'table', name: 'usuarios' },
-                    { menuType: 'table', name: 'origenes' },
+                    { menuType: 'table', name: 'tabla_datos' },
+                    { menuType: 'table', name: 'unidad_analisis' },
                     { menuType: 'table', name: 'variables' },
                 ] };
             return menu;
@@ -40,7 +42,8 @@ function emergeAppOperativos(Base) {
                 operativos: table_operativos_1.operativos,
                 clasevar: table_clasevar_1.clasevar,
                 tipovar: table_tipovar_1.tipovar,
-                origenes: table_origenes_1.origenes,
+                tabla_datos: table_tabla_datos_1.tabla_datos,
+                unidad_analisis: table_unidad_analisis_1.unidad_analisis,
                 variables: table_variables_1.variables,
                 variables_opciones: table_variables_opciones_1.variables_opciones
             };

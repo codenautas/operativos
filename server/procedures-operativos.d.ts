@@ -9,7 +9,7 @@ declare var ProceduresOperativos: {
     }[];
     coreFunction: (context: ProcedureContext, parameters: {
         operativo: string;
-        origen: string;
+        tabla_datos: string;
     }) => Promise<any>;
 }[];
 export = ProceduresOperativos;
