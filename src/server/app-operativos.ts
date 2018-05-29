@@ -6,8 +6,6 @@ import * as pgPromise from "pg-promise-strict";
 import * as express from "express";
 import * as likeAr from "like-ar";
 import {TableDefinitionsGetters,TableContext} from "./types-operativos";
-// import "./types-operativos";
-
 
 export type TableContext = TableContext;
 
@@ -17,7 +15,6 @@ type MenuInfoMapa = {
 
 type MenuInfo = backendPlus.MenuInfo | MenuInfoMapa;
 type MenuDefinition = {menu:MenuInfo[]}
-// interface MenuDefinition MenuInfoMapa
 
 export type Constructor<T> = new(...args: any[]) => T;
 
@@ -53,7 +50,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 {menuType:'table'  , name:'operativos' },
                 {menuType:'table'  , name:'usuarios'   },
                 {menuType:'table'  , name:'origenes'   },
-                {menuType:'table'  , name:'variables'   },
+                {menuType:'table'  , name:'variables'  },
             ]}
             return menu;
         }
