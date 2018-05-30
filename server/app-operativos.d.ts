@@ -8,7 +8,7 @@ import * as express from "express";
 import { TableDefinitionsGetters, TableContext } from "./types-operativos";
 export declare type TableContext = TableContext;
 export declare type Constructor<T> = new (...args: any[]) => T;
-export declare function emergeAppOperativos<T extends Constructor<AppBackend>>(Base: T): {
+export declare function emergeAppOperativos<T extends Constructor<InstanceType<typeof AppBackend>>>(Base: T): {
     new (...args: any[]): {
         getTableDefinition: TableDefinitionsGetters;
         getProcedures(): Promise<backendPlus.ProcedureDef[]>;

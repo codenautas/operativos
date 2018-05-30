@@ -10,7 +10,10 @@ function operativos(context) {
             { name: "operativo", typeName: 'text', },
             { name: "nombre", typeName: 'text', },
         ],
-        primaryKey: ['operativo']
+        primaryKey: ['operativo'],
+        detailTables: [
+            { table: 'tabla_datos', fields: ['operativo'], abr: 'D' }
+        ]
     };
 }
 exports.operativos = operativos;
