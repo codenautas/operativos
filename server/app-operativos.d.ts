@@ -6,9 +6,9 @@ import * as backendPlus from "backend-plus";
 import * as pgPromise from "pg-promise-strict";
 import * as express from "express";
 import { TableDefinitionsGetters, TableContext } from "./types-operativos";
-export declare type TableContext = TableContext;
+export { TableContext } from "./types-operativos";
 export declare type Constructor<T> = new (...args: any[]) => T;
-export declare function emergeAppOperativos<T extends Constructor<InstanceType<typeof AppBackend>>>(Base: T): {
+export declare function emergeAppOperativos<T extends Constructor<AppBackend>>(Base: T): {
     new (...args: any[]): {
         getTableDefinition: TableDefinitionsGetters;
         getProcedures(): Promise<backendPlus.ProcedureDef[]>;
