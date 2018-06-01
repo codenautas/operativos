@@ -64,3 +64,6 @@ typings/
 local-*
 *-local.*
 package-lock.json
+
+server
+client
