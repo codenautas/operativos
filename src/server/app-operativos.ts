@@ -17,6 +17,7 @@ type MenuDefinition = {menu:MenuInfo[]}
 
 export type Constructor<T> = new(...args: any[]) => T;
 
+import {parametros}      from './table-parametros'
 import {usuarios}        from './table-usuarios'
 import {operativos}      from './table-operativos'
 import {clasevar}        from './table-clasevar'
@@ -57,6 +58,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         }
         prepareGetTables(){
             this.getTableDefinition={
+                parametros,    
                 usuarios  ,    
                 operativos,            
                 clasevar  ,    
@@ -69,6 +71,9 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         }
         appendToTableDefinition(tableName:string, appenderFunction:(tableDef:TableDefinition, context?:TableContext)=>void):void{
             var previousDefiniterFunction=this.getTableDefinition[tableName]
+            if(previousDefiniterFunction==null){
+                throw new Error(tableName+" does not exists in getTableDefinition")
+            }
             this.getTableDefinition[tableName]=function(context:TableContext){
                 var defTable=previousDefiniterFunction(context);
                 defTable.fields          =defTable.fields          ||[];

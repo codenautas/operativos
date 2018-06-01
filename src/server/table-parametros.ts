@@ -2,7 +2,7 @@
 
 import { TableContext, TableDefinition } from "./types-operativos"
 
-export function operativos(context: TableContext): TableDefinition {
+export function parametros(context: TableContext): TableDefinition {
     var admin = context.user.rol === 'admin';
     return {
         name: 'parametros',
