@@ -12,7 +12,8 @@ function operativos(context) {
         ],
         primaryKey: ['operativo'],
         detailTables: [
-            { table: 'tabla_datos', fields: ['operativo'], abr: 'D' }
+            { table: 'unidad_analisis', fields: ['operativo'], abr: 'U' },
+            { table: 'tabla_datos', fields: ['operativo'], abr: 'T' }
         ]
     };
 }

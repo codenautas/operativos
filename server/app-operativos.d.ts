@@ -1,6 +1,3 @@
-/// <reference types="backend-plus" />
-/// <reference types="express" />
-/// <reference types="pg-promise-strict" />
 import { AppBackend, Request, TableDefinition } from "backend-plus";
 import * as backendPlus from "backend-plus";
 import * as pgPromise from "pg-promise-strict";
@@ -13,9 +10,7 @@ export declare function emergeAppOperativos<T extends Constructor<AppBackend>>(B
         getTableDefinition: TableDefinitionsGetters;
         getProcedures(): Promise<backendPlus.ProcedureDef[]>;
         clientIncludes(req: Request, hideBEPlusInclusions: boolean): backendPlus.ClientModuleDefinition[];
-        getMenu(): {
-            menu: backendPlus.MenuInfoBase[];
-        };
+        getMenu(): backendPlus.MenuDefinition;
         prepareGetTables(): void;
         appendToTableDefinition(tableName: string, appenderFunction: (tableDef: TableDefinition, context?: TableContext) => void): void;
         getTables(): backendPlus.TableItemDef[];
@@ -25,10 +20,11 @@ export declare function emergeAppOperativos<T extends Constructor<AppBackend>>(B
         getContext(req: Request): backendPlus.Context;
         addSchrödingerServices(mainApp: express.Express, baseUrl: string): void;
         addLoggedServices(): void;
-        inDbClient<T>(req: Request, doThisWithDbClient: (client: pgPromise.Client) => Promise<T>): Promise<T>;
-        inTransaction<T>(req: Request, doThisWithDbTransaction: (client: pgPromise.Client) => Promise<T>): Promise<T>;
+        inDbClient<T_1>(req: Request, doThisWithDbClient: (client: pgPromise.Client) => Promise<T_1>): Promise<T_1>;
+        inTransaction<T_1>(req: Request, doThisWithDbTransaction: (client: pgPromise.Client) => Promise<T_1>): Promise<T_1>;
         procedureDefCompleter(procedureDef: backendPlus.ProcedureDef): backendPlus.ProcedureDef;
         tableDefAdapt(tableDef: TableDefinition, context: backendPlus.Context): TableDefinition;
+        pushApp(dirname: string): void;
     };
 } & T;
 export declare var AppOperativos: {
@@ -36,9 +32,7 @@ export declare var AppOperativos: {
         getTableDefinition: TableDefinitionsGetters;
         getProcedures(): Promise<backendPlus.ProcedureDef[]>;
         clientIncludes(req: Request, hideBEPlusInclusions: boolean): backendPlus.ClientModuleDefinition[];
-        getMenu(): {
-            menu: backendPlus.MenuInfoBase[];
-        };
+        getMenu(): backendPlus.MenuDefinition;
         prepareGetTables(): void;
         appendToTableDefinition(tableName: string, appenderFunction: (tableDef: TableDefinition, context?: TableContext) => void): void;
         getTables(): backendPlus.TableItemDef[];
@@ -52,6 +46,7 @@ export declare var AppOperativos: {
         inTransaction<T>(req: Request, doThisWithDbTransaction: (client: pgPromise.Client) => Promise<T>): Promise<T>;
         procedureDefCompleter(procedureDef: backendPlus.ProcedureDef): backendPlus.ProcedureDef;
         tableDefAdapt(tableDef: TableDefinition, context: backendPlus.Context): TableDefinition;
+        pushApp(dirname: string): void;
     };
 } & typeof AppBackend;
 export declare type AppOperativosType = typeof AppOperativos;

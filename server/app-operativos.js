@@ -56,6 +56,7 @@ function emergeAppOperativos(Base) {
                 defTable.foreignKeys = defTable.foreignKeys || [];
                 defTable.softForeignKeys = defTable.softForeignKeys || [];
                 defTable.detailTables = defTable.detailTables || [];
+                defTable.constraints = defTable.constraints || [];
                 defTable.sql = defTable.sql || {};
                 appenderFunction(defTable, context);
                 return defTable;

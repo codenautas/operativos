@@ -10,11 +10,12 @@ export function operativos(context: TableContext): TableDefinition {
         editable: admin,
         fields: [
             { name: "operativo", typeName: 'text', },
-            { name: "nombre", typeName: 'text', },
+            { name: "nombre"   , typeName: 'text', },
         ],
         primaryKey: ['operativo'],
         detailTables: [
-            { table: 'tabla_datos', fields: ['operativo'], abr: 'D' }
+            { table: 'unidad_analisis', fields: ['operativo'], abr: 'U' },
+            { table: 'tabla_datos'    , fields: ['operativo'], abr: 'T' }
         ]
     };
 }
