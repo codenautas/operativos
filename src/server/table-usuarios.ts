@@ -1,6 +1,6 @@
 "use strict";
 
-import {TableContext,TableDefinition} from "./types-operativos"
+import {TableDefinition, TableContext} from "./types-operativos"
 
 export function usuarios(context:TableContext):TableDefinition{
     var admin = context.user.rol==='admin';

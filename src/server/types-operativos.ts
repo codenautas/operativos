@@ -1,7 +1,7 @@
 import {TableDefinition} from "backend-plus";
 import * as backendPlus from "backend-plus";
 
-export type TableDefinition = TableDefinition;
+export {TableDefinition} from "backend-plus";
 
 export interface TableContext extends backendPlus.TableContext{
     puede:object

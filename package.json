@@ -14,16 +14,16 @@
     "unlogged"
   ],
   "dependencies": {
-    "backend-plus": "~0.21.0",
-    "mini-tools": "~1.0.0",
+    "backend-plus": "~0.21.4",
+    "mini-tools": "~1.0.1",
     "require-bro": "~0.1.11"
   },
   "devDependencies": {
-    "@types/mocha": "~5.2.0",
+    "@types/mocha": "~5.2.1",
     "@types/yazl": "~2.4.0",
     "discrepances": "~0.2.2",
     "pg-triggers": "~0.2.1",
-    "types.d.ts": "~0.1.21"
+    "types.d.ts": "~0.1.22"
   },
   "engines": {
     "node": ">= 8.0.0"

@@ -1,9 +1,8 @@
 "use strict";
 
-import {TableDefinition} from "backend-plus"
-import {TableContext} from "./types-operativos"
-
+import {TableDefinition, TableContext} from "./types-operativos"
 export {variables};
+
 function variables(context:TableContext):TableDefinition{
     var admin = context.user.rol === 'admin';
     return {
