@@ -12,6 +12,7 @@ function variables_opciones(context:TableContext):TableDefinition{
         editable: admin,
         fields: [
             { name: "operativo"           , typeName: 'text'    },
+            { name: "tabla_datos"         , typeName: 'text'    },
             { name: "variable"            , typeName: 'text'    },
             { name: "opcion"              , typeName: 'integer' },
             { name: "nombre"              , typeName: 'text'    },
@@ -19,9 +20,9 @@ function variables_opciones(context:TableContext):TableDefinition{
             { name: "expresion_valor"     , typeName: 'text'    },
             { name: "orden"               , typeName: 'integer' },
         ],
-        primaryKey: ['operativo', 'variable','opcion'],
+        primaryKey: ['operativo', 'tabla_datos','variable','opcion'],
         foreignKeys: [
-            {references:'variables'      , fields:['operativo','variable']      },
+            {references:'variables'      , fields:['operativo','tabla_datos','variable']      },
         ],
     }
 }
