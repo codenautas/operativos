@@ -18,27 +18,32 @@ export type TableDefinitionsGetters = {
 }
 
 export type VariablesOpciones = {
-    operativo: string
-    variable :string  
-    opcion:number
-    nombre:string  
-    expresion_condicion:string  
-    expresion_valor:string  
-    orden:number
+    operativo          :string
+    tabla_datos        :string
+    variable           :string
+    opcion             :number
+    nombre             :string
+    expresion_condicion:string
+    expresion_valor    :string
+    orden              :number
 }
 export type Variables = {
-    operativo:string  
-    origen:string  
-    variable:string  
-    abr:string  
-    nombre:string  
-    tipovar:string  
-    activa:boolean
-    expresion:string  
-    clase:string  
-    cascada:string  
-    nsnc_atipico:number
-    cerrada:boolean
-    funcion_agregacion:string  
-    tabla_agregada:string  
+    operativo          :string
+    tabla_datos        :string
+    variable           :string
+    abr                :string
+    nombre             :string
+    tipovar            :string
+    unidad_analisis    :string
+    clase              :string
+    es_pk              :boolean
+    es_nombre_unico    :boolean
+    activa             :boolean
+    expresion          :string
+    cascada            :string
+    nsnc_atipico       :number
+    cerrada            :boolean
+    funcion_agregacion:string
+    tabla_agregada    :string
+    grupo             :string
 }
