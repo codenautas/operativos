@@ -1,20 +1,15 @@
 import {TableDefinition} from "backend-plus";
 import * as backendPlus from "backend-plus";
 
-export {TableDefinition} from "backend-plus";
+export * from "backend-plus";
 
-export interface TableContext extends backendPlus.TableContext{
-    puede:object
-    superuser?:true
-    forDump?:boolean
-    user:{
-        usuario:string
-        rol:string
-    }
+export interface User extends backendPlus.User{
+    usuario:string
+    rol:string
 }
 
 export type TableDefinitionsGetters = {
-    [key:string]: (context:TableContext) => TableDefinition
+    [key:string]: (context:backendPlus.TableContext) => TableDefinition
 }
 
 export type VariablesOpciones = {

@@ -8,7 +8,8 @@ import * as pgPromise from "pg-promise-strict";
 import * as express from "express";
 import * as likeAr from "like-ar";
 import {TableDefinitionsGetters,TableContext} from "./types-operativos";
-export {TableContext} from "./types-operativos";
+
+export * from "./types-operativos";
 
 type MenuInfoMapa = {
     menuType:'mapa'
