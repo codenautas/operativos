@@ -12,7 +12,7 @@ export type TableDefinitionsGetters = {
     [key:string]: (context:backendPlus.TableContext) => TableDefinition
 }
 
-export type VariablesOpciones = {
+export type VariableOpcion = {
     operativo          :string
     tabla_datos        :string
     variable           :string
@@ -22,7 +22,7 @@ export type VariablesOpciones = {
     expresion_valor    :string
     orden              :number
 }
-export type Variables = {
+export type Variable = {
     operativo          :string
     tabla_datos        :string
     variable           :string
