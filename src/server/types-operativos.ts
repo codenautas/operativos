@@ -42,3 +42,12 @@ export type Variable = {
     tabla_agregada    :string
     grupo             :string
 }
+export interface UnidadDeAnalisis {
+    operativo : string
+    unidad_analisis : string
+    nombre : string
+    pk_agregada : string
+    padre : string
+    orden : string
+    principal : boolean
+}
