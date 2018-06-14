@@ -41,6 +41,7 @@ export type Variable = {
     funcion_agregacion:string
     tabla_agregada    :string
     grupo             :string
+    orden : number
 }
 export interface UnidadDeAnalisis {
     operativo : string
@@ -48,6 +49,6 @@ export interface UnidadDeAnalisis {
     nombre : string
     pk_agregada : string
     padre : string
-    orden : string
+    orden : number
     principal : boolean
 }

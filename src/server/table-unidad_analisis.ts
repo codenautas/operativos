@@ -14,7 +14,7 @@ function unidad_analisis(context:TableContext):TableDefinition{
             {name:"nombre"           , typeName:'text'                },
             {name:"pk_agregada"      , typeName:'text'                },
             {name:"padre"            , typeName:'text'                },
-            {name:"orden"            , typeName:'text'                },
+            {name:"orden"            , typeName:'integer'                },
             {name:"principal"        , typeName:'boolean'             },
         ],
         primaryKey: ['operativo','unidad_analisis'],
