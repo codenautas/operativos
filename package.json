@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "main": "server/app-operativos.js",
@@ -14,12 +14,12 @@
     "unlogged"
   ],
   "dependencies": {
-    "backend-plus": "~0.21.6",
+    "backend-plus": "~0.21.13",
     "mini-tools": "~1.0.1",
     "require-bro": "~0.1.11"
   },
   "devDependencies": {
-    "@types/mocha": "~5.2.1",
+    "@types/mocha": "~5.2.2",
     "@types/yazl": "~2.4.0",
     "discrepances": "~0.2.2",
     "pg-triggers": "~0.2.1",
