@@ -1,17 +1,18 @@
 "use strict";
 
-import {AppBackend,Request,TableDefinition} from "backend-plus";
-import * as backendPlus from "backend-plus";
+// import {AppBackend,Request,TableDefinition} from "backend-plus";
+// import * as backendPlus from "backend-plus";
 import * as likeAr from "like-ar";
-import {TableDefinitionsGetters,TableContext} from "./types-operativos";
+import {TableDefinitionsGetters,TableContext, AppBackend, Request, TableDefinition} from "./types-operativos";
+import * as typesOperativos from "./types-operativos";
 
 export * from "./types-operativos";
 
 type MenuInfoMapa = {
     menuType:'mapa'
-} & backendPlus.MenuInfoMinimo;
+} & typesOperativos.MenuInfoMinimo;
 
-type MenuInfo = MenuInfoMapa | backendPlus.MenuInfo;
+type MenuInfo = MenuInfoMapa | typesOperativos.MenuInfo;
 type MenuDefinition = {menu:MenuInfo[]}
 
 export type Constructor<T> = new(...args: any[]) => T;
@@ -45,7 +46,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 {type:'js' , src:'client/operativos.js'},
             ])
         }
-        getMenu():backendPlus.MenuDefinition{
+        getMenu():typesOperativos.MenuDefinition{
             let menu:MenuDefinition = {menu:[
                 {menuType:'table'  , name:'operativos' },
                 {menuType:'table'  , name:'usuarios'   },
