@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "main": "server/app-operativos.js",
@@ -14,22 +14,18 @@
     "unlogged"
   ],
   "dependencies": {
-    "backend-plus": "~0.21.13",
-    "mini-tools": "~1.0.1",
-    "require-bro": "~0.1.11"
+    "backend-plus": "~0.21.18",
+    "like-ar": "~0.2.6",
+    "pg-triggers": "~0.2.1"
   },
   "devDependencies": {
-    "@types/mocha": "~5.2.2",
-    "@types/yazl": "~2.4.0",
-    "discrepances": "~0.2.2",
-    "pg-triggers": "~0.2.1",
-    "types.d.ts": "~0.1.25"
+    "@types/node": "~10.3.4",
+    "@types/express": "~4.16.0"
   },
   "engines": {
     "node": ">= 8.0.0"
   },
   "scripts": {
-    "test": "mocha --reporter spec --bail --check-leaks test/",
     "prepublish": "(tsc -p tsconfig-client.json || echo \"continue w/error\") && (tsc -p tsconfig-server.json  || echo \"continue w/error\")",
     "start": "node server/server-operativos.js"
   },

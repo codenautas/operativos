@@ -2,10 +2,6 @@
 
 import {AppBackend,Request,TableDefinition} from "backend-plus";
 import * as backendPlus from "backend-plus";
-// @ts-ignore: no unused import
-import * as pgPromise from "pg-promise-strict";
-// @ts-ignore: no Unused import
-import * as express from "express";
 import * as likeAr from "like-ar";
 import {TableDefinitionsGetters,TableContext} from "./types-operativos";
 
