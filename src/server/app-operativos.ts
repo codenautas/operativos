@@ -1,7 +1,5 @@
 "use strict";
 
-// import {AppBackend,Request,TableDefinition} from "backend-plus";
-// import * as backendPlus from "backend-plus";
 import * as likeAr from "like-ar";
 import {TableDefinitionsGetters,TableContext, AppBackend, Request, TableDefinition} from "./types-operativos";
 import * as typesOperativos from "./types-operativos";
