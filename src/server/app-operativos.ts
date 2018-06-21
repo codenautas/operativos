@@ -1,16 +1,16 @@
 "use strict";
 
 import * as likeAr from "like-ar";
-import {TableDefinitionsGetters,TableContext, AppBackend, Request, TableDefinition} from "./types-operativos";
-import * as typesOperativos from "./types-operativos";
+import {TableContext, AppBackend} from "./types-operativos";
+import * as typesOpe from "./types-operativos";
 
 export * from "./types-operativos";
 
 type MenuInfoMapa = {
     menuType:'mapa'
-} & typesOperativos.MenuInfoMinimo;
+} & typesOpe.MenuInfoMinimo;
 
-type MenuInfo = MenuInfoMapa | typesOperativos.MenuInfo;
+type MenuInfo = MenuInfoMapa | typesOpe.MenuInfo;
 type MenuDefinition = {menu:MenuInfo[]}
 
 export type Constructor<T> = new(...args: any[]) => T;
@@ -27,7 +27,7 @@ import {variables_opciones} from "./table-variables_opciones";
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
-        getTableDefinition:TableDefinitionsGetters
+        getTableDefinition:typesOpe.TableDefinitionsGetters
         constructor(...args:any[]){
             super(...args);
         }
@@ -39,12 +39,12 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 );
             });
         }    
-        clientIncludes(req:Request, hideBEPlusInclusions:boolean){
+        clientIncludes(req:typesOpe.Request, hideBEPlusInclusions:boolean){
             return super.clientIncludes(req, hideBEPlusInclusions).concat([
                 {type:'js' , src:'client/operativos.js'},
             ])
         }
-        getMenu():typesOperativos.MenuDefinition{
+        getMenu():typesOpe.MenuDefinition{
             let menu:MenuDefinition = {menu:[
                 {menuType:'table'  , name:'operativos' },
                 {menuType:'table'  , name:'usuarios'   },
@@ -67,7 +67,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 variables_opciones
             }
         }
-        appendToTableDefinition(tableName:string, appenderFunction:(tableDef:TableDefinition, context?:TableContext)=>void):void{
+        appendToTableDefinition(tableName:string, appenderFunction:(tableDef:typesOpe.TableDefinition, context?:TableContext)=>void):void{
             var previousDefiniterFunction=this.getTableDefinition[tableName]
             if(previousDefiniterFunction==null){
                 throw new Error(tableName+" does not exists in getTableDefinition")
