@@ -1,11 +1,12 @@
 .git
-install/
-src/
-node_modules/
 .vscode/
 
 local-*
 *-local.*
 
-# !server/
-# !client/
+# Never publish Typescript code
+src/
+
+# Always publish generated files (.js, .map. .d.ts)
+!server/
+!client/
