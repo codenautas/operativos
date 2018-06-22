@@ -99,4 +99,3 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
 }
 
 export var AppOperativos = emergeAppOperativos(AppBackend);
-export type AppOperativosType = typeof AppOperativos;
