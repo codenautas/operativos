@@ -52,3 +52,10 @@ export interface UnidadDeAnalisis {
     orden : number
     principal : boolean
 }
+export interface TipoVar {
+    tipovar: string
+    html_type: string
+    type_name: backendPlus.PgKnownTypes
+    validar: string
+    radio: boolean
+}
