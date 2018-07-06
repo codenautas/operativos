@@ -14,7 +14,7 @@
     "unlogged"
   ],
   "dependencies": {
-    "backend-plus": "~0.23.7",
+    "backend-plus": "~0.23.12",
     "like-ar": "~0.2.7",
     "pg-triggers": "~0.2.1"
   },
