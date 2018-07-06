@@ -1,6 +1,6 @@
 "use strict";
 
-import {ProcedureContext} from "backend-plus";
+import {ProcedureContext} from "./types-operativos";
 
 type TablaDatosGenerarParameters={
     operativo: string

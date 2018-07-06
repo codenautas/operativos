@@ -59,3 +59,9 @@ export interface TipoVar {
     validar: string
     radio: boolean
 }
+
+export interface TablaDatos {
+    operativo: string
+    tabla_datos: string
+    unidad_analisis: string
+}

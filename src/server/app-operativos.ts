@@ -1,7 +1,7 @@
 "use strict";
 
 import * as likeAr from "like-ar";
-import {TableContext, AppBackend} from "./types-operativos";
+import {TableContext,TableDefinition, Context, TableDefinitionFunction, Variable, TipoVar, TablaDatos, AppBackend, Request} from "./types-operativos";
 import * as typesOpe from "./types-operativos";
 
 export * from "./types-operativos";
@@ -12,6 +12,58 @@ type MenuInfoMapa = {
 
 type MenuInfo = MenuInfoMapa | typesOpe.MenuInfo;
 type MenuDefinition = {menu:MenuInfo[]}
+
+type VariableWitType = (Variable & TipoVar);
+
+export async function generateAndLoadTableDef(client: Client, be:AppBackend, tablaDatos:TablaDatos){
+    let nombreTablaDatos = tablaDatos.tabla_datos;
+    let resultV = await client.query(
+        `select *
+        from variables left join tipovar using(tipovar)
+        where operativo = $1 and tabla_datos = $2
+        `,
+        [tablaDatos.operativo, nombreTablaDatos]
+    ).fetchAll();
+    if(resultV.rowCount==0){
+        throw new Error('La tabla no tiene variables');
+    }
+    let variables: VariableWitType[] = <VariableWitType[]>resultV.rows;
+    let tableDef: TableDefinition = {
+        name: nombreTablaDatos,
+        fields: variables.map(function (v: VariableWitType) {
+            if (v.tipovar == null) {
+                throw new Error('la variable ' + v.variable + ' no tiene tipo');
+            }
+            return { name: v.variable, typeName: v.type_name };
+        }),
+        editable: true,
+        primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
+        sql: {
+            tableName: nombreTablaDatos,
+            isTable: true,
+            isReferable: true,
+            skipEnance: true
+        },
+    };
+    //Load generated tableDef as function
+    be.tableStructures[tableDef.name] = <TableDefinitionFunction> function (contexto: Context):TableDefinition {
+        return contexto.be.tableDefAdapt(tableDef, contexto);
+    };
+    return tableDef;
+}
+
+async function cargarGenerados(client: Client, be: AppBackend) {
+    let resultTD = await client.query(`
+    select * from tabla_datos 
+    where EXISTS (
+        SELECT 1
+        FROM information_schema.tables 
+        WHERE table_name = tabla_datos
+        );
+    `).fetchAll();
+    return await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => generateAndLoadTableDef(client, be, tablaDatosRow)))
+        .then(() => "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas");
+}
 
 export type Constructor<T> = new(...args: any[]) => T;
 
@@ -24,12 +76,20 @@ import {tabla_datos}     from "./table-tabla_datos";
 import {unidad_analisis} from "./table-unidad_analisis";
 import {variables}       from "./table-variables";
 import {variables_opciones} from "./table-variables_opciones";
+import { Client } from "pg-promise-strict";
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
         getTableDefinition:typesOpe.TableDefinitionsGetters
         constructor(...args:any[]){
             super(...args);
+        }
+        async postConfig(){
+            await super.postConfig();
+            var be=this;
+            await be.inTransaction({} as Request, async function(client:Client){
+                await cargarGenerados(client, be);
+            });
         }
         getProcedures(){
             var be = this;
