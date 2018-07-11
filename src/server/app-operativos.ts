@@ -15,14 +15,23 @@ type MenuDefinition = {menu:MenuInfo[]}
 
 type VariableWitType = (Variable & TipoVar);
 
-export async function generateAndLoadTableDef(client: Client, be:AppBackend, tablaDatos:TablaDatos){
-    let nombreTablaDatos = tablaDatos.tabla_datos;
-    let resultV = await client.query(
-        `select *
+export async function generateBaseTableDef(client: Client, tablaDatos:TablaDatos, calcPostFix: string = ''){
+    let nombreTablaDatos = tablaDatos.tabla_datos+calcPostFix;
+    // calcular fields
+    let query = `select *
         from variables left join tipovar using(tipovar)
-        where operativo = $1 and tabla_datos = $2
-        `,
-        [tablaDatos.operativo, nombreTablaDatos]
+        where operativo = $1 and tabla_datos = $2||$3
+        `;
+    // calcular pks para el caso de calculadas
+    if (calcPostFix){
+        query += `
+        UNION
+        select *
+        from variables left join tipovar using(tipovar)
+        where operativo = $1 and tabla_datos = $2 and es_pk
+        `
+    }
+    let resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.tabla_datos, calcPostFix]
     ).fetchAll();
     if(resultV.rowCount==0){
         throw new Error('La tabla no tiene variables');
@@ -34,7 +43,7 @@ export async function generateAndLoadTableDef(client: Client, be:AppBackend, tab
             if (v.tipovar == null) {
                 throw new Error('la variable ' + v.variable + ' no tiene tipo');
             }
-            return { name: v.variable, typeName: v.type_name };
+            return { name: v.variable, typeName: v.type_name, editable: false};
         }),
         editable: true,
         primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
@@ -45,11 +54,17 @@ export async function generateAndLoadTableDef(client: Client, be:AppBackend, tab
             skipEnance: true
         },
     };
-    //Load generated tableDef as function
-    be.tableStructures[tableDef.name] = <TableDefinitionFunction> function (contexto: Context):TableDefinition {
+    return tableDef;
+}
+
+export function loadTableDef(tableDef: TableDefinition, be:AppBackend){
+    return be.tableStructures[tableDef.name] = <TableDefinitionFunction> function (contexto: Context):TableDefinition {
         return contexto.be.tableDefAdapt(tableDef, contexto);
     };
-    return tableDef;
+}
+
+export async function generateAndLoadTableDef(client: Client, be:AppBackend, tablaDatos:TablaDatos, calcPostFix: string = ''){
+    return loadTableDef(await generateBaseTableDef(client, tablaDatos, calcPostFix), be);
 }
 
 async function cargarGenerados(client: Client, be: AppBackend) {
@@ -60,7 +75,7 @@ async function cargarGenerados(client: Client, be: AppBackend) {
         FROM information_schema.tables 
         WHERE table_name = tabla_datos
         );
-    `).fetchAll();
+        `).fetchAll();
     return await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => generateAndLoadTableDef(client, be, tablaDatosRow)))
         .then(() => "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas");
 }
@@ -77,6 +92,7 @@ import {unidad_analisis} from "./table-unidad_analisis";
 import {variables}       from "./table-variables";
 import {variables_opciones} from "./table-variables_opciones";
 import { Client } from "pg-promise-strict";
+import { ProceduresOperativos } from "./procedures-operativos";
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
@@ -95,7 +111,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             var be = this;
             return super.getProcedures().then(function(procedures){
                 return procedures.concat(
-                    require('./procedures-operativos.js').map(be.procedureDefCompleter, be)
+                    ProceduresOperativos.map(be.procedureDefCompleter, be)
                 );
             });
         }    
