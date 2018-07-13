@@ -15,71 +15,6 @@ type MenuDefinition = {menu:MenuInfo[]}
 
 type VariableWitType = (Variable & TipoVar);
 
-export async function generateBaseTableDef(client: Client, tablaDatos:TablaDatos, calcPostFix: string = ''){
-    let nombreTablaDatos = tablaDatos.tabla_datos+calcPostFix;
-    // calcular fields
-    let query = `select *
-        from variables left join tipovar using(tipovar)
-        where operativo = $1 and tabla_datos = $2||$3
-        `;
-    // calcular pks para el caso de calculadas
-    if (calcPostFix){
-        query += `
-        UNION
-        select *
-        from variables left join tipovar using(tipovar)
-        where operativo = $1 and tabla_datos = $2 and es_pk
-        `
-    }
-    let resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.tabla_datos, calcPostFix]
-    ).fetchAll();
-    if(resultV.rowCount==0){
-        throw new Error('La tabla no tiene variables');
-    }
-    let variables: VariableWitType[] = <VariableWitType[]>resultV.rows;
-    let tableDef: TableDefinition = {
-        name: nombreTablaDatos,
-        fields: variables.map(function (v: VariableWitType) {
-            if (v.tipovar == null) {
-                throw new Error('la variable ' + v.variable + ' no tiene tipo');
-            }
-            return { name: v.variable, typeName: v.type_name, editable: false};
-        }),
-        editable: true,
-        primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
-        sql: {
-            tableName: nombreTablaDatos,
-            isTable: true,
-            isReferable: true,
-            skipEnance: true
-        },
-    };
-    return tableDef;
-}
-
-export function loadTableDef(tableDef: TableDefinition, be:AppBackend){
-    return be.tableStructures[tableDef.name] = <TableDefinitionFunction> function (contexto: Context):TableDefinition {
-        return contexto.be.tableDefAdapt(tableDef, contexto);
-    };
-}
-
-export async function generateAndLoadTableDef(client: Client, be:AppBackend, tablaDatos:TablaDatos, calcPostFix: string = ''){
-    return loadTableDef(await generateBaseTableDef(client, tablaDatos, calcPostFix), be);
-}
-
-async function cargarGenerados(client: Client, be: AppBackend) {
-    let resultTD = await client.query(`
-    select * from tabla_datos 
-    where EXISTS (
-        SELECT 1
-        FROM information_schema.tables 
-        WHERE table_name = tabla_datos
-        );
-        `).fetchAll();
-    return await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => generateAndLoadTableDef(client, be, tablaDatosRow)))
-        .then(() => "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas");
-}
-
 export type Constructor<T> = new(...args: any[]) => T;
 
 import {parametros}      from './table-parametros'
@@ -100,13 +35,73 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         constructor(...args:any[]){
             super(...args);
         }
+
+        /*private*/ async cargarGenerados(client: Client) {
+            let resultTD = await client.query(`
+            select * from tabla_datos 
+            where EXISTS (
+                SELECT 1
+                FROM information_schema.tables 
+                WHERE table_name = tabla_datos
+                );
+                `).fetchAll();
+            return await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => this.generateAndLoadTableDef(client, tablaDatosRow)))
+                .then(() => "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas");
+        }
+
         async postConfig(){
             await super.postConfig();
             var be=this;
             await be.inTransaction({} as Request, async function(client:Client){
-                await cargarGenerados(client, be);
+                await be.cargarGenerados(client);
             });
         }
+        async generateBaseTableDef(client: Client, tablaDatos:TablaDatos){
+            let nombreTablaDatos = tablaDatos.tabla_datos;
+            // calcular fields
+            // TODO: $2 es unidad de análisis porque para varcal la UA es el origen de la tabla calculada
+            // y para datos-ext la UA es la tabla de datos, por eso la siguiente query funciona para ambos casos
+            let query = `select *
+                from variables left join tipovar using(tipovar)
+                where operativo = $1 and ((tabla_datos = $2 and es_pk) or tabla_datos = $3)
+                `;
+            
+            let resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.unidad_analisis, tablaDatos.tabla_datos]
+            ).fetchAll();
+            if(resultV.rowCount==0){
+                throw new Error('La tabla no tiene variables');
+            }
+            let variables: VariableWitType[] = <VariableWitType[]>resultV.rows;
+            let tableDef: TableDefinition = {
+                name: nombreTablaDatos,
+                fields: variables.map(function (v: VariableWitType) {
+                    if (v.tipovar == null) {
+                        throw new Error('la variable ' + v.variable + ' no tiene tipo');
+                    }
+                    return { name: v.variable, typeName: v.type_name, editable: false};
+                }),
+                editable: true,
+                primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
+                sql: {
+                    tableName: nombreTablaDatos,
+                    isTable: true,
+                    isReferable: true,
+                    skipEnance: true
+                },
+            };
+            return tableDef;
+        }
+        
+        loadTableDef(tableDef: TableDefinition){
+            return this.tableStructures[tableDef.name] = <TableDefinitionFunction> function (contexto: Context):TableDefinition {
+                return contexto.be.tableDefAdapt(tableDef, contexto);
+            };
+        }
+        
+        async generateAndLoadTableDef(client: Client, tablaDatos:TablaDatos){
+            return this.loadTableDef(await this.generateBaseTableDef(client, tablaDatos));
+        }
+        
         getProcedures(){
             var be = this;
             return super.getProcedures().then(function(procedures){
@@ -175,3 +170,4 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
 }
 
 export var AppOperativos = emergeAppOperativos(AppBackend);
+export type AppOperativosType = InstanceType<typeof AppOperativos>;
