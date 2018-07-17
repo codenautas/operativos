@@ -8,9 +8,9 @@ export interface User extends backendPlus.User{
     rol:string
 }
 
-export enum sufijoTablaDato {
-    calculada = '_calc',
-    externa = '_ext'
+export enum tiposTablaDato {
+    calculada = 'calculada',
+    externa = 'externa'
 }
 
 export type TableDefinitionsGetters = {
@@ -66,8 +66,8 @@ export interface TipoVar {
 }
 
 export interface TablaDatos {
-    operativo: string
+    operativo?: string
     tabla_datos: string
+    tipo: tiposTablaDato
     unidad_analisis: string
-    sufijo: sufijoTablaDato
 }

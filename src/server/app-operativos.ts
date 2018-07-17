@@ -1,7 +1,7 @@
 "use strict";
 
 import * as likeAr from "like-ar";
-import {TableContext,TableDefinition, Context, TableDefinitionFunction, Variable, TipoVar, TablaDatos, AppBackend, Request} from "./types-operativos";
+import {TableContext,TableDefinition, Context, TableDefinitionFunction, Variable, TipoVar, TablaDatos, AppBackend, Request, tiposTablaDato} from "./types-operativos";
 import * as typesOpe from "./types-operativos";
 
 export * from "./types-operativos";
@@ -46,7 +46,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             where EXISTS (
                 SELECT 1
                 FROM information_schema.tables 
-                WHERE table_name = tabla_datos
+                WHERE table_name = tabla_datos || '_' || tipo
                 );
                 `).fetchAll();
             return await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => this.generateAndLoadTableDef(client, tablaDatosRow)))
@@ -61,23 +61,38 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             });
         }
         async generateBaseTableDef(client: Client, tablaDatos:TablaDatos){
-            let nombreTablaDatos = tablaDatos.tabla_datos;
+            let nombreTablaFisica = tablaDatos.tabla_datos + '_' + tablaDatos.tipo;
+            let resultV;
+
             // calcular fields
-            // TODO: $2 es unidad de análisis porque para varcal la UA es el origen de la tabla calculada
-            // y para datos-ext la UA es la tabla de datos, por eso la siguiente query funciona para ambos casos
-            let query = `select *
-                from variables left join tipovar using(tipovar)
-                where operativo = $1 and ((tabla_datos = $2 and es_pk) or tabla_datos = $3)
-                `;
-            
-            let resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.unidad_analisis, tablaDatos.tabla_datos]
-            ).fetchAll();
+            // para el caso de las tablas externas con $3 alcanza para obtener armar los fields incluidas las pks,
+            // pero para las calculadas tenemos que agregarle (or) las pks de la tabla externa
+            // TODO: en el futuro cuando se generen una tabla calculada hay que agregar automaticamente en la tabla
+            // variables los registros correspondientes a las pks, con eso se simplificaría la siguiente consulta
+            if (tablaDatos.tipo == tiposTablaDato.calculada){
+                let query = `select *
+                    from variables left join tipovar using(tipovar)
+                    where operativo = $1 and ((tabla_datos = $2) or (tabla_datos = $3 and es_pk))
+                    order by es_pk, orden, variable
+                    `;            
+                resultV = await client.query(query, [tablaDatos.operativo, nombreTablaFisica, tablaDatos.tabla_datos]
+                ).fetchAll();
+            } else {
+                let query = `select *
+                    from variables left join tipovar using(tipovar)
+                    where operativo = $1 and tabla_datos = $2
+                    order by es_pk, orden, variable
+                    `;            
+                resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.tabla_datos]
+                ).fetchAll();
+            }
+
             if(resultV.rowCount==0){
                 throw new Error('La tabla no tiene variables');
             }
             let variables: VariableWitType[] = <VariableWitType[]>resultV.rows;
             let tableDef: TableDefinition = {
-                name: nombreTablaDatos,
+                name: nombreTablaFisica,
                 fields: variables.map(function (v: VariableWitType) {
                     if (v.tipovar == null) {
                         throw new Error('la variable ' + v.variable + ' no tiene tipo');
@@ -87,7 +102,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 allow:{export: true, select: true},
                 primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
                 sql: {
-                    tableName: nombreTablaDatos,
+                    tableName: nombreTablaFisica,
                     isTable: true,
                     skipEnance: false
                 },

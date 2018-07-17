@@ -1,7 +1,7 @@
 "use strict";
 
 import {TableDefinition} from "backend-plus"
-import {TableContext, sufijoTablaDato} from "./types-operativos"
+import {TableContext, tiposTablaDato} from "./types-operativos"
 
 export {tabla_datos};
 function tabla_datos(context:TableContext):TableDefinition{
@@ -12,11 +12,11 @@ function tabla_datos(context:TableContext):TableDefinition{
         editable:admin,
         fields:[
             {name:"operativo"         , typeName:'text'                   ,},
-            {name:"tabla_datos"       , typeName:'text'                   ,},
-            {name:"unidad_analisis"   , typeName:'text'                   ,},
-            {name:"sufijo"            , typeName:'text'                   ,},
+            {name:"tabla_datos"       , typeName:'text', nullable: false  ,},
+            {name:"tipo"            , typeName:'text', nullable: false  ,},
+            {name:"unidad_analisis"   , typeName:'text', nullable: false  ,},
         ],
-        primaryKey:['operativo', 'tabla_datos'],
+        primaryKey:['operativo', 'tabla_datos', 'tipo'],
         foreignKeys:[
             {references:'operativos', fields:['operativo']},
             {references:'unidad_analisis', fields:['operativo','unidad_analisis']},
@@ -25,7 +25,7 @@ function tabla_datos(context:TableContext):TableDefinition{
             {table:'variables'       , fields:['operativo','tabla_datos'], abr:'V'},
         ],
         constraints: [
-            { constraintType: 'check', expr: `sufijo IN ('${sufijoTablaDato.calculada}', '${sufijoTablaDato.externa}')` },
+            { constraintType: 'check', consName:'valor inválido en tipo' , expr: `tipo IN ('${tiposTablaDato.calculada}', '${tiposTablaDato.externa}')` },
         ],
     };
 }
