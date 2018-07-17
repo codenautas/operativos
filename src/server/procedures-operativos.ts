@@ -1,16 +1,6 @@
 "use strict";
+import * as typesOpe from "./types-operativos";
 
-var ProceduresOperativos = [
-    {   
-        action:'tabla_datos/generar',
-        parameters:[
-            {name:'operativo'   , typeName:'text', references:'operativos'  },
-            {name:'tabla_datos' , typeName:'text', references:'tabla_datos' }
-        ],
-        coreFunction:async function(){
-            // do nothing
-        }
-    },
-];
+var procedures: typesOpe.ProcedureDef[] = [];
 
-export {ProceduresOperativos};
+export {procedures};

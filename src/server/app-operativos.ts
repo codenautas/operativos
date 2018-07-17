@@ -27,13 +27,17 @@ import {unidad_analisis} from "./table-unidad_analisis";
 import {variables}       from "./table-variables";
 import {variables_opciones} from "./table-variables_opciones";
 import { Client } from "pg-promise-strict";
-import { ProceduresOperativos } from "./procedures-operativos";
+import { procedures } from "./procedures-operativos";
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
         getTableDefinition:typesOpe.TableDefinitionsGetters
+        myProcedures: typesOpe.ProcedureDef[] = [];
+        myClientFileName: string = 'operativos';
+
         constructor(...args:any[]){
             super(...args);
+            this.myProcedures =  this.myProcedures.concat(procedures);
         }
 
         /*private*/ async cargarGenerados(client: Client) {
@@ -78,15 +82,14 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                     if (v.tipovar == null) {
                         throw new Error('la variable ' + v.variable + ' no tiene tipo');
                     }
-                    return { name: v.variable, typeName: v.type_name, editable: false};
+                    return { name: v.variable, typeName: v.type_name};
                 }),
-                editable: true,
+                allow:{export: true, select: true},
                 primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
                 sql: {
                     tableName: nombreTablaDatos,
                     isTable: true,
-                    isReferable: true,
-                    skipEnance: true
+                    skipEnance: false
                 },
             };
             return tableDef;
@@ -106,21 +109,21 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             var be = this;
             return super.getProcedures().then(function(procedures){
                 return procedures.concat(
-                    ProceduresOperativos.map(be.procedureDefCompleter, be)
+                    be.myProcedures.map(be.procedureDefCompleter, be)
                 );
             });
-        }    
+        }
         clientIncludes(req:typesOpe.Request, hideBEPlusInclusions:boolean){
             return super.clientIncludes(req, hideBEPlusInclusions).concat([
-                {type:'js' , src:'client/operativos.js'},
+                {type:'js' , src:'client/'+ this.myClientFileName + '.js'},
             ])
         }
         getMenu():typesOpe.MenuDefinition{
             let menu:MenuDefinition = {menu:[
-                {menuType:'table'  , name:'operativos' },
                 {menuType:'table'  , name:'usuarios'   },
-                {menuType:'table'  , name:'tabla_datos'},
+                {menuType:'table'  , name:'operativos' },
                 {menuType:'table'  , name:'unidad_analisis'   },
+                {menuType:'table'  , name:'tabla_datos'},
                 {menuType:'table'  , name:'variables'  },
             ]}
             return menu;
