@@ -8,6 +8,11 @@ export interface User extends backendPlus.User{
     rol:string
 }
 
+export enum sufijoTablaDato {
+    calculada = '_calc',
+    externa = '_ext'
+}
+
 export type TableDefinitionsGetters = {
     [key:string]: (context:backendPlus.TableContext) => TableDefinition
 }
@@ -64,4 +69,5 @@ export interface TablaDatos {
     operativo: string
     tabla_datos: string
     unidad_analisis: string
+    sufijo: sufijoTablaDato
 }

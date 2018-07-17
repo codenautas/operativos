@@ -1,8 +1,7 @@
 "use strict";
 
 import {TableDefinition} from "backend-plus"
-import {TableContext} from "./types-operativos"
-
+import {TableContext, sufijoTablaDato} from "./types-operativos"
 
 export {tabla_datos};
 function tabla_datos(context:TableContext):TableDefinition{
@@ -15,6 +14,7 @@ function tabla_datos(context:TableContext):TableDefinition{
             {name:"operativo"         , typeName:'text'                   ,},
             {name:"tabla_datos"       , typeName:'text'                   ,},
             {name:"unidad_analisis"   , typeName:'text'                   ,},
+            {name:"sufijo"            , typeName:'text'                   ,},
         ],
         primaryKey:['operativo', 'tabla_datos'],
         foreignKeys:[
@@ -23,6 +23,9 @@ function tabla_datos(context:TableContext):TableDefinition{
         ],
         detailTables:[
             {table:'variables'       , fields:['operativo','tabla_datos'], abr:'V'},
+        ],
+        constraints: [
+            { constraintType: 'check', expr: `sufijo IN ('${sufijoTablaDato.calculada}', '${sufijoTablaDato.externa}')` },
         ],
     };
 }
