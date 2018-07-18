@@ -46,7 +46,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             where EXISTS (
                 SELECT 1
                 FROM information_schema.tables 
-                WHERE table_name = tabla_datos || '_' || tipo
+                WHERE table_name = tabla_datos
                 );
                 `).fetchAll();
             return await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => this.generateAndLoadTableDef(client, tablaDatosRow)))
@@ -61,7 +61,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             });
         }
         async generateBaseTableDef(client: Client, tablaDatos:TablaDatos){
-            let nombreTablaFisica = tablaDatos.tabla_datos + '_' + tablaDatos.tipo;
+            let nombreTabla = tablaDatos.tabla_datos;
             let resultV;
 
             // calcular fields
@@ -75,7 +75,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                     where operativo = $1 and ((tabla_datos = $2) or (tabla_datos = $3 and es_pk))
                     order by es_pk, orden, variable
                     `;            
-                resultV = await client.query(query, [tablaDatos.operativo, nombreTablaFisica, tablaDatos.tabla_datos]
+                resultV = await client.query(query, [tablaDatos.operativo, nombreTabla, tablaDatos.unidad_analisis]
                 ).fetchAll();
             } else {
                 let query = `select *
@@ -83,7 +83,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                     where operativo = $1 and tabla_datos = $2
                     order by es_pk, orden, variable
                     `;            
-                resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.tabla_datos]
+                resultV = await client.query(query, [tablaDatos.operativo, nombreTabla]
                 ).fetchAll();
             }
 
@@ -92,7 +92,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             }
             let variables: VariableWitType[] = <VariableWitType[]>resultV.rows;
             let tableDef: TableDefinition = {
-                name: nombreTablaFisica,
+                name: nombreTabla,
                 fields: variables.map(function (v: VariableWitType) {
                     if (v.tipovar == null) {
                         throw new Error('la variable ' + v.variable + ' no tiene tipo');
@@ -102,7 +102,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 allow:{export: true, select: true},
                 primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
                 sql: {
-                    tableName: nombreTablaFisica,
+                    tableName: nombreTabla,
                     isTable: true,
                     skipEnance: false
                 },
