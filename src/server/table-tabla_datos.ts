@@ -11,9 +11,9 @@ function tabla_datos(context:TableContext):TableDefinition{
         elementName:'tabla_datos',
         editable:admin,
         fields:[
-            {name:"operativo"         , typeName:'text'                   ,},
+            {name:"operativo"         , typeName:'text', nullable: false  ,},
             {name:"tabla_datos"       , typeName:'text', nullable: false  ,},
-            {name:"tipo"            , typeName:'text', nullable: false  ,},
+            {name:"tipo"              , typeName:'text', nullable: false    ,},
             {name:"unidad_analisis"   , typeName:'text', nullable: false  ,},
         ],
         primaryKey:['operativo', 'tabla_datos', 'tipo'],

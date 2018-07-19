@@ -66,7 +66,7 @@ export interface TipoVar {
 }
 
 export interface TablaDatos {
-    operativo?: string
+    operativo: string
     tabla_datos: string
     tipo: tiposTablaDato
     unidad_analisis: string
