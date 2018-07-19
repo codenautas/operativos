@@ -110,10 +110,14 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             return tableDef;
         }
         
-        loadTableDef(tableDef: TableDefinition){
-            return this.tableStructures[tableDef.name] = <TableDefinitionFunction> function (contexto: Context):TableDefinition {
+        getTableDefFunction(tableDef: TableDefinition){
+            return <TableDefinitionFunction> function (contexto: Context):TableDefinition {
                 return contexto.be.tableDefAdapt(tableDef, contexto);
             };
+        }
+
+        loadTableDef(tableDef: TableDefinition){
+            return this.tableStructures[tableDef.name] = this.getTableDefFunction(tableDef);
         }
         
         async generateAndLoadTableDef(client: Client, tablaDatos:TablaDatos){
