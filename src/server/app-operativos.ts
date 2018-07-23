@@ -1,7 +1,7 @@
 "use strict";
 
 import * as likeAr from "like-ar";
-import {TableContext,TableDefinition, Context, TableDefinitionFunction, Variable, TipoVar, TablaDatos, AppBackend, Request, tiposTablaDato} from "./types-operativos";
+import {TableContext,TableDefinition, Context, TableDefinitionFunction, Variable, TipoVar, TablaDatos, AppBackend, Request, tiposTablaDato, ClientModuleDefinition} from "./types-operativos";
 import * as typesOpe from "./types-operativos";
 
 export * from "./types-operativos";
@@ -32,12 +32,19 @@ import { procedures } from "./procedures-operativos";
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
         getTableDefinition:typesOpe.TableDefinitionsGetters
-        myProcedures: typesOpe.ProcedureDef[] = [];
+        allProcedures: typesOpe.ProcedureDef[] = [];
+        allClientFileNames: string[] = [];
+        myProcedures: typesOpe.ProcedureDef[] = procedures;
         myClientFileName: string = 'operativos';
-
+        
         constructor(...args:any[]){
-            super(...args);
-            this.myProcedures =  this.myProcedures.concat(procedures);
+            super(args);
+            this.initialize();
+        }
+
+        initialize(): void {
+            this.allProcedures = this.allProcedures.concat(this.myProcedures);
+            this.allClientFileNames.push(this.myClientFileName)
         }
 
         /*private*/ async cargarGenerados(client: Client) {
@@ -128,15 +135,18 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             var be = this;
             return super.getProcedures().then(function(procedures){
                 return procedures.concat(
-                    be.myProcedures.map(be.procedureDefCompleter, be)
+                    be.allProcedures.map(be.procedureDefCompleter, be)
                 );
             });
         }
         clientIncludes(req:typesOpe.Request, hideBEPlusInclusions:boolean){
-            return super.clientIncludes(req, hideBEPlusInclusions).concat([
-                {type:'js' , src:'client/'+ this.myClientFileName + '.js'},
-            ])
+            return super.clientIncludes(req, hideBEPlusInclusions).concat(this.allClientFileNames.map(
+                (fileName:string) => {
+                    let clientModDef:ClientModuleDefinition = {src:'client/'+ fileName + '.js', type:'js'}
+                    return clientModDef;
+                }));
         }
+
         getMenu():typesOpe.MenuDefinition{
             let menu:MenuDefinition = {menu:[
                 {menuType:'table'  , name:'usuarios'   },
