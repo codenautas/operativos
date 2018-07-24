@@ -83,7 +83,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 let query = `select *
                     from variables left join tipovar using(tipovar)
                     where operativo = $1 and ((tabla_datos = $2) or (tabla_datos = $3 and es_pk))
-                    order by es_pk, orden, variable
+                    order by es_pk desc nulls last, orden, variable
                     `;            
                 resultV = await client.query(query, [tablaDatos.operativo, nombreTabla, tablaDatos.unidad_analisis]
                 ).fetchAll();
@@ -91,7 +91,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 let query = `select *
                     from variables left join tipovar using(tipovar)
                     where operativo = $1 and tabla_datos = $2
-                    order by es_pk, orden, variable
+                    order by es_pk desc nulls last, orden, variable
                     `;            
                 resultV = await client.query(query, [tablaDatos.operativo, nombreTabla]
                 ).fetchAll();

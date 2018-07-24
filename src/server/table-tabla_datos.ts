@@ -13,11 +13,11 @@ function tabla_datos(context:TableContext):TableDefinition{
         fields:[
             {name:"operativo"         , typeName:'text', nullable: false  ,},
             {name:"tabla_datos"       , typeName:'text', nullable: false  ,},
-            {name:"tipo"              , typeName:'text', nullable: false    ,},
+            {name:"tipo"              , typeName:'text', nullable: false  ,},
             {name:"unidad_analisis"   , typeName:'text', nullable: false  ,},
             {name:"generar"           , typeName: "bigint"  , editable:false, clientSide:'generarTD'}
         ],
-        primaryKey:['operativo', 'tabla_datos', 'tipo'],
+        primaryKey:['operativo', 'tabla_datos'],
         foreignKeys:[
             {references:'operativos', fields:['operativo']},
             {references:'unidad_analisis', fields:['operativo','unidad_analisis']},
