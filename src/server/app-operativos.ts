@@ -33,7 +33,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
         getTableDefinition:typesOpe.TableDefinitionsGetters
         allProcedures: typesOpe.ProcedureDef[] = [];
-        allClientFileNames: string[] = [];
+        allClientFileNames: ClientModuleDefinition[] = [];
         myProcedures: typesOpe.ProcedureDef[] = procedures;
         myClientFileName: string = 'operativos';
         
@@ -44,7 +44,10 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
 
         initialize(): void {
             this.allProcedures = this.allProcedures.concat(this.myProcedures);
-            this.allClientFileNames.push(this.myClientFileName)
+            // TODO: ahora se está usando myClientFileName para el attr module y file, refactorizar.
+            // TODO: el clientIncludes de BEPlus está diseñado para archivos que expone un módulo en la rama principal (donde está el main del módulo),
+            // por eso hubo que poner '../client' en modPath
+            this.allClientFileNames.push({type:'js', module: this.myClientFileName, modPath: '../client', file: this.myClientFileName + '.js', path: 'client_modules'})
         }
 
         /*private*/ async cargarGenerados(client: Client) {
@@ -140,11 +143,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             });
         }
         clientIncludes(req:typesOpe.Request, hideBEPlusInclusions:boolean){
-            return super.clientIncludes(req, hideBEPlusInclusions).concat(this.allClientFileNames.map(
-                (fileName:string) => {
-                    let clientModDef:ClientModuleDefinition = {src:'client/'+ fileName + '.js', type:'js'}
-                    return clientModDef;
-                }));
+            return super.clientIncludes(req, hideBEPlusInclusions).concat(this.allClientFileNames);
         }
 
         getMenu():typesOpe.MenuDefinition{
