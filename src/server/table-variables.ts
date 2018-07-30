@@ -39,7 +39,7 @@ function variables(context:TableContext):TableDefinition{
             {references:'unidad_analisis', fields:['operativo','unidad_analisis'] },
         ],
         detailTables: [
-            { table: 'variables_opciones', fields: ['operativo', 'variable'], abr: 'o', label: 'opciones' }
+            { table: 'variables_opciones', fields: ['operativo', 'tabla_datos', 'variable'], abr: 'o', label: 'opciones' }
         ],
         constraints: [
             { constraintType: 'check', expr: "es_nombre_unico = TRUE" },
