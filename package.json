@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "main": "server/app-operativos.js",
