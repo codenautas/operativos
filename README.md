@@ -1,2 +1,2 @@
 # operativos
-Elementos base para operativos estadísticos...
+Elementos base para operativos estadísticos.
