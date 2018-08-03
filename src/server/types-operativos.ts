@@ -64,10 +64,13 @@ export interface TipoVar {
     validar: string
     radio: boolean
 }
-
 export interface TablaDatos {
     operativo: string
     tabla_datos: string
     tipo: tiposTablaDato
     unidad_analisis: string
+}
+export interface Operativo {
+    operativo: string
+    nombre: string
 }
