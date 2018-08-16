@@ -15,7 +15,8 @@ function tabla_datos(context:TableContext):TableDefinition{
             {name:"tabla_datos"       , typeName:'text', nullable: false  ,},
             {name:"tipo"              , typeName:'text', nullable: false  ,},
             {name:"unidad_analisis"   , typeName:'text', nullable: false  ,},
-            {name:"generar"           , typeName: "bigint"  , editable:false, clientSide:'generarTD'}
+            {name:"generar"           , typeName: "bigint"  , editable:false, clientSide:'generarTD'},
+            {name:"ver_tabla"               , typeName: "bigint"  , editable:false, clientSide:'verTabla'}
         ],
         primaryKey:['operativo', 'tabla_datos'],
         foreignKeys:[
