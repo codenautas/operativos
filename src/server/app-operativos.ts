@@ -153,6 +153,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 {menuType:'table'  , name:'unidad_analisis'   },
                 {menuType:'table'  , name:'tabla_datos'},
                 {menuType:'table'  , name:'variables'  },
+                {menuType:'table'  , name:'variables_opciones'  },
             ]}
             return menu;
         }

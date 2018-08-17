@@ -11,6 +11,7 @@ export function operativos(context: TableContext): TableDefinition {
         fields: [
             { name: "operativo", typeName: 'text', },
             { name: "nombre"   , typeName: 'text', },
+            { name: "calcular" , typeName: "bigint"  , editable:false, clientSide:'generarCalculadas'},
         ],
         primaryKey: ['operativo'],
         detailTables: [
