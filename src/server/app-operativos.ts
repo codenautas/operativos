@@ -59,7 +59,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 WHERE table_name = tabla_datos
                 );
                 `).fetchAll();
-            return await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => this.generateAndLoadTableDef(client, tablaDatosRow)))
+            await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatos) => this.generateAndLoadTableDef(client, tablaDatosRow)))
                 .then(() => "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas");
         }
 
@@ -98,7 +98,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             }
 
             if(resultV.rowCount==0){
-                throw new Error('La tabla no tiene variables');
+                console.error('La tabla' + nombreTabla + 'no tiene variables');
             }
             let variables: VariableWitType[] = <VariableWitType[]>resultV.rows;
             let tableDef: TableDefinition = {
