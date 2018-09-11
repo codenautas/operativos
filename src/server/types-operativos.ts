@@ -39,13 +39,14 @@ export type Variable = {
     es_pk              :boolean
     es_nombre_unico    :boolean
     activa             :boolean
+    filtro             :string
     expresion          :string
     cascada            :string
     nsnc_atipico       :number
     cerrada            :boolean
-    funcion_agregacion:string
-    tabla_agregada    :string
-    grupo             :string
+    funcion_agregacion :string
+    tabla_agregada     :string
+    grupo              :string
     orden : number
 }
 export interface UnidadDeAnalisis {

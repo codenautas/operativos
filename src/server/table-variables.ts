@@ -21,6 +21,7 @@ function variables(context:TableContext):TableDefinition{
             { name: "es_pk"              , typeName: 'boolean', defaultValue: false},
             { name: "es_nombre_unico"    , typeName: 'boolean' },
             { name: "activa"             , typeName: 'boolean', nullable:false, defaultValue:false},
+            { name: "filtro"             , typeName: 'text'    },
             { name: "expresion"          , typeName: 'text'    },
             { name: "cascada"            , typeName: 'text'    },
             { name: "nsnc_atipico"       , typeName: 'integer' },
