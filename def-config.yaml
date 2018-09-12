@@ -8,7 +8,6 @@ db:
   database: operativos_db
   schema: ope
   user: operativos_user
-  password: la_clavasdf93939kdkx.sdlf2342sdaf####109
   search_path: 
   - ope
 install:
@@ -39,7 +38,6 @@ login:
     maxAge-10-day: 864000000
     allowHttpLogin: true
     fileStore: false
-    secret: secret some in blah blah
     skipCheckAlreadyLoggedIn: true
     loginForm:
       formTitle: Base Operativos
