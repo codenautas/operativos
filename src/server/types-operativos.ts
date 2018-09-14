@@ -49,6 +49,9 @@ export type Variable = {
     grupo              :string
     orden : number
 }
+export interface VariableComplete extends Variable {
+     opciones: VariableOpcion[]
+};
 export interface UnidadDeAnalisis {
     operativo : string
     unidad_analisis : string

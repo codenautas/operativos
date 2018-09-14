@@ -4,6 +4,7 @@ import * as likeAr from "like-ar";
 import {TableContext,TableDefinition, Context, TableDefinitionFunction, Variable, TipoVar, TablaDatos, AppBackend, Request, tiposTablaDato, ClientModuleDefinition} from "./types-operativos";
 import * as typesOpe from "./types-operativos";
 
+// re-export my file of types for external modules
 export * from "./types-operativos";
 
 type MenuInfoMapa = {
