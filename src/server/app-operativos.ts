@@ -48,6 +48,10 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             // TODO: ahora se está usando myClientFileName para el attr module y file, refactorizar.
             // TODO: el clientIncludes de BEPlus está diseñado para archivos que expone un módulo en la rama principal (donde está el main del módulo),
             // por eso hubo que poner '../client' en modPath
+            // Esto NO FUNCIONA cuando se quiere leventar una app layer sin procesamiento:
+            // datos-ext, varcal, operativos y exportador son capas de aplicación que por si solas y como está diseñado deberían poder levantarse
+            // como apps (npm start en varcal por ej)
+            // pero la siguiente linea hace que una app quiera agregarse a si misma como dependencia
             this.allClientFileNames.push({type:'js', module: this.myClientFileName, modPath: '../client', file: this.myClientFileName + '.js', path: 'client_modules'})
         }
 
