@@ -1,8 +1,19 @@
 "use strict";
 
 import * as likeAr from "like-ar";
-import {TableContext,TableDefinition, Context, TableDefinitionFunction, Variable, TipoVar, TablaDatos, AppBackend, Request, tiposTablaDato, ClientModuleDefinition} from "./types-operativos";
+import { Client } from "pg-promise-strict";
+import { procedures } from "./procedures-operativos";
+import { clasevar } from './table-clasevar';
+import { operativos } from './table-operativos';
+import { parametros } from './table-parametros';
+import { tabla_datos } from "./table-tabla_datos";
+import { tipovar } from './table-tipovar';
+import { unidad_analisis } from "./table-unidad_analisis";
+import { usuarios } from './table-usuarios';
+import { variables } from "./table-variables";
+import { variables_opciones } from "./table-variables_opciones";
 import * as typesOpe from "./types-operativos";
+import { AppBackend, ClientModuleDefinition, Context, Request, TablaDatos, TableContext, TableDefinition, TableDefinitionFunction, tiposTablaDato, TipoVar, Variable } from "./types-operativos";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
@@ -18,17 +29,6 @@ type VariableWitType = (Variable & TipoVar);
 
 export type Constructor<T> = new(...args: any[]) => T;
 
-import {parametros}      from './table-parametros'
-import {usuarios}        from './table-usuarios'
-import {operativos}      from './table-operativos'
-import {clasevar}        from './table-clasevar'
-import {tipovar}         from './table-tipovar'
-import {tabla_datos}     from "./table-tabla_datos";
-import {unidad_analisis} from "./table-unidad_analisis";
-import {variables}       from "./table-variables";
-import {variables_opciones} from "./table-variables_opciones";
-import { Client } from "pg-promise-strict";
-import { procedures } from "./procedures-operativos";
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
@@ -52,6 +52,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             // datos-ext, varcal, operativos y exportador son capas de aplicación que por si solas y como está diseñado deberían poder levantarse
             // como apps (npm start en varcal por ej)
             // pero la siguiente linea hace que una app quiera agregarse a si misma como dependencia
+            // Que hace la siguiente linea: agrega los client de cada layer al client includes
             this.allClientFileNames.push({type:'js', module: this.myClientFileName, modPath: '../client', file: this.myClientFileName + '.js', path: 'client_modules'})
         }
 
