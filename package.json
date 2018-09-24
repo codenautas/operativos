@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.1.31",
+  "version": "0.1.33",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "main": "server/app-operativos.js",
@@ -14,7 +14,7 @@
     "unlogged"
   ],
   "dependencies": {
-    "backend-plus": "0.25.12",
+    "backend-plus": "0.25.17",
     "like-ar": "~0.2.7",
     "pg-triggers": "~0.2.2"
   },
@@ -22,7 +22,7 @@
     "node": ">= 8.0.0"
   },
   "scripts": {
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "build": "(tsc -p tsconfig-client.json || echo \"continue w/error\") && (tsc -p tsconfig-server.json  || echo \"continue w/error\")",
     "start": "node server/server-operativos.js"
   },
