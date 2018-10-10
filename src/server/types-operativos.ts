@@ -27,7 +27,8 @@ export type VariableOpcion = {
     expresion_valor    :string
     orden              :number
 }
-export type Variable = {
+
+export interface Variable {
     operativo          :string
     tabla_datos        :string
     variable           :string
@@ -50,7 +51,8 @@ export type Variable = {
     orden : number
 }
 export interface VariableComplete extends Variable {
-     opciones: VariableOpcion[]
+    opciones: VariableOpcion[]
+    unidad_analisis: string
 };
 export interface UnidadDeAnalisis {
     operativo : string
@@ -68,11 +70,29 @@ export interface TipoVar {
     validar: string
     radio: boolean
 }
-export interface TablaDatos {
+
+export interface TablaDatosDB {
     operativo: string
     tabla_datos: string
     tipo: tiposTablaDato
     unidad_analisis: string
+}
+
+export class TablaDatos implements TablaDatosDB {
+    constructor(public operativo:string, public tabla_datos: string, public tipo: tiposTablaDato, public unidad_analisis: string){
+    }
+    
+    static construirConObj(tdDB: TablaDatosDB){
+        return new TablaDatos(tdDB.operativo, tdDB.tabla_datos, tdDB.tipo, tdDB.unidad_analisis);
+    }
+
+    getTableName(){
+        return this.operativo.toLowerCase() + '_' + this.tabla_datos;
+    }
+
+    esCalculada(){
+        return this.tipo == tiposTablaDato.calculada
+    }
 }
 export interface Operativo {
     operativo: string
