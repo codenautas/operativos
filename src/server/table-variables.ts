@@ -16,7 +16,6 @@ function variables(context:TableContext):TableDefinition{
             { name: "abr"                , typeName: 'text'    },
             { name: "nombre"             , typeName: 'text'    },
             { name: "tipovar"            , typeName: 'text'    },
-            { name: "unidad_analisis"    , typeName: 'text'   , nullable:false                    },
             { name: "clase"              , typeName: 'text'   , nullable:false                    },
             { name: "es_pk"              , typeName: 'boolean', defaultValue: false},
             { name: "es_nombre_unico"    , typeName: 'boolean' },
@@ -29,7 +28,7 @@ function variables(context:TableContext):TableDefinition{
             { name: "funcion_agregacion" , typeName: 'text'    },
             { name: "tabla_agregada"     , typeName: 'text'    },
             { name: "grupo"              , typeName: 'text'    },
-            { name: "orden"              , typeName: 'integer'    },
+            { name: "orden"              , typeName: 'integer' },
         ],
         primaryKey: ['operativo', 'tabla_datos','variable'],
         foreignKeys: [
@@ -37,7 +36,6 @@ function variables(context:TableContext):TableDefinition{
             {references:'tabla_datos'    , fields:['operativo','tabla_datos'] },
             {references:'clasevar'       , fields:['clase']                   },
             {references:'tipovar'        , fields:['tipovar']                 },
-            {references:'unidad_analisis', fields:['operativo','unidad_analisis'] },
         ],
         detailTables: [
             { table: 'variables_opciones', fields: ['operativo', 'tabla_datos', 'variable'], abr: 'o', label: 'opciones' }
