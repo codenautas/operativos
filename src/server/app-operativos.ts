@@ -14,7 +14,7 @@ import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
 import * as typesOpe from "./types-operativos";
-import { AppBackend, ClientModuleDefinition, Context, Request, TablaDatosDB, TablaDatos, TableContext, TableDefinition, TableDefinitionFunction, TipoVar, Variable } from "./types-operativos";
+import { AppBackend, ClientModuleDefinition, Context, Request, TablaDatosDB, TablaDatos, UnidadDeAnalisis, TableContext, TableDefinition, TableDefinitionFunction, TipoVar, Variable } from "./types-operativos";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
@@ -150,6 +150,11 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 [op, id]
                 ).fetchUniqueRow();
             return <TablaDatos> result.row        
+        }
+
+        async getUAs(client:Client, op:string): Promise<UnidadDeAnalisis[]>{
+            let resultUA = await client.query('select * from unidad_analisis ua where operativo = $1', [op]).fetchAll();
+            return <UnidadDeAnalisis[]> resultUA.rows
         }
         
         getTableDefFunction(tableDef: TableDefinition){
