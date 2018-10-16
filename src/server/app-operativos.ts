@@ -74,7 +74,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 (SELECT jsonb_agg(to_jsonb(vo.*) order by vo.orden, vo.opcion) 
                     FROM variables_opciones vo 
                     WHERE vo.operativo = v.operativo and vo.variable = v.variable) as opciones
-               FROM variables v JOIN tabla_datos td ON v.tabla_datos=td.tabla_datos AND v.operativo=td.operativo
+               FROM variables v JOIN tabla_datos td USING (operativo, tabla_datos)
                WHERE v.operativo = $1 AND v.activa
             `, [operativo]).fetchAll();
         }
