@@ -17,7 +17,7 @@ function variables(context:TableContext):TableDefinition{
             { name: "nombre"             , typeName: 'text'    },
             { name: "tipovar"            , typeName: 'text'    },
             { name: "clase"              , typeName: 'text'   , nullable:false                    },
-            { name: "es_pk"              , typeName: 'boolean', defaultValue: false},
+            { name: "es_pk"              , typeName: 'integer'},
             { name: "es_nombre_unico"    , typeName: 'boolean' },
             { name: "activa"             , typeName: 'boolean', nullable:false, defaultValue:false},
             { name: "filtro"             , typeName: 'text'    },

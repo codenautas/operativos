@@ -15,7 +15,6 @@ export function operativos(context: TableContext): TableDefinition {
         ],
         primaryKey: ['operativo'],
         detailTables: [
-            { table: 'unidad_analisis', fields: ['operativo'], abr: 'U' },
             { table: 'tabla_datos'    , fields: ['operativo'], abr: 'T' }
         ]
     };

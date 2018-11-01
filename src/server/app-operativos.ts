@@ -1,20 +1,21 @@
 "use strict";
 
-import * as likeAr from "like-ar";
 import * as bg from "best-globals";
+import * as likeAr from "like-ar";
 import { Client } from "pg-promise-strict";
 import { procedures } from "./procedures-operativos";
 import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
 import { parametros } from './table-parametros';
+import { relaciones } from "./table-relaciones";
+import { relac_vars } from "./table-relac_vars";
 import { tabla_datos } from "./table-tabla_datos";
 import { tipovar } from './table-tipovar';
-import { unidad_analisis } from "./table-unidad_analisis";
 import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
 import * as typesOpe from "./types-operativos";
-import { AppBackend, ClientModuleDefinition, Context, Request, TablaDatosDB, TablaDatos, UnidadDeAnalisis, TableContext, TableDefinition, TableDefinitionFunction, TipoVar, Variable } from "./types-operativos";
+import { AppBackend, ClientModuleDefinition, Context, OperativoGenerator, Request, TablaDatos, TableContext, TableDefinition, TableDefinitionFunction } from "./types-operativos";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
@@ -26,8 +27,6 @@ type MenuInfoMapa = {
 type MenuInfo = MenuInfoMapa | typesOpe.MenuInfo;
 type MenuDefinition = {menu:MenuInfo[]}
 
-type VariableWitType = (Variable & TipoVar);
-
 export type Constructor<T> = new(...args: any[]) => T;
 
 
@@ -38,6 +37,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         allClientFileNames: ClientModuleDefinition[] = [];
         myProcedures: typesOpe.ProcedureDef[] = procedures;
         myClientFileName: string = 'operativos';
+        tablasDatos: TablaDatos[];
         
         constructor(...args:any[]){
             super(args);
@@ -58,9 +58,10 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         }
 
         /*private*/ async cargarGenerados(client: Client) {
-            let resultTD = await client.query('SELECT * from tabla_datos WHERE generada is not null;').fetchAll();
-            await Promise.all(resultTD.rows.map((tablaDatosRow: TablaDatosDB) => this.generateAndLoadTableDef(client, tablaDatosRow)))
-                .then(() => "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas");
+            let operativoGenerator = new OperativoGenerator(this);
+            await operativoGenerator.fetchDataFromDB(client);
+            operativoGenerator.myTDs.filter(td=>td.generada).forEach(td => this.generateAndLoadTableDef(td))
+            return "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas"
         }
 
         //TODO: pasar a BEPlus
@@ -68,15 +69,8 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             return bg.date.today().toYmd();
         }
 
-        async getVariablesDatos(client:Client, operativo: string){
-            return await client.query(`SELECT
-               v.*, td.unidad_analisis, 
-                (SELECT jsonb_agg(to_jsonb(vo.*) order by vo.orden, vo.opcion) 
-                    FROM variables_opciones vo 
-                    WHERE vo.operativo = v.operativo and vo.variable = v.variable) as opciones
-               FROM variables v JOIN tabla_datos td USING (operativo, tabla_datos)
-               WHERE v.operativo = $1 AND v.activa
-            `, [operativo]).fetchAll();
+        static prefixTableName(tableName: string, prefix: string){
+            return prefix.toLowerCase() + '_' + tableName;
         }
 
         async postConfig(){
@@ -87,77 +81,27 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             });
         }
         
-        async generateBaseTableDef(client: Client, tablaDatosDB:TablaDatosDB){
-            let tablaDatos = TablaDatos.construirConObj(tablaDatosDB);
-            let nombreTablaDato = tablaDatos.getTableName();
-            let resultV;
-
-            // calcular fields
-            // para el caso de las tablas externas con $3 alcanza para obtener armar los fields incluidas las pks,
-            // pero para las calculadas tenemos que agregarle (or) las pks de la tabla externa
-            // TODO: en el futuro cuando se generen una tabla calculada hay que agregar automaticamente en la tabla
-            // variables los registros correspondientes a las pks, con eso se simplificaría la siguiente consulta
-            
-            // OJO VER EN FLUJO CALCULADAS COMO TOMAR LOS CAMPOS PKS DE LA FUTURA TABLA CALCULADA
-
-            if (tablaDatos.esCalculada()){
-                let query = `select *
-                    from variables left join tipovar using(tipovar)
-                    where operativo = $1 and ((tabla_datos = $2) or (tabla_datos = $3 and es_pk))
-                    order by es_pk desc nulls last, orden, variable
-                    `;
-                resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.tabla_datos, tablaDatos.unidad_analisis]
-                ).fetchAll();
-            } else {
-                let query = `select *
-                    from variables left join tipovar using(tipovar)
-                    where operativo = $1 and tabla_datos = $2
-                    order by es_pk desc nulls last, orden, variable
-                    `;
-                resultV = await client.query(query, [tablaDatos.operativo, tablaDatos.tabla_datos]
-                ).fetchAll();
+        generateBaseTableDef(tablaDatos:TablaDatos){
+            let variables = OperativoGenerator.instanceObj.getVars(tablaDatos);
+            let tableName = tablaDatos.getTableName();
+            if(variables.length==0){
+                console.error('La tabla ' + tablaDatos.tabla_datos + ' no tiene variables');
             }
-
-            if(resultV.rowCount==0){
-                console.error('La tabla ' + nombreTablaDato + ' no tiene variables');
-            }
-            let variables: VariableWitType[] = <VariableWitType[]>resultV.rows;
             let tableDef: TableDefinition = {
-                name: nombreTablaDato,
+                name: tableName,
                 title: tablaDatos.tabla_datos,
-                fields: variables.map(function (v: VariableWitType) {
-                    if (v.tipovar == null) {
-                        throw new Error('la variable ' + v.variable + ' no tiene tipo');
-                    }
-                    return { name: v.variable, typeName: v.type_name};
-                }),
+                fields: variables.map(v => v.getFieldObject()),
                 allow:{export: true, select: true},
-                primaryKey: variables.filter(v => v.es_pk).map(fieldDef => fieldDef.variable),
+                primaryKey: tablaDatos.pks,
                 sql: {
-                    tableName: nombreTablaDato,
+                    tableName: tableName,
                     isTable: true,
                     skipEnance: false
                 },
             };
             return tableDef;
         }
-
-        async getTablaDatos(client:Client, op:string, id:string): Promise<TablaDatos>{
-            let result = await client.query(
-                `select *
-                from tabla_datos, parametros
-                where operativo = $1 and tabla_datos = $2
-                `,
-                [op, id]
-                ).fetchUniqueRow();
-            return <TablaDatos> result.row        
-        }
-
-        async getUAs(client:Client, op:string): Promise<UnidadDeAnalisis[]>{
-            let resultUA = await client.query('select * from unidad_analisis ua where operativo = $1', [op]).fetchAll();
-            return <UnidadDeAnalisis[]> resultUA.rows
-        }
-        
+       
         getTableDefFunction(tableDef: TableDefinition){
             return <TableDefinitionFunction> function (contexto: Context):TableDefinition {
                 return contexto.be.tableDefAdapt(tableDef, contexto);
@@ -168,8 +112,8 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             return this.tableStructures[tableDef.name] = this.getTableDefFunction(tableDef);
         }
         
-        async generateAndLoadTableDef(client: Client, tablaDatosDB:TablaDatosDB){
-            return this.loadTableDef(await this.generateBaseTableDef(client, tablaDatosDB));
+        generateAndLoadTableDef(tablaDatos:TablaDatos){
+            return this.loadTableDef(this.generateBaseTableDef(tablaDatos));
         }
         
         getProcedures(){
@@ -188,10 +132,11 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             let menu:MenuDefinition = {menu:[
                 {menuType:'table'  , name:'usuarios'   },
                 {menuType:'table'  , name:'operativos' },
-                {menuType:'table'  , name:'unidad_analisis'   },
                 {menuType:'table'  , name:'tabla_datos'},
                 {menuType:'table'  , name:'variables'  },
                 {menuType:'table'  , name:'variables_opciones'  },
+                {menuType:'table'  , name:'relaciones'},
+                {menuType:'table'  , name:'relac_vars'},
             ]}
             return menu;
         }
@@ -203,9 +148,10 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 clasevar  ,    
                 tipovar   ,
                 tabla_datos,
-                unidad_analisis,
                 variables,
-                variables_opciones
+                variables_opciones,
+                relaciones,
+                relac_vars
             }
         }
         appendToTableDefinition(tableName:string, appenderFunction:(tableDef:typesOpe.TableDefinition, context?:TableContext)=>void):void{

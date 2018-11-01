@@ -14,15 +14,13 @@ function tabla_datos(context:TableContext):TableDefinition{
             {name:"operativo"         , typeName:'text', nullable: false  ,},
             {name:"tabla_datos"       , typeName:'text', nullable: false  ,},
             {name:"tipo"              , typeName:'text', nullable: false  ,},
-            {name:"unidad_analisis"   , typeName:'text', nullable: false  ,},
-            {name:"generar"           , typeName:'bigint'  , editable:false, clientSide:'generarTD'},
-            {name:"ver_tabla"         , typeName:'bigint'  , editable:false, clientSide:'verTabla'},
-            {name:'generada'          , typeName:'date', title:'generada/calculada', editable:true}
+            {name:"generar"           , typeName:'bigint' , editable:false, clientSide:'generarTD'},
+            {name:"ver_tabla"         , typeName:'bigint' , editable:false, clientSide:'verTabla'},
+            {name:'generada'          , typeName:'date'   , editable:false, title:'generada/calculada', }
         ],
         primaryKey:['operativo', 'tabla_datos'],
         foreignKeys:[
             {references:'operativos', fields:['operativo']},
-            {references:'unidad_analisis', fields:['operativo','unidad_analisis']},
         ],
         detailTables:[
             {table:'variables'       , fields:['operativo','tabla_datos'], abr:'V'},
