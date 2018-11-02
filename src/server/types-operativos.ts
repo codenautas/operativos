@@ -15,6 +15,23 @@ export enum tiposTablaDato {
     externa = 'externa'
 }
 
+
+export class RelacionesDB {
+    operativo: string
+    tabla_datos: string
+    que_busco: string
+    tabla_busqueda: string
+    tipo: string
+}
+
+export class Relaciones extends RelacionesDB {
+    static async fetchAll(client:Client){
+        let query = `SELECT * from relaciones`;
+        let resultV = await client.query(query).fetchAll();
+        return <Variable[]>resultV.rows.map((v:Variable) => Variable.buildFromDBJSON(v));
+    }
+}
+
 export type TableDefinitionsGetters = {
     [key:string]: (context:backendPlus.TableContext) => TableDefinition
 }
@@ -34,33 +51,33 @@ export abstract class VariableDB {
     operativo          :string
     tabla_datos        :string
     variable           :string
-    abr                :string
-    nombre             :string
+    abr?                :string
+    nombre?             :string
     tipovar            :string
     clase              :string
-    es_pk              :boolean
-    es_nombre_unico    :boolean
-    activa             :boolean
-    filtro             :string
-    expresion          :string
-    cascada            :string
-    nsnc_atipico       :number
-    cerrada            :boolean
-    funcion_agregacion :string
-    tabla_agregada     :string
-    grupo              :string
-    orden : number
+    es_pk?              :boolean
+    es_nombre_unico?    :boolean
+    activa?             :boolean
+    filtro?             :string
+    expresion?          :string
+    cascada?            :string
+    nsnc_atipico?       :number
+    cerrada?            :boolean
+    funcion_agregacion? :string
+    tabla_agregada?     :string
+    grupo?              :string
+    orden? : number
 }
 export class Variable extends VariableDB implements TipoVarDB {
-    opciones: VariableOpcion[]
+    opciones?: VariableOpcion[]
 
     tipovar: string
     html_type?: string
-    type_name: backendPlus.PgKnownTypes
-    validar: string
-    radio: boolean
+    type_name?: backendPlus.PgKnownTypes
+    validar?: string
+    radio?: boolean
 
-    tdObj: TablaDatos
+    // tdObj: TablaDatos
 
     getFieldObject(){
         if (this.tipovar == null) {
@@ -101,9 +118,9 @@ export class Variable extends VariableDB implements TipoVarDB {
 export interface TipoVarDB {
     tipovar: string
     html_type?: string
-    type_name: backendPlus.PgKnownTypes
-    validar: string
-    radio: boolean
+    type_name?: backendPlus.PgKnownTypes
+    validar?: string
+    radio?: boolean
 }
 
 export abstract class TablaDatosDB {
@@ -117,7 +134,13 @@ export abstract class TablaDatosDB {
 
 export class TablaDatos extends TablaDatosDB {
 
-    myVars: Variable[]
+    init(op:string, td:string, pks:string[], que_busco:string, tipo:tiposTablaDato){
+        this.operativo = op
+        this.tabla_datos = td
+        this.pks = pks
+        this.que_busco = que_busco
+        this.tipo = tipo
+    }
 
     static buildFromDBJSON(dbJson: TablaDatosDB){
         return Object.assign(new TablaDatos, dbJson);
