@@ -1,5 +1,4 @@
 import * as backendPlus from "backend-plus";
-import { TableDefinition } from "backend-plus";
 import { Client } from "pg-promise-strict";
 import { AppOperativos, AppOperativosType } from "./app-operativos";
 
