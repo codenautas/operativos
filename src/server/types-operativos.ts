@@ -32,10 +32,6 @@ export class Relaciones extends RelacionesDB {
     }
 }
 
-export type TableDefinitionsGetters = {
-    [key:string]: (context:backendPlus.TableContext) => TableDefinition
-}
-
 export type VariableOpcion = {
     operativo          :string
     tabla_datos        :string

@@ -32,7 +32,6 @@ export type Constructor<T> = new(...args: any[]) => T;
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
-        getTableDefinition:typesOpe.TableDefinitionsGetters
         allProcedures: typesOpe.ProcedureDef[] = [];
         allClientFileNames: ClientModuleDefinition[] = [];
         myProcedures: typesOpe.ProcedureDef[] = procedures;
@@ -141,7 +140,9 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             return menu;
         }
         prepareGetTables(){
+            super.prepareGetTables();
             this.getTableDefinition={
+                ... this.getTableDefinition,
                 parametros,    
                 usuarios  ,    
                 operativos,            
@@ -152,23 +153,6 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 variables_opciones,
                 relaciones,
                 relac_vars
-            }
-        }
-        appendToTableDefinition(tableName:string, appenderFunction:(tableDef:typesOpe.TableDefinition, context?:TableContext)=>void):void{
-            var previousDefiniterFunction=this.getTableDefinition[tableName]
-            if(previousDefiniterFunction==null){
-                throw new Error(tableName+" does not exists in getTableDefinition")
-            }
-            this.getTableDefinition[tableName]=function(context:TableContext){
-                var defTable=previousDefiniterFunction(context);
-                defTable.fields          =defTable.fields          ||[];
-                defTable.foreignKeys     =defTable.foreignKeys     ||[];
-                defTable.softForeignKeys =defTable.softForeignKeys ||[];
-                defTable.detailTables    =defTable.detailTables    ||[];
-                defTable.constraints     =defTable.constraints     ||[];
-                defTable.sql             =defTable.sql             ||{};
-                appenderFunction(defTable, context)
-                return defTable;
             }
         }
         getTables(){
