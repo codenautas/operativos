@@ -34,26 +34,12 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
         allProcedures: typesOpe.ProcedureDef[] = [];
         allClientFileNames: ClientModuleDefinition[] = [];
-        myProcedures: typesOpe.ProcedureDef[] = procedures;
-        myClientFileName: string = 'operativos';
         tablasDatos: TablaDatos[];
         
         constructor(...args:any[]){
             super(args);
-            this.initialize();
-        }
-
-        initialize(): void {
-            this.allProcedures = this.allProcedures.concat(this.myProcedures);
-            // TODO: ahora se está usando myClientFileName para el attr module y file, refactorizar.
-            // TODO: el clientIncludes de BEPlus está diseñado para archivos que expone un módulo en la rama principal (donde está el main del módulo),
-            // por eso hubo que poner '../client' en modPath
-            // Esto NO FUNCIONA cuando se quiere leventar una app layer sin procesamiento:
-            // datos-ext, varcal, operativos y exportador son capas de aplicación que por si solas y como está diseñado deberían poder levantarse
-            // como apps (npm start en varcal por ej)
-            // pero la siguiente linea hace que una app quiera agregarse a si misma como dependencia
-            // Que hace la siguiente linea: agrega los client de cada layer al client includes
-            this.allClientFileNames.push({type:'js', module: this.myClientFileName, modPath: '../client', file: this.myClientFileName + '.js', path: 'client_modules'})
+            // this.allProcedures = this.allProcedures.concat([]);
+            this.allClientFileNames.push({type:'js', module: 'operativos', modPath: '../client', file: 'operativos.js', path: 'client_modules'})
         }
 
         /*private*/ async cargarGenerados(client: Client) {
