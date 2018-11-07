@@ -3,7 +3,6 @@
 import * as bg from "best-globals";
 import * as likeAr from "like-ar";
 import { Client } from "pg-promise-strict";
-import { procedures } from "./procedures-operativos";
 import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
 import { parametros } from './table-parametros';
@@ -29,7 +28,6 @@ type MenuDefinition = {menu:MenuInfo[]}
 
 export type Constructor<T> = new(...args: any[]) => T;
 
-
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
         allProcedures: typesOpe.ProcedureDef[] = [];
@@ -43,7 +41,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         }
 
         /*private*/ async cargarGenerados(client: Client) {
-            let operativoGenerator = new OperativoGenerator(this);
+            let operativoGenerator = new OperativoGenerator();
             await operativoGenerator.fetchDataFromDB(client);
             operativoGenerator.myTDs.filter(td=>td.generada).forEach(td => this.generateAndLoadTableDef(td))
             return "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas"
@@ -113,18 +111,24 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             return super.clientIncludes(req, hideBEPlusInclusions).concat(this.allClientFileNames);
         }
 
-        getMenu():typesOpe.MenuDefinition{
-            let menu:MenuDefinition = {menu:[
-                {menuType:'table'  , name:'usuarios'   },
-                {menuType:'table'  , name:'operativos' },
-                {menuType:'table'  , name:'tabla_datos'},
-                {menuType:'table'  , name:'variables'  },
-                {menuType:'table'  , name:'variables_opciones'  },
-                {menuType:'table'  , name:'relaciones'},
-                {menuType:'table'  , name:'relac_vars'},
-            ]}
+        getMenu(): typesOpe.MenuDefinition {
+            let menu: MenuDefinition = {
+                menu: [
+                    {
+                        menuType: 'menu', name: 'Operativos', menuContent: [
+                            { menuType: 'table', name: 'usuarios' },
+                            { menuType: 'table', name: 'operativos' },
+                            { menuType: 'table', name: 'tabla_datos' },
+                            { menuType: 'table', name: 'variables' },
+                            { menuType: 'table', name: 'variables_opciones' },
+                            { menuType: 'table', name: 'relaciones' },
+                            { menuType: 'table', name: 'relac_vars' },
+                        ]
+                    }]
+            }
             return menu;
         }
+
         prepareGetTables(){
             super.prepareGetTables();
             this.getTableDefinition={

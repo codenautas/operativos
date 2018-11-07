@@ -1,6 +1,6 @@
 import * as backendPlus from "backend-plus";
 import { Client } from "pg-promise-strict";
-import { AppOperativos, AppOperativosType } from "./app-operativos";
+import { AppOperativos } from "./app-operativos";
 
 export * from "backend-plus";
 
@@ -194,7 +194,7 @@ export class OperativoGenerator{
 
     static instanceObj: OperativoGenerator;
 
-    constructor(public app:AppOperativosType, public operativo?: string){
+    constructor(public operativo?: string){
         OperativoGenerator.instanceObj = this;
     }
 
