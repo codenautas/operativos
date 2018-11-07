@@ -10,8 +10,7 @@ export function operativos(context: TableContext): TableDefinition {
         editable: admin,
         fields: [
             { name: "operativo", typeName: 'text', },
-            { name: "nombre"   , typeName: 'text', },
-            { name: "calcular" , typeName: "bigint"  , editable:false, clientSide:'generarCalculadas'},
+            { name: "nombre"   , typeName: 'text', }
         ],
         primaryKey: ['operativo'],
         detailTables: [
