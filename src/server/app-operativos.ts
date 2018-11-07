@@ -141,17 +141,6 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 relac_vars
             }
         }
-        getTables(){
-            var be=this;
-            this.prepareGetTables();
-            return super.getTables().concat(
-                likeAr(this.getTableDefinition).map(function(tableDef, tableName){
-                    return {name:tableName, tableGenerator:function(context:TableContext){
-                        return be.tableDefAdapt(tableDef(context), context);
-                    }};
-                }).array()
-            );
-        }
     }
 }
 
