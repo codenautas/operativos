@@ -11,11 +11,44 @@ export interface User extends backendPlus.User{
 
 export enum tiposTablaDato {
     calculada = 'calculada',
-    externa = 'externa'
+    externa = 'externa',
+    interna = 'interna'
 }
 
+export let tiposTablaDatoArray: string[];
+for (let tipoTD in tiposTablaDato) {
+    tiposTablaDatoArray.push(tipoTD)
+}
 
-export class RelacionesDB {
+export function hasTablePrefix(columnName: string) {
+    return columnName.match(/^.+\..+$/);
+}
+
+export class BPTable {
+    static async fetchAll(client:Client, tableName:string):Promise<{[key:string]:any}[]> {
+        let query = 'SELECT * FROM ' + tableName;
+        return (await client.query(query).fetchAll()).rows;
+    }
+}
+export class RelacVarDB extends BPTable{
+    operativo: string
+    tabla_datos: string
+    que_busco: string
+    orden: number
+    campo_datos: string
+    campo_busco: string
+    dato_fijo: string
+    funcion_dato: string
+}
+
+export class RelacVar extends RelacVarDB{
+    static async fetchAll(client:Client): Promise<RelacVar[]>{
+        let relacVars = await super.fetchAll(client, 'relac_vars');
+        return relacVars.map(rv => Object.setPrototypeOf(rv, RelacVar.prototype))
+    }
+}
+
+export class RelacionesDB extends BPTable {
     operativo: string
     tabla_datos: string
     que_busco: string
@@ -24,10 +57,10 @@ export class RelacionesDB {
 }
 
 export class Relaciones extends RelacionesDB {
-    static async fetchAll(client:Client){
-        let query = `SELECT * from relaciones`;
-        let resultV = await client.query(query).fetchAll();
-        return <Variable[]>resultV.rows.map((v:Variable) => Variable.buildFromDBJSON(v));
+
+    static async fetchAll(client:Client): Promise<RelacVar[]>{
+        let relaciones = await super.fetchAll(client, 'relaciones');
+        return relaciones.map(rv => Object.setPrototypeOf(rv, Relaciones.prototype))
     }
 }
 

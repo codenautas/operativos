@@ -82,6 +82,9 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                     skipEnance: false
                 },
             };
+            if (tablaDatos.tipo == typesOpe.tiposTablaDato.interna){
+                tableDef.allow = {...tableDef.allow, insert: true, update: true}
+            }
             return tableDef;
         }
        

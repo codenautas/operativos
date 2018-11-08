@@ -1,7 +1,7 @@
 "use strict";
 
 import {TableDefinition} from "backend-plus"
-import {TableContext, tiposTablaDato} from "./types-operativos"
+import {TableContext, tiposTablaDatoArray} from "./types-operativos"
 
 export {tabla_datos};
 function tabla_datos(context:TableContext):TableDefinition{
@@ -25,7 +25,7 @@ function tabla_datos(context:TableContext):TableDefinition{
             {table:'variables'       , fields:['operativo','tabla_datos'], abr:'V'},
         ],
         constraints: [
-            { constraintType: 'check', consName:'valor inválido en tipo' , expr: `tipo IN ('${tiposTablaDato.calculada}', '${tiposTablaDato.externa}')` },
+            { constraintType: 'check', consName:'valor inválido en tipo' , expr: `tipo IN ('${tiposTablaDatoArray.join("','")}')` },
         ],
     };
 }
