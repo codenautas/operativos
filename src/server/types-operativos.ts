@@ -15,7 +15,7 @@ export enum tiposTablaDato {
     interna = 'interna'
 }
 
-export let tiposTablaDatoArray: string[];
+export let tiposTablaDatoArray: string[] = [];
 for (let tipoTD in tiposTablaDato) {
     tiposTablaDatoArray.push(tipoTD)
 }
