@@ -42,10 +42,14 @@ export class RelacVarDB extends BPTable{
 }
 
 export class RelacVar extends RelacVarDB{
+    static getONConditions(queBuscoTD: TablaDatos, rightTD: TablaDatos, relacVars: RelacVar[]): any {
+        return relacVars.map(rv=> `${queBuscoTD.getTableName()}.${rv.campo_busco}=${rightTD.getTableName()}.${rv.campo_datos}`).join(' AND ');
+    }
     static async fetchAll(client:Client): Promise<RelacVar[]>{
         let relacVars = await super.fetchAll(client, 'relac_vars');
         return relacVars.map(rv => Object.setPrototypeOf(rv, RelacVar.prototype))
     }
+
 }
 
 export class RelacionesDB extends BPTable {
@@ -58,7 +62,7 @@ export class RelacionesDB extends BPTable {
 
 export class Relaciones extends RelacionesDB {
 
-    static async fetchAll(client:Client): Promise<RelacVar[]>{
+    static async fetchAll(client:Client): Promise<Relaciones[]>{
         let relaciones = await super.fetchAll(client, 'relaciones');
         return relaciones.map(rv => Object.setPrototypeOf(rv, Relaciones.prototype))
     }
@@ -224,6 +228,8 @@ export class OperativoGenerator{
     // myVars: {[key:string]: Variable} = {}
     myTDs: TablaDatos[]
     myVars: Variable[]
+    myRels: Relaciones[]
+    myRelacVars: RelacVar[]
 
     static instanceObj: OperativoGenerator;
 
@@ -234,10 +240,14 @@ export class OperativoGenerator{
     async fetchDataFromDB(client:Client){
         this.myTDs = await TablaDatos.fetchAll(client);
         this.myVars = await Variable.fetchAll(client);
+        this.myRels = await Relaciones.fetchAll(client);
+        this.myRelacVars = await RelacVar.fetchAll(client);
 
         if (this.operativo){
             this.myTDs = this.myTDs.filter(td=>td.operativo==this.operativo);
             this.myVars = this.myVars.filter(v=>v.operativo==this.operativo);
+            this.myRels = this.myRels.filter(v=>v.operativo==this.operativo);
+            this.myRelacVars = this.myRelacVars.filter(v=>v.operativo==this.operativo);
         }
 
         // OJO los TDs pueden repetirse por operativo y las vars se repiten por TD, entonces 
@@ -251,10 +261,21 @@ export class OperativoGenerator{
         // return likeAr(this.myVars).filter(v=>v.tabla_datos==td.tabla_datos).array();
     }
  
-    getTD(v:Variable){
+    getTDFor(v:Variable){
         return this.myTDs.find(td => td.operativo == v.operativo && td.tabla_datos == v.tabla_datos);
     }
 
+    getTD(tdName:string){
+        return  this.myTDs.find(td=>td.tabla_datos==tdName);
+    }
+
+    joinTDs(queBuscoTDName: string, rightTDName: string): any {
+        let queBuscoTD = this.getTD(queBuscoTDName);
+        let rightTD = this.getTD(rightTDName)
+        let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos==rightTDName && rv.que_busco==queBuscoTDName)
+
+        return ` JOIN ${rightTD.getTableName()} ON ${RelacVar.getONConditions(queBuscoTD,rightTD,relacVars)}`
+    }
 }
 
 export class Operativo {
