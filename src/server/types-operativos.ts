@@ -49,7 +49,6 @@ export class RelacVar extends RelacVarDB{
         let relacVars = await super.fetchAll(client, 'relac_vars');
         return relacVars.map(rv => Object.setPrototypeOf(rv, RelacVar.prototype))
     }
-
 }
 
 export class RelacionesDB extends BPTable {
@@ -245,7 +244,7 @@ export class OperativoGenerator{
 
         if (this.operativo){
             this.myTDs = this.myTDs.filter(td=>td.operativo==this.operativo);
-            this.myVars = this.myVars.filter(v=>v.operativo==this.operativo);
+            this.myVars = this.myVars.filter(v=>v.operativo==this.operativo && v.activa);
             this.myRels = this.myRels.filter(v=>v.operativo==this.operativo);
             this.myRelacVars = this.myRelacVars.filter(v=>v.operativo==this.operativo);
         }

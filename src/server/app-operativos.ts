@@ -38,7 +38,9 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             // this.allProcedures = this.allProcedures.concat([]);
             this.allClientFileNames.push({type:'js', module: 'operativos', modPath: '../client', file: 'operativos.js', path: 'client_modules'})
         }
-
+        configStaticConfig(){
+            super.configStaticConfig();
+        }
         /*private*/ async cargarGenerados(client: Client) {
             let operativoGenerator = new OperativoGenerator();
             await operativoGenerator.fetchDataFromDB(client);
