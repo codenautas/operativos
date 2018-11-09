@@ -1,7 +1,6 @@
 "use strict";
 
 import * as bg from "best-globals";
-import * as likeAr from "like-ar";
 import { Client } from "pg-promise-strict";
 import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
@@ -14,7 +13,7 @@ import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
 import * as typesOpe from "./types-operativos";
-import { AppBackend, ClientModuleDefinition, Context, OperativoGenerator, Request, TablaDatos, TableContext, TableDefinition, TableDefinitionFunction } from "./types-operativos";
+import { AppBackend, ClientModuleDefinition, Context, OperativoGenerator, Request, TablaDatos, TableDefinition, TableDefinitionFunction } from "./types-operativos";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
