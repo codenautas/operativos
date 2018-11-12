@@ -1,6 +1,5 @@
 "use strict";
 
-import * as bg from "best-globals";
 import { Client } from "pg-promise-strict";
 import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
@@ -46,11 +45,6 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             await operativoGenerator.fetchDataFromDB(client);
             operativoGenerator.myTDs.filter(td=>td.generada).forEach(td => this.generateAndLoadTableDef(td))
             return "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas"
-        }
-
-        //TODO: pasar a BEPlus
-        getTodayForDB(){
-            return bg.date.today().toYmd();
         }
 
         static prefixTableName(tableName: string, prefix: string){

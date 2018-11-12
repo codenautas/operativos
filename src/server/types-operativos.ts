@@ -1,3 +1,4 @@
+import * as bg from "best-globals";
 import * as backendPlus from "backend-plus";
 import { Client } from "pg-promise-strict";
 import { AppOperativos } from "./app-operativos";
@@ -234,6 +235,11 @@ export class OperativoGenerator{
 
     constructor(public operativo?: string){
         OperativoGenerator.instanceObj = this;
+    }
+
+    //TODO: pasar a BEPlus
+    static getTodayForDB(){
+        return bg.date.today().toYmd();
     }
 
     async fetchDataFromDB(client:Client){
