@@ -36,7 +36,8 @@ begin
                  AND kcu.table_name = tc.table_name
                  AND kcu.constraint_name = tc.constraint_name
                  AND kcu.column_name = c.column_name
-      where c.table_schema = p_esquema and c.table_name = p_tabla;
+      where c.table_schema = p_esquema and c.table_name = p_tabla
+        and (p_tabla,c.column_name) not in (select tabla_datos, variable from variables existentes);
   return 'ok';
 end;
 $body$;
