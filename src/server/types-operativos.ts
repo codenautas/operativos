@@ -87,7 +87,7 @@ export abstract class VariableDB {
     nombre?             :string
     tipovar            :string
     clase              :string
-    es_pk?              :boolean
+    es_pk?              :number
     es_nombre_unico?    :boolean
     activa?             :boolean
     filtro?             :string
@@ -180,7 +180,7 @@ export class TablaDatos extends TablaDatosDB {
 
     static async fetchAll(client: Client):Promise<TablaDatos[]>{
         let result = await client.query(`
-            SELECT td.*, r.que_busco, to_jsonb(array_agg(v.variable order by v.orden)) pks
+            SELECT td.*, r.que_busco, to_jsonb(array_agg(v.variable order by v.es_pk)) pks
                 FROM tabla_datos td 
                     LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional' 
                     LEFT JOIN variables v ON td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
@@ -215,10 +215,19 @@ export class TablaDatos extends TablaDatosDB {
     }
 
     getTableName(){
-        return AppOperativos.prefixTableName(this.tabla_datos, this.operativo);
+        return this.esInterna()? this.tabla_datos: this.getPrefixedTablaDatos()
     }
 
-    esCalculada(){
+    getPrefixedTablaDatos(): string {
+        return AppOperativos.prefixTableName(this.tabla_datos, this.operativo);
+    }
+    
+    // TODO: ver los tipos any o void que dejamos desperdigados
+    esInterna(): boolean {
+        return this.tipo == tiposTablaDato.interna
+    }
+    
+    esCalculada():boolean{
         return this.tipo == tiposTablaDato.calculada
     }
 }
@@ -238,6 +247,7 @@ export class OperativoGenerator{
     }
 
     //TODO: pasar a BEPlus
+    //TODO: pasar a AppOperativo como método static (igual que prefijar prefixTableName)
     static getTodayForDB(){
         return bg.date.today().toYmd();
     }
