@@ -1,5 +1,4 @@
 "use strict";
-import * as bg from "best-globals";
 import { Client } from "pg-promise-strict";
 import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
@@ -49,11 +48,6 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
 
         static prefixTableName(tableName: string, prefix: string){
             return prefix.toLowerCase() + '_' + tableName;
-        }
-        
-        //TODO: pasar a BEPlus
-        static getTodayForDB(){
-            return bg.date.today().toYmd();
         }
 
         async postConfig(){
