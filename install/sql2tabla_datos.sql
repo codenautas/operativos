@@ -10,7 +10,7 @@ begin
   insert into tabla_datos(operativo, tabla_datos, tipo) 
     select p_operativo, p_tabla, 'interna'
       where p_tabla not in (select tabla_datos from tabla_datos existentes);
-  insert into variables(operativo, tabla_datos, variable, tipovar, clase, es_pk, orden)
+  insert into variables(operativo, tabla_datos, variable, tipovar, clase, es_pk, orden, activa)
     select p_operativo, p_tabla, c.column_name,
         case c.data_type
           when 'text'     then 'texto'
@@ -23,7 +23,8 @@ begin
         end,
         'interna',
         kcu.ordinal_position,
-        c.ordinal_position
+        c.ordinal_position,
+        true
       from information_schema.columns c 
           LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
                  ON tc.table_catalog = c.table_catalog
