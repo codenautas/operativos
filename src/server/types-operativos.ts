@@ -138,7 +138,7 @@ export class Variable extends VariableDB implements TipoVarDB {
             SELECT v.*, tv.*, (SELECT jsonb_agg(to_jsonb(vo.*) order by vo.orden, vo.opcion) 
                                 FROM variables_opciones vo 
                                 WHERE vo.operativo = v.operativo and vo.tabla_datos = v.tabla_datos and vo.variable = v.variable) as opciones
-                FROM variables v LEFT JOIN tipovar tv USING(tipovar)
+                FROM variables v JOIN tipovar tv USING(tipovar)
                 WHERE v.activa
                 ORDER BY es_pk desc, orden, variable`;
         let resultV = await client.query(query).fetchAll();
@@ -207,6 +207,10 @@ export class TablaDatos extends TablaDatosDB {
 
     getPKCSV(){
         return this.pks.join(',');
+    }
+
+    getPKsWitAlias(){
+        return this.pks.map(pk=>this.getTableName()+'.'+pk)
     }
 
     getPrefixedQueBusco(){
