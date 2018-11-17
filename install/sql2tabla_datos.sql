@@ -1,5 +1,3 @@
-set search_path = repsic;
-
 create or replace function sql2tabla_datos(p_esquema text, p_tabla text, p_operativo text) returns text
   language plpgsql
 as

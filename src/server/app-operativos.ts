@@ -43,7 +43,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             let operativoGenerator = new OperativoGenerator();
             await operativoGenerator.fetchDataFromDB(client);
             operativoGenerator.myTDs.filter(td=>td.generada).forEach(td => this.generateAndLoadTableDef(td))
-            return "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=grupo_personas"
+            return "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=NOMBRE_DE_TABLA"
         }
 
         static prefixTableName(tableName: string, prefix: string){
