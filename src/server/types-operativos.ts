@@ -20,8 +20,12 @@ for (let tipoTD in tiposTablaDato) {
     tiposTablaDatoArray.push(tipoTD)
 }
 
-export function hasTablePrefix(columnName: string) {
-    return columnName.match(/^.+\..+$/);
+export function hasPrefix(text: string) {
+    return text.match(/^.+\..+$/);
+}
+
+export function getElementWithoutPrefix(text: string):string {
+    return hasPrefix(text)? text.split('.')[1] :text;
 }
 
 export class BPTable {
@@ -124,10 +128,6 @@ export class Variable extends VariableDB implements TipoVarDB {
     // async getTD(client: Client){
     //     return await TablaDatos.fetchOne(client, this.operativo, this.tabla_datos);
     // }
-
-    static hasTablePrefix(variable: string){
-        return variable.match(/^.+\..+$/);
-    }
 
     static buildFromDBJSON(dbJson: Variable){
         return Object.assign(new Variable, dbJson);
