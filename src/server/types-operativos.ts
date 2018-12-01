@@ -3,6 +3,13 @@ import { Client } from "pg-promise-strict";
 import { AppOperativos } from "./app-operativos";
 
 export * from "backend-plus";
+export {Request, MenuInfoMinimo, ProcedureDef} from "backend-plus";
+
+type MenuInfoMapa = {
+    menuType:'mapa'
+} & backendPlus.MenuInfoMinimo;
+
+export type MenuInfo = MenuInfoMapa | backendPlus.MenuInfo;
 
 export interface User extends backendPlus.User{
     usuario:string

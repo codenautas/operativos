@@ -10,24 +10,19 @@ import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
-import * as typesOpe from "./types-operativos";
-import { AppBackend, ClientModuleDefinition, Context, OperativoGenerator, Request, TablaDatos, TableDefinition, TableDefinitionFunction } from "./types-operativos";
+import { AppBackend, ClientModuleDefinition, Context, OperativoGenerator, Request, TablaDatos, TableDefinition, TableDefinitionFunction, ProcedureDef, 
+        MenuInfo, tiposTablaDato } from "./types-operativos";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
 
-type MenuInfoMapa = {
-    menuType:'mapa'
-} & typesOpe.MenuInfoMinimo;
-
-type MenuInfo = MenuInfoMapa | typesOpe.MenuInfo;
-type MenuDefinition = {menu:MenuInfo[]}
+export type MenuDefinition = {menu:MenuInfo[]}
 
 export type Constructor<T> = new(...args: any[]) => T;
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
-        allProcedures: typesOpe.ProcedureDef[] = [];
+        allProcedures: ProcedureDef[] = [];
         allClientFileNames: ClientModuleDefinition[] = [];
         tablasDatos: TablaDatos[];
         
@@ -76,7 +71,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                     skipEnance: false
                 },
             };
-            if (tablaDatos.tipo == typesOpe.tiposTablaDato.interna){
+            if (tablaDatos.tipo == tiposTablaDato.interna){
                 tableDef.allow = {...tableDef.allow, insert: true, update: true}
             }
             return tableDef;
@@ -104,11 +99,11 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 );
             });
         }
-        clientIncludes(req:typesOpe.Request, hideBEPlusInclusions:boolean){
+        clientIncludes(req:Request, hideBEPlusInclusions:boolean){
             return super.clientIncludes(req, hideBEPlusInclusions).concat(this.allClientFileNames);
         }
 
-        getMenu(): typesOpe.MenuDefinition {
+        getMenu(): MenuDefinition {
             let menu: MenuDefinition = {
                 menu: [
                     {
