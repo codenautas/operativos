@@ -1,11 +1,11 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
-  "main": "server/app-operativos.js",
-  "types": "server/app-operativos.d.ts",
+  "main": "dist/server/app-operativos.js",
+  "types": "dist/server/app-operativos.d.ts",
   "repository": "codenautas/operativos",
   "files": [
     "client",
@@ -14,10 +14,13 @@
     "unlogged"
   ],
   "dependencies": {
-    "backend-plus": "~0.26.5",
+    "backend-plus": "~0.27.1",
     "like-ar": "~0.2.7",
     "pg-triggers": "~0.2.2",
-    "best-globals": "~0.10.5"
+    "best-globals": "~0.10.6"
+  },
+  "devDependencies": {
+    "types.d.ts": "~0.3.1"
   },
   "engines": {
     "node": ">= 8.0.0"

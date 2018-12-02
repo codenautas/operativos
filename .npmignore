@@ -8,5 +8,6 @@ local-*
 src/
 
 # Always publish generated files (.js, .map. .d.ts)
-!server/
-!client/
+!dist/
+# and source for debug
+!src/client

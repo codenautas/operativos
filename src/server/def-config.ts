@@ -1,3 +1,4 @@
+export const defConfig=`
 server:
   port: 3058
   base-url: /operativos
@@ -59,3 +60,4 @@ client-setup:
   cursors: true
   lang: es
   menu: true
+`;  

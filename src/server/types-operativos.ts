@@ -1,9 +1,10 @@
 import * as backendPlus from "backend-plus";
 import { Client } from "pg-promise-strict";
+export { Client } from "pg-promise-strict";
 import { AppOperativos } from "./app-operativos";
 
 export * from "backend-plus";
-export {Request, MenuInfoMinimo, ProcedureDef} from "backend-plus";
+export {AppBackend, ClientModuleDefinition, Context, Request, MenuInfoMinimo, ProcedureDef, TableDefinition} from "backend-plus";
 
 type MenuInfoMapa = {
     menuType:'mapa'

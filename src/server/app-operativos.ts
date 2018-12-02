@@ -1,5 +1,4 @@
 "use strict";
-import { Client } from "pg-promise-strict";
 import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
 import { parametros } from './table-parametros';
@@ -11,10 +10,11 @@ import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
 import { AppBackend, ClientModuleDefinition, Context, OperativoGenerator, Request, TablaDatos, TableDefinition, TableDefinitionFunction, ProcedureDef, 
-        MenuInfo, tiposTablaDato } from "./types-operativos";
+        Client, MenuInfo, tiposTablaDato } from "./types-operativos";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
+import {defConfig} from "./def-config"
 
 export type MenuDefinition = {menu:MenuInfo[]}
 
@@ -33,6 +33,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         }
         configStaticConfig(){
             super.configStaticConfig();
+            this.setStaticConfig(defConfig);
         }
         /*private*/ async cargarGenerados(client: Client) {
             let operativoGenerator = new OperativoGenerator();
@@ -107,7 +108,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             let menu: MenuDefinition = {
                 menu: [
                     {
-                        menuType: 'menu', name: 'Operativos', menuContent: [
+                        menuType: 'menu', name: 'operativos', menuContent: [
                             { menuType: 'table', name: 'usuarios' },
                             { menuType: 'table', name: 'operativos' },
                             { menuType: 'table', name: 'tabla_datos' },
