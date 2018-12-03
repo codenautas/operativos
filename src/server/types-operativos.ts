@@ -150,7 +150,7 @@ export class Variable extends VariableDB implements TipoVarDB {
                 WHERE v.activa
                 ORDER BY es_pk desc, orden, variable`;
         let resultV = await client.query(query).fetchAll();
-        return <Variable[]>resultV.rows.map((v:Variable) => Variable.buildFromDBJSON(v));
+        return (<Variable[]>resultV.rows).map(v => Variable.buildFromDBJSON(v));
     }
 }
 
@@ -193,7 +193,7 @@ export class TablaDatos extends TablaDatosDB {
                     LEFT JOIN variables v ON td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
                 GROUP BY td.operativo, td.tabla_datos, r.que_busco`
             , []).fetchAll();
-        return <TablaDatos[]> result.rows.map((td:TablaDatos) => TablaDatos.buildFromDBJSON(td));
+        return (<TablaDatos[]>result.rows).map(td => TablaDatos.buildFromDBJSON(td));
     }
     
     static async fetchOne(client:Client, op: string, td:string){
@@ -285,13 +285,15 @@ export class OperativoGenerator{
         return this.myTDs.find(td => td.operativo == v.operativo && td.tabla_datos == v.tabla_datos);
     }
 
-    getTD(tdName:string){
-        return  this.myTDs.find(td=>td.tabla_datos==tdName);
+    getUniqueTD(tdName:string){
+        let td = this.myTDs.find(td=>td.tabla_datos==tdName);
+        if (! td){ throw new Error('La Tabla de datos '+tdName+' no existe') }
+        return td;
     }
 
     joinTDs(queBuscoTDName: string, rightTDName: string): any {
-        let queBuscoTD = this.getTD(queBuscoTDName);
-        let rightTD = this.getTD(rightTDName)
+        let queBuscoTD = this.getUniqueTD(queBuscoTDName);
+        let rightTD = this.getUniqueTD(rightTDName)
         let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos==rightTDName && rv.que_busco==queBuscoTDName)
 
         return ` JOIN ${rightTD.getTableName()} ON ${RelacVar.getONConditions(queBuscoTD,rightTD,relacVars)}`

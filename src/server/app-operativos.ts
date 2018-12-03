@@ -24,7 +24,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
         allProcedures: ProcedureDef[] = [];
         allClientFileNames: ClientModuleDefinition[] = [];
-        tablasDatos: TablaDatos[];
+        tablasDatos: TablaDatos[] = [];
         
         constructor(...args:any[]){
             super(args);
