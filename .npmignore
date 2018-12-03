@@ -4,10 +4,5 @@
 local-*
 *-local.*
 
-# Never publish Typescript code
-src/
-
 # Always publish generated files (.js, .map. .d.ts)
 !dist/
-# and source for debug
-!src/client
