@@ -1,10 +1,12 @@
 import * as backendPlus from "backend-plus";
-import { Client } from "pg-promise-strict";
-export { Client } from "pg-promise-strict";
+import { Client, quoteIdent } from "pg-promise-strict";
 import { AppOperativos } from "./app-operativos";
 
+// exports
 export * from "backend-plus";
-export {AppBackend, ClientModuleDefinition, Context, Request, MenuInfoMinimo, ProcedureDef, TableDefinition} from "backend-plus";
+export { AppBackend, ClientModuleDefinition, Context, MenuInfoMinimo, ProcedureDef, Request, TableDefinition } from "backend-plus";
+export { Client } from "pg-promise-strict";
+
 
 type MenuInfoMapa = {
     menuType:'mapa'
@@ -28,17 +30,18 @@ for (let tipoTD in tiposTablaDato) {
     tiposTablaDatoArray.push(tipoTD)
 }
 
-export function hasPrefix(text: string) {
+export function hasAlias(text: string) {
     return text.match(/^.+\..+$/);
 }
 
+//TODO: mejorar esto
 export function getElementWithoutPrefix(text: string):string {
-    return hasPrefix(text)? text.split('.')[1] :text;
+    return hasAlias(text)? text.split('.')[1] :text;
 }
 
 export class BPTable {
     static async fetchAll(client:Client, tableName:string):Promise<{[key:string]:any}[]> {
-        let query = 'SELECT * FROM ' + tableName;
+        let query = 'SELECT * FROM ' + quoteIdent(tableName);
         return (await client.query(query).fetchAll()).rows;
     }
 }
@@ -55,7 +58,7 @@ export class RelacVarDB extends BPTable{
 
 export class RelacVar extends RelacVarDB{
     static getONConditions(queBuscoTD: TablaDatos, rightTD: TablaDatos, relacVars: RelacVar[]): any {
-        return relacVars.map(rv=> `${queBuscoTD.getTableName()}.${rv.campo_busco}=${rightTD.getTableName()}.${rv.campo_datos}`).join(' AND ');
+        return relacVars.map(rv=> `${quoteIdent(queBuscoTD.getTableName())}.${quoteIdent(rv.campo_busco)}=${quoteIdent(rightTD.getTableName())}.${quoteIdent(rv.campo_datos)}`).join(' AND ');
     }
     static async fetchAll(client:Client): Promise<RelacVar[]>{
         let relacVars = await super.fetchAll(client, 'relac_vars');
@@ -191,7 +194,8 @@ export class TablaDatos extends TablaDatosDB {
                 FROM tabla_datos td 
                     LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional' 
                     LEFT JOIN variables v ON td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
-                GROUP BY td.operativo, td.tabla_datos, r.que_busco`
+                GROUP BY td.operativo, td.tabla_datos, r.que_busco
+                ORDER BY td.operativo, td.tabla_datos, r.que_busco`
             , []).fetchAll();
         return (<TablaDatos[]>result.rows).map(td => TablaDatos.buildFromDBJSON(td));
     }
@@ -213,8 +217,8 @@ export class TablaDatos extends TablaDatosDB {
     //     return (await Variable.fetchAll(client)).filter(v=>v.tabla_datos==this.tabla_datos && v.operativo == this.operativo);
     // }
 
-    getPKCSV(){
-        return this.pks.join(',');
+    getQuotedPKsCSV(){
+        return this.pks.map(pk=>quoteIdent(pk)).join(',');
     }
 
     getPKsWitAlias(){
@@ -296,7 +300,7 @@ export class OperativoGenerator{
         let rightTD = this.getUniqueTD(rightTDName)
         let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos==rightTDName && rv.que_busco==queBuscoTDName)
 
-        return ` JOIN ${rightTD.getTableName()} ON ${RelacVar.getONConditions(queBuscoTD,rightTD,relacVars)}`
+        return ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${RelacVar.getONConditions(queBuscoTD,rightTD,relacVars)}`
     }
 }
 
