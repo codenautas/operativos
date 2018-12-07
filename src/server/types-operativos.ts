@@ -1,5 +1,5 @@
 import * as backendPlus from "backend-plus";
-import { Client, quoteIdent } from "pg-promise-strict";
+import { Client, quoteIdent, quoteLiteral } from "pg-promise-strict";
 import { AppOperativos } from "./app-operativos";
 
 // exports
@@ -57,16 +57,34 @@ export class RelacVarDB extends BPTable{
 }
 
 export class RelacVar extends RelacVarDB{
-    static getONConditions(queBuscoTD: TablaDatos, rightTD: TablaDatos, relacVars: RelacVar[]): any {
-        return relacVars.map(rv=> `${quoteIdent(queBuscoTD.getTableName())}.${quoteIdent(rv.campo_busco)}=${quoteIdent(rightTD.getTableName())}.${quoteIdent(rv.campo_datos)}`).join(' AND ');
-    }
     static async fetchAll(client:Client): Promise<RelacVar[]>{
         let relacVars = await super.fetchAll(client, 'relac_vars');
         return relacVars.map(rv => Object.setPrototypeOf(rv, RelacVar.prototype))
     }
+    
+    getTDsONConditions(queBuscoTD: TablaDatos, rightTD: TablaDatos){
+        return this.getLeftONCondition(queBuscoTD.getTableName()) + this.getRightTDONCondition(rightTD);
+    }
+
+    // "referente".id_caso=grupo_personas.id_caso AND referente.operativo=grupo_personas.operativo and referente.p0=1
+    getRelationONCondition(relationTD:TablaDatos): string{
+        //TODO: actualmente las relaciones y las relac_vars no tienen joineo con el campo operativo.
+        //TODO: tener en cuanta calculadas y otras TDs (usar td.getTableName)
+        //suponemos que si no tiene campo_datos entonces tendra dato_fijo
+        return this.getLeftONCondition(this.que_busco) + 
+            (this.dato_fijo? quoteLiteral(this.dato_fijo): this.getRightTDONCondition(relationTD));
+    }
+
+    private getLeftONCondition(alias:string):string{
+        return `${quoteIdent(alias)}.${quoteIdent(this.campo_busco)}=`;
+    }
+
+    private getRightTDONCondition(td:TablaDatos): string{
+        return `${quoteIdent(td.getTableName())}.${quoteIdent(this.campo_datos)}`;
+    }
 }
 
-export class RelacionesDB extends BPTable {
+export class RelacionDB extends BPTable {
     operativo: string
     tabla_datos: string
     que_busco: string
@@ -74,11 +92,11 @@ export class RelacionesDB extends BPTable {
     tipo: string
 }
 
-export class Relaciones extends RelacionesDB {
+export class Relacion extends RelacionDB {
 
-    static async fetchAll(client:Client): Promise<Relaciones[]>{
+    static async fetchAll(client:Client): Promise<Relacion[]>{
         let relaciones = await super.fetchAll(client, 'relaciones');
-        return relaciones.map(rv => Object.setPrototypeOf(rv, Relaciones.prototype))
+        return relaciones.map(rv => Object.setPrototypeOf(rv, Relacion.prototype))
     }
 }
 
@@ -252,7 +270,7 @@ export class OperativoGenerator{
     // myVars: {[key:string]: Variable} = {}
     myTDs: TablaDatos[]
     myVars: Variable[]
-    myRels: Relaciones[]
+    myRels: Relacion[]
     myRelacVars: RelacVar[]
 
     static instanceObj: OperativoGenerator;
@@ -264,7 +282,7 @@ export class OperativoGenerator{
     async fetchDataFromDB(client:Client){
         this.myTDs = await TablaDatos.fetchAll(client);
         this.myVars = await Variable.fetchAll(client);
-        this.myRels = await Relaciones.fetchAll(client);
+        this.myRels = await Relacion.fetchAll(client);
         this.myRelacVars = await RelacVar.fetchAll(client);
 
         if (this.operativo){
@@ -295,12 +313,23 @@ export class OperativoGenerator{
         return td;
     }
 
-    joinTDs(queBuscoTDName: string, rightTDName: string): any {
+    joinTDs(queBuscoTDName: string, rightTDName: string): string {
         let queBuscoTD = this.getUniqueTD(queBuscoTDName);
         let rightTD = this.getUniqueTD(rightTDName)
         let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos==rightTDName && rv.que_busco==queBuscoTDName)
 
-        return ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${RelacVar.getONConditions(queBuscoTD,rightTD,relacVars)}`
+        return ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${relacVars.map(rv=>rv.getTDsONConditions(queBuscoTD, rightTD)).join(' AND ')}`
+    }
+
+    joinRelation(relation: Relacion): any {
+        let relationName = relation.que_busco;
+        let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos == relation.tabla_datos && rv.que_busco==relationName);
+        let tablaBusqueda = this.getUniqueTD(relation.tabla_busqueda);
+        let relationTD = this.getUniqueTD(relation.tabla_datos)
+        return ` LEFT JOIN (
+                    SELECT ${quoteIdent(relationName)}.* 
+                      FROM ${quoteIdent(tablaBusqueda.getTableName())} ${quoteIdent(relationName)}
+                    ) ${quoteIdent(relationName)} ON ${relacVars.map(rv=>rv.getRelationONCondition(relationTD)).join(' AND ')}`;
     }
 }
 
