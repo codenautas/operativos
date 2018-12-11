@@ -268,7 +268,7 @@ export class OperativoGenerator{
 
     static instanceObj: OperativoGenerator;
 
-    constructor(public operativo?: string){
+    constructor(public client:Client, public operativo?: string){
         OperativoGenerator.instanceObj = this;
     }
 
