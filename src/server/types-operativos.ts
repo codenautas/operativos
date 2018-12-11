@@ -34,11 +34,6 @@ export function hasAlias(text: string) {
     return text.match(/^.+\..+$/);
 }
 
-//TODO: mejorar esto
-export function getElementWithoutPrefix(text: string):string {
-    return hasAlias(text)? text.split('.')[1] :text;
-}
-
 export class BPTable {
     static async fetchAll(client:Client, tableName:string):Promise<{[key:string]:any}[]> {
         let query = 'SELECT * FROM ' + quoteIdent(tableName);
@@ -66,11 +61,9 @@ export class RelacVar extends RelacVarDB{
         return this.getLeftONCondition(queBuscoTD.getTableName()) + this.getRightTDONCondition(rightTD);
     }
 
-    // "referente".id_caso=grupo_personas.id_caso AND referente.operativo=grupo_personas.operativo and referente.p0=1
     getRelationONCondition(relationTD:TablaDatos): string{
         //TODO: actualmente las relaciones y las relac_vars no tienen joineo con el campo operativo.
-        //TODO: tener en cuanta calculadas y otras TDs (usar td.getTableName)
-        //suponemos que si no tiene campo_datos entonces tendra dato_fijo
+        //aqui suponemos que si no tiene campo_datos entonces tendra dato_fijo
         return this.getLeftONCondition(this.que_busco) + 
             (this.dato_fijo? quoteLiteral(this.dato_fijo): this.getRightTDONCondition(relationTD));
     }
