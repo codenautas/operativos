@@ -272,11 +272,11 @@ export class OperativoGenerator{
         OperativoGenerator.instanceObj = this;
     }
 
-    async fetchDataFromDB(client:Client){
-        this.myTDs = await TablaDatos.fetchAll(client);
-        this.myVars = await Variable.fetchAll(client);
-        this.myRels = await Relacion.fetchAll(client);
-        this.myRelacVars = await RelacVar.fetchAll(client);
+    async fetchDataFromDB(){
+        this.myTDs = await TablaDatos.fetchAll(this.client);
+        this.myVars = await Variable.fetchAll(this.client);
+        this.myRels = await Relacion.fetchAll(this.client);
+        this.myRelacVars = await RelacVar.fetchAll(this.client);
 
         if (this.operativo){
             this.myTDs = this.myTDs.filter(td=>td.operativo==this.operativo);

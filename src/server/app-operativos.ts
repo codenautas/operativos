@@ -36,8 +36,8 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             this.setStaticConfig(defConfig);
         }
         /*private*/ async cargarGenerados(client: Client) {
-            let operativoGenerator = new OperativoGenerator();
-            await operativoGenerator.fetchDataFromDB(client);
+            let operativoGenerator = new OperativoGenerator(client);
+            await operativoGenerator.fetchDataFromDB();
             operativoGenerator.myTDs.filter(td=>td.generada).forEach(td => this.generateAndLoadTableDef(td))
             return "Se cargaron las tablas datos para visualizarlas mediante /menu?w=table&table=NOMBRE_DE_TABLA"
         }

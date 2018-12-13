@@ -14,7 +14,7 @@
     "src"
   ],
   "dependencies": {
-    "backend-plus": "~0.27.1",
+    "backend-plus": "~0.27.3",
     "like-ar": "~0.2.7",
     "pg-triggers": "~0.2.2",
     "best-globals": "~0.10.6"
