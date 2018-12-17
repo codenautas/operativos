@@ -9,7 +9,7 @@ type TablaDatos = any;
 myOwn.clientSides.verTabla = {
     prepare: function (depot:myOwn.Depot, fieldName: string) {
         let tabla_datos = <TablaDatos> depot.row;
-        if (tabla_datos.generada){
+        if (tabla_datos.generada || tabla_datos.tipo === "interna"){
             var td = depot.rowControls[fieldName];
             td.appendChild(myOwn.createForkeableButton(
                 {w:'table', table:tabla_datos.operativo.toLowerCase()+'_' + tabla_datos.tabla_datos}, 
