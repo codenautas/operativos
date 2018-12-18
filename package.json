@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "license": "MIT",
   "main": "dist/server/app-operativos.js",
@@ -15,7 +15,6 @@
   ],
   "dependencies": {
     "backend-plus": "~0.27.6",
-    "like-ar": "~0.2.7",
     "pg-triggers": "~0.2.2",
     "best-globals": "~0.10.6"
   },
