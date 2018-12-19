@@ -8,11 +8,12 @@ type TablaDatos = any;
 
 myOwn.clientSides.verTabla = {
     prepare: function (depot:myOwn.Depot, fieldName: string) {
-        let tabla_datos = <TablaDatos> depot.row;
-        if (tabla_datos.generada || tabla_datos.tipo === "interna"){
+        let tablaDatos = <TablaDatos> depot.row;
+        if (tablaDatos.generada || tablaDatos.tipo === "interna"){
+            var tableName = tablaDatos.tipo==='interna' ? tablaDatos.tabla_datos : tablaDatos.operativo.toLowerCase()+'_'+tablaDatos.tabla_datos;
             var td = depot.rowControls[fieldName];
             td.appendChild(myOwn.createForkeableButton(
-                {w:'table', table:tabla_datos.operativo.toLowerCase()+'_' + tabla_datos.tabla_datos}, 
+                {w:'table', table:tableName}, 
                 {label:"abrir", class:"x"}
             ));
             // TODO: se debería poder usar método de instancia getTableName pero desde el navegador no funciona
