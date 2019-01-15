@@ -244,7 +244,7 @@ export class TablaDatos extends TablaDatosDB {
         return this.esInterna()? this.tabla_datos: this.getPrefixedTablaDatos()
     }
 
-    getPrefixedTablaDatos(): string {
+    private getPrefixedTablaDatos(): string {
         return AppOperativos.prefixTableName(this.tabla_datos, this.operativo);
     }
     
