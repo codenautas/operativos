@@ -23,7 +23,7 @@ export function usuarios(context:TableContext):TableDefinition{
         ],
         primaryKey:['usuario'],
         sql:{
-            where:admin?'true':"usuario = "+context.be.db.quoteText(context.user.usuario)
+            where:admin?'true':"usuario = "+context.be.db.quoteNullable(context.user.usuario)
         }
     };
 }

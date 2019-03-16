@@ -11,10 +11,10 @@ export function tipovar(context:TableContext):TableDefinition{
         editable:admin,
         fields:[
             {name:"tipovar"   , typeName:'text'     },
-            {name:"html_type" , typeName:'text'     },
-            {name:"type_name" , typeName:'text'     },
-            {name:"validar"   , typeName:'text'     },
-            {name:"radio"     , typeName:'boolean'  },
+            {name:"html_type" , typeName:'text'     ,nullable:false},
+            {name:"type_name" , typeName:'text'     ,nullable:false},
+            {name:"validar"   , typeName:'text'     ,nullable:false},
+            {name:"radio"     , typeName:'boolean'  ,nullable:false},
         ],
         primaryKey:['tipovar']
     };

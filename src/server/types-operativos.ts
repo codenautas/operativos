@@ -40,14 +40,23 @@ export class BPTable {
         return (await client.query(query).fetchAll()).rows;
     }
 }
+
 export class RelacVarDB extends BPTable{
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     operativo: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tabla_datos: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     que_busco: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     orden: number
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     campo_datos: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     campo_busco: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     dato_fijo: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     funcion_dato: string
 }
 
@@ -78,10 +87,15 @@ export class RelacVar extends RelacVarDB{
 }
 
 export class RelacionDB extends BPTable {
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     operativo: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tabla_datos: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     que_busco: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tabla_busqueda: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tipo: string
 }
 
@@ -105,12 +119,17 @@ export type VariableOpcion = {
 }
 
 export abstract class VariableDB {
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     operativo          :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tabla_datos        :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     variable           :string
     abr?                :string
     nombre?             :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tipovar            :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     clase              :string
     es_pk?              :number
     es_nombre_unico?    :boolean
@@ -128,11 +147,16 @@ export abstract class VariableDB {
 export class Variable extends VariableDB implements TipoVarDB {
     opciones?: VariableOpcion[]
 
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tipovar: string
-    html_type?: string
-    type_name?: backendPlus.PgKnownTypes
-    validar?: string
-    radio?: boolean
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    html_type: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    type_name: backendPlus.PgKnownTypes
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    validar: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    radio: boolean
 
     // tdObj: TablaDatos
 
@@ -177,11 +201,17 @@ export interface TipoVarDB {
 }
 
 export abstract class TablaDatosDB {
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     operativo: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tabla_datos: string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tipo: tiposTablaDato
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     generada: Date
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     pks: string[]
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     que_busco: string
 }
 
@@ -261,9 +291,13 @@ export class TablaDatos extends TablaDatosDB {
 export class OperativoGenerator{
     // myTDs: {[key:string]: TablaDatos} = {}
     // myVars: {[key:string]: Variable} = {}
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myTDs: TablaDatos[]
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myVars: Variable[]
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myRels: Relacion[]
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myRelacVars: RelacVar[]
 
     static instanceObj: OperativoGenerator;

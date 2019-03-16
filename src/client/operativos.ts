@@ -1,8 +1,5 @@
 "use strict";
 
-
-import * as myOwn from "myOwn";
-
 // TODO: ver cómo mejorar esto para que vuelva a tomar el tipo de TablaDatos.
 type TablaDatos = any; 
 
