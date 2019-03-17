@@ -250,7 +250,7 @@ export class TablaDatos extends TablaDatosDB {
                     LEFT JOIN variables v ON td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
                 WHERE td.operativo = $1 AND td.tabla_datos = $2
                 GROUP BY td.operativo, td.tabla_datos, r.que_busco`
-            , [op, td]).fetchOneRowIfExists();
+            , [op, td]).fetchUniqueRow();
         return TablaDatos.buildFromDBJSON(<TablaDatos> result.row);
     }
     
