@@ -1,4 +1,5 @@
 "use strict";
+import { defConfig } from "./def-config";
 import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
 import { parametros } from './table-parametros';
@@ -9,12 +10,13 @@ import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
-import { AppBackend, ClientModuleDefinition, Context, OperativoGenerator, Request, TablaDatos, TableDefinition, TableDefinitionFunction, ProcedureDef, 
-        Client, MenuInfo, tiposTablaDato } from "./types-operativos";
+import { AppBackend, ClientModuleDefinition, Context, MenuInfo, ProcedureDef, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato } from "./types-operativos";
+import { TablaDatos } from "model/tabla-datos";
+import { Client } from "pg-promise-strict";
+import { OperativoGenerator } from "operativo-generator";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
-import {defConfig} from "./def-config"
 
 export type MenuDefinition = {menu:MenuInfo[]}
 
