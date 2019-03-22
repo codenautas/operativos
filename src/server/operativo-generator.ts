@@ -13,6 +13,15 @@ export class OperativoGenerator{
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myRelacVars: RelacVar[]
 
+    static mainTD: string;
+    static mainTDPK: string;
+    static orderedIngresoTDNames: string[];
+    static orderedReferencialesTDNames: string[];
+
+    static orderedTDNames(): any {
+        return OperativoGenerator.orderedIngresoTDNames.concat(OperativoGenerator.orderedReferencialesTDNames);
+    }
+
     static instanceObj: OperativoGenerator;
 
     constructor(public client:Client, public operativo?: string){
