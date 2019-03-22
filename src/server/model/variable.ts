@@ -1,10 +1,9 @@
-import { TipoVarDB } from "./tipo-var";
-import { VariableOpcion } from "./variable-opcion";
-import { PgKnownTypes } from "backend-plus";
-import { tiposTablaDato } from "types-operativos";
-import { Client } from "pg-promise-strict";
 
-export abstract class VariableDB {
+import { PgKnownTypes } from "backend-plus";
+import { Client } from "pg-promise-strict";
+import { TipoVarDB } from "./tipo-var";
+
+export interface VariableDB {
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     operativo          :string
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
@@ -30,9 +29,34 @@ export abstract class VariableDB {
     grupo?              :string
     orden? : number
 }
-export class Variable extends VariableDB implements TipoVarDB {
-    opciones?: VariableOpcion[]
+export class Variable implements VariableDB, TipoVarDB {
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    operativo          :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    tabla_datos        :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    variable           :string
+    abr?                :string
+    nombre?             :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    tipovar            :string
+    // @ts-ignore https://github.com/codenautas/operativos/issues/4
+    clase              :string
+    es_pk?              :number
+    es_nombre_unico?    :boolean
+    activa?             :boolean
+    filtro?             :string
+    expresion?          :string
+    cascada?            :string
+    nsnc_atipico?       :number
+    cerrada?            :boolean
+    funcion_agregacion? :string
+    tabla_agregada?     :string
+    grupo?              :string
+    orden? : number
 
+
+    
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tipovar: string
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
@@ -44,25 +68,11 @@ export class Variable extends VariableDB implements TipoVarDB {
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     radio: boolean
 
-    // tdObj: TablaDatos
-
     getFieldObject(){
         if (this.tipovar == null) {
             throw new Error('la variable ' + this.variable + ' no tiene tipo');
         }
         return { name: this.variable, typeName: this.type_name};
-    }
-
-    esCalculada(){
-        return this.clase == tiposTablaDato.calculada;
-    }
-
-    // async getTD(client: Client){
-    //     return await TablaDatos.fetchOne(client, this.operativo, this.tabla_datos);
-    // }
-
-    static buildFromDBJSON(dbJson: Variable){
-        return Object.assign(new Variable, dbJson);
     }
 
     static async fetchAll(client:Client){
@@ -75,5 +85,8 @@ export class Variable extends VariableDB implements TipoVarDB {
                 ORDER BY es_pk desc, orden, variable`;
         let resultV = await client.query(query).fetchAll();
         return (<Variable[]>resultV.rows).map(v => Variable.buildFromDBJSON(v));
+    }
+    static buildFromDBJSON(dbJson: Variable) {
+        return Object.assign(new Variable, dbJson);
     }
 }

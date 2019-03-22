@@ -51,10 +51,6 @@ export class OperativoGenerator{
         return this.myVars.filter(v => v.operativo == td.operativo && v.tabla_datos == td.tabla_datos);
         // return likeAr(this.myVars).filter(v=>v.tabla_datos==td.tabla_datos).array();
     }
- 
-    getTDFor(v:Variable){
-        return this.myTDs.find(td => td.operativo == v.operativo && td.tabla_datos == v.tabla_datos);
-    }
 
     getUniqueTD(tdName:string){
         let td = this.myTDs.find(td=>td.tabla_datos==tdName);
