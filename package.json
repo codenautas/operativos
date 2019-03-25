@@ -3,22 +3,22 @@
   "description": "Elementos base para operativos estadísticos",
   "version": "0.5.2",
   "author": "Codenautas <codenautas@googlegroups.com>",
+  "repository": "codenautas/operativos",
   "license": "MIT",
   "main": "dist/server/app-operativos.js",
   "types": "dist/server/app-operativos.d.ts",
-  "repository": "codenautas/operativos",
   "files": [
     "dist",
     "install",
     "unlogged"
   ],
   "dependencies": {
-    "backend-plus": "~0.29.15",
+    "backend-plus": "~0.29.24",
     "pg-triggers": "~0.2.3",
-    "best-globals": "~0.10.13"
+    "best-globals": "~0.10.15"
   },
   "devDependencies": {
-    "types.d.ts": "~0.4.0"
+    "types.d.ts": "~0.4.1"
   },
   "engines": {
     "node": ">= 10.0.0"
