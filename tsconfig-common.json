@@ -7,7 +7,7 @@
         "moduleResolution": "node",
         "lib":["es2015"],
         "target": "es5",
-        "strict": true, // por ahora lo dejamos deshabilitado aunque sirve activarlo antes de pushear para ver algunos posibles errores.
+        "strict": true,
         "skipLibCheck": true, //para que no haga chequeo de tipos en los declaration files dentro de node-modules(pg-promise-strict, express, node)
         "module": "umd",
         "typeRoots" : ["node_modules/@types", "node_modules/types.d.ts/modules"],
