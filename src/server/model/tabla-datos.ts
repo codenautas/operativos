@@ -1,6 +1,6 @@
-import { tiposTablaDato } from "types-operativos";
+import { tiposTablaDato } from "../types-operativos";
 import { Client, quoteIdent } from "pg-promise-strict";
-import { AppOperativos } from "app-operativos";
+import { AppOperativos } from "../app-operativos";
 
 export abstract class TablaDatosDB {
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
