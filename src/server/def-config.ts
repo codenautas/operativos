@@ -9,8 +9,6 @@ db:
   database: operativos_db
   schema: ope
   user: operativos_user
-  search_path: 
-  - ope
 install:
   dump:
     db:
