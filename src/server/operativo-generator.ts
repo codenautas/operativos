@@ -2,8 +2,6 @@ import { Client, quoteIdent } from "pg-promise-strict";
 import { Relacion, RelacVar, TablaDatos, Variable } from "./types-operativos";
 
 export class OperativoGenerator{
-    // myTDs: {[key:string]: TablaDatos} = {}
-    // myVars: {[key:string]: Variable} = {}
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myTDs: TablaDatos[]
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
