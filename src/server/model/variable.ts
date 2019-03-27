@@ -54,8 +54,6 @@ export class Variable implements VariableDB, TipoVarDB {
     tabla_agregada?     :string
     grupo?              :string
     orden? : number
-
-
     
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     tipovar: string
