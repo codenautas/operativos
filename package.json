@@ -9,8 +9,7 @@
   "types": "dist/server/app-operativos.d.ts",
   "files": [
     "dist",
-    "install",
-    "unlogged"
+    "install"
   ],
   "dependencies": {
     "backend-plus": "~0.29.24",
