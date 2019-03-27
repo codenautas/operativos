@@ -10,7 +10,7 @@ import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
-import { AppBackend, ClientModuleDefinition, Context, MenuInfo, ProcedureDef, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator } from "./types-operativos";
+import { AppBackend, Context, MenuInfo, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator } from "./types-operativos";
 import { TablaDatos } from "model/tabla-datos";
 import { Client } from "pg-promise-strict";
 
@@ -23,14 +23,10 @@ export type Constructor<T> = new(...args: any[]) => T;
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{
-        allProcedures: ProcedureDef[] = [];
-        allClientFileNames: ClientModuleDefinition[] = [];
         tablasDatos: TablaDatos[] = [];
         
         constructor(...args:any[]){
             super(args);
-            // this.allProcedures = this.allProcedures.concat([]);
-            this.allClientFileNames.push({type:'js', module: 'operativos', modPath: '../client', file: 'operativos.js', path: 'client_modules'})
         }
         configStaticConfig(){
             super.configStaticConfig();
@@ -92,7 +88,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         generateAndLoadTableDef(tablaDatos:TablaDatos){
             return this.loadTableDef(this.generateBaseTableDef(tablaDatos));
         }
-        
+        /*        
         getProcedures(){
             var be = this;
             return super.getProcedures().then(function(procedures){
@@ -101,8 +97,11 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 );
             });
         }
-        clientIncludes(req:Request, hideBEPlusInclusions?:boolean){
-            return super.clientIncludes(req, hideBEPlusInclusions).concat(this.allClientFileNames);
+        */
+        clientIncludes(req:Request, hideBEPlusInclusions:boolean){
+            return super.clientIncludes(req, hideBEPlusInclusions).concat([
+                {type:'js', module: 'operativos', modPath: '../client', file: 'operativos.js', path: 'client_modules'}
+            ]);
         }
 
         getMenu(): MenuDefinition {
