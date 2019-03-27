@@ -50,12 +50,12 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 await be.cargarGenerados(client);
             });
         }
-        
+    
         generateBaseTableDef(tablaDatos:TablaDatos){
             let variables = OperativoGenerator.instanceObj.getVars(tablaDatos);
             let tableName = tablaDatos.getTableName();
             if(variables.length==0){
-                console.error('La tabla ' + tablaDatos.tabla_datos + ' no tiene variables');
+                throw new Error('La tabla ' + tablaDatos.tabla_datos + ' no tiene variables activas');
             }
             let tableDef: TableDefinition = {
                 name: tableName,
