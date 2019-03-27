@@ -101,7 +101,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 );
             });
         }
-        clientIncludes(req:Request, hideBEPlusInclusions:boolean){
+        clientIncludes(req:Request, hideBEPlusInclusions?:boolean){
             return super.clientIncludes(req, hideBEPlusInclusions).concat(this.allClientFileNames);
         }
 
