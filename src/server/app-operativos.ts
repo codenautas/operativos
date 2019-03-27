@@ -88,16 +88,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         generateAndLoadTableDef(tablaDatos:TablaDatos){
             return this.loadTableDef(this.generateBaseTableDef(tablaDatos));
         }
-        /*        
-        getProcedures(){
-            var be = this;
-            return super.getProcedures().then(function(procedures){
-                return procedures.concat(
-                    be.allProcedures.map(be.procedureDefCompleter, be)
-                );
-            });
-        }
-        */
+
         clientIncludes(req:Request, hideBEPlusInclusions:boolean){
             return super.clientIncludes(req, hideBEPlusInclusions).concat([
                 {type:'js', module: 'operativos', modPath: '../client', file: 'operativos.js', path: 'client_modules'}
