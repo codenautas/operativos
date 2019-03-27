@@ -10,7 +10,7 @@ import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
-import { AppBackend, ClientModuleDefinition, Context, MenuInfo, ProcedureDef, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator } from "./types-operativos";
+import { AppBackend, Context, MenuInfo, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator } from "./types-operativos";
 import { TablaDatos } from "model/tabla-datos";
 import { Client } from "pg-promise-strict";
 
