@@ -1,6 +1,7 @@
 
 import { PgKnownTypes } from "backend-plus";
 import { Client } from "pg-promise-strict";
+import { tiposTablaDato } from "types-operativos";
 import { TipoVarDB } from "./tipo-var";
 
 export interface VariableDB {
@@ -65,6 +66,10 @@ export class Variable implements VariableDB, TipoVarDB {
     validar: string
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     radio: boolean
+
+    esCalculada(){
+        return this.clase == tiposTablaDato.calculada;
+    }
 
     getFieldObject(){
         if (this.tipovar == null) {

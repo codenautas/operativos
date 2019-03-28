@@ -11,6 +11,11 @@ export class OperativoGenerator{
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myRelacVars: RelacVar[]
 
+    // acá bajo se concatena _agg
+    static sufijo_agregacion: string = '_agg';
+
+    static instanceObj: OperativoGenerator;
+
     static mainTD: string;
     static mainTDPK: string;
     static orderedIngresoTDNames: string[];
@@ -20,7 +25,6 @@ export class OperativoGenerator{
         return OperativoGenerator.orderedIngresoTDNames.concat(OperativoGenerator.orderedReferencialesTDNames);
     }
 
-    static instanceObj: OperativoGenerator;
 
     constructor(public client:Client, public operativo?: string){
         OperativoGenerator.instanceObj = this;

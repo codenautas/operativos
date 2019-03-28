@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "repository": "codenautas/operativos",
   "license": "MIT",
