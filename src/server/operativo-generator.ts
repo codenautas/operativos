@@ -54,6 +54,10 @@ export class OperativoGenerator{
         // return likeAr(this.myVars).filter(v=>v.tabla_datos==td.tabla_datos).array();
     }
 
+    getTDFor(v:Variable): TablaDatos{
+        return <TablaDatos>this.myTDs.find(td => td.operativo == v.operativo && td.tabla_datos == v.tabla_datos);
+    }
+    
     getUniqueTD(tdName:string){
         let td = this.myTDs.find(td=>td.tabla_datos==tdName);
         if (! td){ throw new Error('La Tabla de datos '+tdName+' no existe') }
