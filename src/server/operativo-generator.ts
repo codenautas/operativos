@@ -25,8 +25,7 @@ export class OperativoGenerator{
         return OperativoGenerator.orderedIngresoTDNames.concat(OperativoGenerator.orderedReferencialesTDNames);
     }
 
-    //TODO operativo is required, we only support one operativo per app
-    constructor(public client:Client, public operativo: string){
+    constructor(public client:Client, public operativo?: string){
         OperativoGenerator.instanceObj = this;
     }
 
@@ -64,12 +63,12 @@ export class OperativoGenerator{
         return td;
     }
 
-    joinTDs(queBuscoTDName: string, rightTDName: string): string {
+    protected joinTDs(queBuscoTDName: string, rightTDName: string): string {
         let rightTD = this.getUniqueTD(rightTDName)
         return ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.samePKsConditions(queBuscoTDName, rightTDName)}`
     }
 
-    samePKsConditions(queBuscoTDName: string, rightTDName: string): string {
+    protected samePKsConditions(queBuscoTDName: string, rightTDName: string): string {
         let queBuscoTD = this.getUniqueTD(queBuscoTDName);
         let rightTD = this.getUniqueTD(rightTDName)
         let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos==rightTDName && rv.que_busco==queBuscoTDName)
@@ -77,7 +76,7 @@ export class OperativoGenerator{
         return `${relacVars.map(rv=>rv.getTDsONConditions(queBuscoTD, rightTD)).join(' AND ')}`
     }
 
-    joinRelation(relation: Relacion): any {
+    protected joinRelation(relation: Relacion): any {
         let relationName = relation.que_busco;
         let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos == relation.tabla_datos && rv.que_busco==relationName);
         let tablaBusqueda = this.getUniqueTD(relation.tabla_busqueda);
@@ -86,5 +85,16 @@ export class OperativoGenerator{
                     SELECT ${quoteIdent(relationName)}.* 
                       FROM ${quoteIdent(tablaBusqueda.getTableName())} ${quoteIdent(relationName)}
                     ) ${quoteIdent(relationName)} ON ${relacVars.map(rv=>rv.getRelationONCondition(relationTD)).join(' AND ')}`;
+    }
+
+    protected buildInsumosTDsFromClausule(orderedTDNames: string[]) {
+        let clausula_from = 'FROM ' + quoteIdent(this.getUniqueTD(orderedTDNames[0]).getTableName());;
+        //starting from 1 instead of 0
+        for (let i = 1; i < orderedTDNames.length; i++) {
+            let leftInsumoAlias = orderedTDNames[i - 1];
+            let rightInsumoAlias = orderedTDNames[i];
+            clausula_from += this.joinTDs(leftInsumoAlias, rightInsumoAlias);
+        }
+        return clausula_from;
     }
 }
