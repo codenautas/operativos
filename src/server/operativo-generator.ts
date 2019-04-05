@@ -65,11 +65,16 @@ export class OperativoGenerator{
     }
 
     joinTDs(queBuscoTDName: string, rightTDName: string): string {
+        let rightTD = this.getUniqueTD(rightTDName)
+        return ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.samePKsConditions(queBuscoTDName, rightTDName)}`
+    }
+
+    samePKsConditions(queBuscoTDName: string, rightTDName: string): string {
         let queBuscoTD = this.getUniqueTD(queBuscoTDName);
         let rightTD = this.getUniqueTD(rightTDName)
         let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos==rightTDName && rv.que_busco==queBuscoTDName)
 
-        return ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${relacVars.map(rv=>rv.getTDsONConditions(queBuscoTD, rightTD)).join(' AND ')}`
+        return `${relacVars.map(rv=>rv.getTDsONConditions(queBuscoTD, rightTD)).join(' AND ')}`
     }
 
     joinRelation(relation: Relacion): any {
