@@ -25,8 +25,8 @@ export class OperativoGenerator{
         return OperativoGenerator.orderedIngresoTDNames.concat(OperativoGenerator.orderedReferencialesTDNames);
     }
 
-
-    constructor(public client:Client, public operativo?: string){
+    //TODO operativo is required, we only support one operativo per app
+    constructor(public client:Client, public operativo: string){
         OperativoGenerator.instanceObj = this;
     }
 
