@@ -28,7 +28,7 @@ export class TablaDatos extends TablaDatosDB {
     }
 
     static buildFromDBJSON(dbJson: TablaDatosDB){
-        return Object.assign(new TablaDatos, dbJson);
+        return  Object.setPrototypeOf(dbJson, TablaDatos.prototype);
     }
 
     static async fetchAll(client: Client):Promise<TablaDatos[]>{
