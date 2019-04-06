@@ -32,11 +32,24 @@ export class TablaDatos extends TablaDatosDB {
     }
 
     static async fetchAll(client: Client):Promise<TablaDatos[]>{
+        /*
         let result = await client.query(`
             SELECT td.*, r.que_busco, to_jsonb(array_agg(v.variable order by v.es_pk)) pks
                 FROM tabla_datos td 
                     LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional' 
                     LEFT JOIN variables v ON td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
+                GROUP BY td.operativo, td.tabla_datos, r.que_busco
+                ORDER BY td.operativo, td.tabla_datos, r.que_busco`
+            , []).fetchAll();
+        */
+        let result = await client.query(`
+            SELECT td.*, r.que_busco, 
+                    (SELECT jsonb_agg(v.variable order by v.es_pk) 
+                        FROM variables v 
+                        WHERE td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
+                    ) as pks
+                FROM tabla_datos td 
+                    LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional' 
                 GROUP BY td.operativo, td.tabla_datos, r.que_busco
                 ORDER BY td.operativo, td.tabla_datos, r.que_busco`
             , []).fetchAll();
@@ -46,10 +59,13 @@ export class TablaDatos extends TablaDatosDB {
     static async fetchOne(client:Client, op: string, td:string){
         //TODO sacar cosas comunes de la query afuera y parametrizar el where
         let result = await client.query(`
-            SELECT td.*, r.que_busco, to_jsonb(array_agg(v.variable order by v.orden)) pks
+            SELECT td.*, r.que_busco, 
+                    (SELECT jsonb_agg(v.variable order by v.es_pk) 
+                        FROM variables v 
+                        WHERE td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
+                    ) as pks
                 FROM tabla_datos td 
                     LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <>'opcional' 
-                    LEFT JOIN variables v ON td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
                 WHERE td.operativo = $1 AND td.tabla_datos = $2
                 GROUP BY td.operativo, td.tabla_datos, r.que_busco`
             , [op, td]).fetchUniqueRow();
