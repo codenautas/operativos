@@ -1,7 +1,7 @@
 
 import { PgKnownTypes } from "backend-plus";
 import { Client } from "pg-promise-strict";
-import { tiposTablaDato } from "types-operativos";
+import { tiposTablaDato } from "../types-operativos";
 import { TipoVarDB } from "./tipo-var";
 
 export interface VariableDB {
