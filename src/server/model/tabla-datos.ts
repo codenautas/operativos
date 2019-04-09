@@ -3,18 +3,12 @@ import { Client, quoteIdent } from "pg-promise-strict";
 import { AppOperativos } from "../app-operativos";
 
 export abstract class TablaDatosDB {
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    operativo: string
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    tabla_datos: string
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    tipo: tiposTablaDato
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    generada: Date
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    pks: string[]
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    que_busco: string
+    operativo!: string
+    tabla_datos!: string
+    tipo!: tiposTablaDato
+    generada!: Date
+    pks!: string[]
+    que_busco!: string
 }
 
 export class TablaDatos extends TablaDatosDB {
@@ -31,50 +25,25 @@ export class TablaDatos extends TablaDatosDB {
         return  Object.setPrototypeOf(dbJson, TablaDatos.prototype);
     }
 
+    static selectFrom = 
+        `SELECT td.*, r.que_busco, 
+          (SELECT jsonb_agg(v.variable order by v.es_pk) 
+            FROM variables v 
+            WHERE td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
+          ) as pks
+        FROM tabla_datos td 
+          LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional'`;
+    static groupBy = ` GROUP BY td.operativo, td.tabla_datos, r.que_busco`;
+
     static async fetchAll(client: Client):Promise<TablaDatos[]>{
-        /*
-        let result = await client.query(`
-            SELECT td.*, r.que_busco, to_jsonb(array_agg(v.variable order by v.es_pk)) pks
-                FROM tabla_datos td 
-                    LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional' 
-                    LEFT JOIN variables v ON td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
-                GROUP BY td.operativo, td.tabla_datos, r.que_busco
-                ORDER BY td.operativo, td.tabla_datos, r.que_busco`
-            , []).fetchAll();
-        */
-        let result = await client.query(`
-            SELECT td.*, r.que_busco, 
-                    (SELECT jsonb_agg(v.variable order by v.es_pk) 
-                        FROM variables v 
-                        WHERE td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
-                    ) as pks
-                FROM tabla_datos td 
-                    LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional' 
-                GROUP BY td.operativo, td.tabla_datos, r.que_busco
-                ORDER BY td.operativo, td.tabla_datos, r.que_busco`
-            , []).fetchAll();
+        let result = await client.query(TablaDatos.selectFrom+TablaDatos.groupBy+` ORDER BY td.operativo, td.tabla_datos, r.que_busco`, []).fetchAll();
         return (<TablaDatos[]>result.rows).map(td => TablaDatos.buildFromDBJSON(td));
     }
     
     static async fetchOne(client:Client, op: string, td:string){
-        //TODO sacar cosas comunes de la query afuera y parametrizar el where
-        let result = await client.query(`
-            SELECT td.*, r.que_busco, 
-                    (SELECT jsonb_agg(v.variable order by v.es_pk) 
-                        FROM variables v 
-                        WHERE td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
-                    ) as pks
-                FROM tabla_datos td 
-                    LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <>'opcional' 
-                WHERE td.operativo = $1 AND td.tabla_datos = $2
-                GROUP BY td.operativo, td.tabla_datos, r.que_busco`
-            , [op, td]).fetchUniqueRow();
+        let result = await client.query(TablaDatos.selectFrom+' WHERE td.operativo = $1 AND td.tabla_datos = $2 '+TablaDatos.groupBy, [op, td]).fetchUniqueRow();
         return TablaDatos.buildFromDBJSON(<TablaDatos> result.row);
     }
-    
-    // async getVars(client:Client){
-    //     return (await Variable.fetchAll(client)).filter(v=>v.tabla_datos==this.tabla_datos && v.operativo == this.operativo);
-    // }
 
     getQuotedPKsCSV(){
         return this.pks.map(pk=>quoteIdent(pk)).join(',');
