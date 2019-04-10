@@ -1,5 +1,4 @@
-import { Client, quoteIdent } from "pg-promise-strict";
-import { Relacion, RelacVar, TablaDatos, Variable } from "./types-operativos";
+import { Client, quoteIdent, Relacion, RelacVar, TablaDatos, Variable } from "./types-operativos";
 
 export class OperativoGenerator{
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
@@ -88,7 +87,7 @@ export class OperativoGenerator{
     }
 
     protected buildInsumosTDsFromClausule(orderedTDNames: string[]) {
-        let clausula_from = 'FROM ' + quoteIdent(this.getUniqueTD(orderedTDNames[0]).getTableName());;
+        let clausula_from = 'FROM ' + quoteIdent(this.getUniqueTD(orderedTDNames[0]).getTableName());
         //starting from 1 instead of 0
         for (let i = 1; i < orderedTDNames.length; i++) {
             let leftInsumoAlias = orderedTDNames[i - 1];

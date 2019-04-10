@@ -1,5 +1,5 @@
 import { BaseDBTable } from "./base-db-table";
-import { Client } from "pg-promise-strict";
+import { Client } from "../types-operativos";
 
 export class RelacionDB extends BaseDBTable {
     // @ts-ignore https://github.com/codenautas/operativos/issues/4

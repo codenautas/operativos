@@ -1,4 +1,4 @@
-import { Client, quoteIdent } from "pg-promise-strict";
+import { Client, quoteIdent } from "../types-operativos";
 
 export class BaseDBTable {
     static async fetchAll(client:Client, tableName:string):Promise<{[key:string]:any}[]> {

@@ -1,7 +1,5 @@
 
-import { PgKnownTypes } from "backend-plus";
-import { Client } from "pg-promise-strict";
-import { tiposTablaDato } from "../types-operativos";
+import { PgKnownTypes, tiposTablaDato, Client } from "../types-operativos";
 import { TipoVarDB } from "./tipo-var";
 
 export interface VariableDB {
@@ -90,6 +88,7 @@ export class Variable implements VariableDB, TipoVarDB {
         return (<Variable[]>resultV.rows).map(v => Variable.buildFromDBJSON(v));
     }
     static buildFromDBJSON(dbJson: Variable) {
-        return Object.setPrototypeOf(dbJson, Variable.prototype)
+        // Using assign instead of setPrototypeOf because we need to have initialized properties
+        return Object.assign(new Variable, dbJson);
     }
 }

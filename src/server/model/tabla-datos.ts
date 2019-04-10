@@ -1,5 +1,4 @@
-import { tiposTablaDato } from "../types-operativos";
-import { Client, quoteIdent } from "pg-promise-strict";
+import { tiposTablaDato, Client, quoteIdent } from "../types-operativos";
 import { AppOperativos } from "../app-operativos";
 
 export abstract class TablaDatosDB {
@@ -25,6 +24,7 @@ export class TablaDatos extends TablaDatosDB {
         return  Object.setPrototypeOf(dbJson, TablaDatos.prototype);
     }
 
+    //TODO re-think this query because it was tought for have "que_busco" for variable calculada
     static selectFrom = 
         `SELECT td.*, r.que_busco, 
           (SELECT jsonb_agg(v.variable order by v.es_pk) 

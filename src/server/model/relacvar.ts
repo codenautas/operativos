@@ -1,5 +1,5 @@
 
-import { Client, quoteLiteral, quoteIdent } from "pg-promise-strict";
+import { Client, quoteLiteral, quoteIdent } from "../types-operativos";
 import { TablaDatos } from "./tabla-datos";
 import { BaseDBTable } from "./base-db-table";
 
