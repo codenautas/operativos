@@ -28,22 +28,18 @@ export class RelacVar extends RelacVarDB{
         return relacVars.map(rv => Object.setPrototypeOf(rv, RelacVar.prototype))
     }
     
-    getTDsONConditions(queBuscoTD: TablaDatos, rightTD: TablaDatos){
-        return this.getLeftONCondition(queBuscoTD.getTableName()) + this.getRightTDONCondition(rightTD);
+    public getTDsONConditions(queBuscoTD: TablaDatos, rightTD: TablaDatos){
+        return this.getFieldCondition(queBuscoTD.getTableName(), this.campo_busco) + '=' + this.getFieldCondition(rightTD.getTableName(), this.campo_datos);
     }
 
-    getRelationONCondition(relationTD:TablaDatos): string{
+    public getRelationONCondition(relationTD:TablaDatos): string{
         //TODO: actualmente las relaciones y las relac_vars no tienen joineo con el campo operativo.
         //aqui suponemos que si no tiene campo_datos entonces tendra dato_fijo
-        return this.getLeftONCondition(this.que_busco) + 
-            (this.dato_fijo? quoteLiteral(this.dato_fijo): this.getRightTDONCondition(relationTD));
+        return this.getFieldCondition(this.que_busco, this.campo_busco) + '=' + 
+            (this.dato_fijo? quoteLiteral(this.dato_fijo): this.getFieldCondition(relationTD.getTableName(), this.campo_datos));
     }
 
-    private getLeftONCondition(alias:string):string{
-        return `${quoteIdent(alias)}.${quoteIdent(this.campo_busco)}=`;
-    }
-
-    private getRightTDONCondition(td:TablaDatos): string{
-        return `${quoteIdent(td.getTableName())}.${quoteIdent(this.campo_datos)}`;
+    private getFieldCondition(alias: string, fieldName: string){
+        return `${quoteIdent(alias)}.${quoteIdent(fieldName)}`;
     }
 }
