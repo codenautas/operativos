@@ -1,4 +1,4 @@
-import { Client, quoteIdent, Relacion, RelacVar, TablaDatos, Variable } from "./types-operativos";
+import { Client, quoteIdent, Relacion, RelVar, TablaDatos, Variable } from "./types-operativos";
 
 export class OperativoGenerator{
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
@@ -8,7 +8,7 @@ export class OperativoGenerator{
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myRels: Relacion[]
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    myRelacVars: RelacVar[]
+    myRelacVars: RelVar[]
 
     // acá bajo se concatena _agg
     static sufijo_agregacion: string = '_agg';
@@ -32,7 +32,7 @@ export class OperativoGenerator{
         this.myTDs = await TablaDatos.fetchAll(this.client);
         this.myVars = await Variable.fetchAll(this.client);
         this.myRels = await Relacion.fetchAll(this.client);
-        this.myRelacVars = await RelacVar.fetchAll(this.client);
+        this.myRelacVars = await RelVar.fetchAll(this.client);
 
         if (this.operativo){
             this.myTDs = this.myTDs.filter(td=>td.operativo==this.operativo);

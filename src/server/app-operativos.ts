@@ -4,7 +4,7 @@ import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
 import { parametros } from './table-parametros';
 import { relaciones } from "./table-relaciones";
-import { relac_vars } from "./table-relac_vars";
+import { relac_vars } from "./table-rel_vars";
 import { tabla_datos } from "./table-tabla_datos";
 import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';

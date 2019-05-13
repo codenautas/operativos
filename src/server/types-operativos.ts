@@ -6,7 +6,7 @@ export * from "pg-promise-strict";
 export * from "./model/base-db-table";
 export * from "./model/operativo";
 export * from "./model/relacion";
-export * from "./model/relacvar";
+export * from "./model/relvar";
 export * from "./model/tabla-datos";
 export * from "./model/tipo-var";
 export * from "./model/variable";

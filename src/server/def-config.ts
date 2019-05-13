@@ -17,6 +17,8 @@ install:
     enances: inline
     skip-content: true
     scripts:
+      prepare:
+      - rel_tabla_relacionada.sql
       post-adapt: 
       - para-install.sql
       - ../node_modules/pg-triggers/lib/recreate-his.sql

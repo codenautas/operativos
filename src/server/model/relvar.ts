@@ -3,7 +3,7 @@ import { Client, quoteLiteral, quoteIdent } from "../types-operativos";
 import { TablaDatos } from "./tabla-datos";
 import { BaseDBTable } from "./base-db-table";
 
-export class RelacVarDB extends BaseDBTable{
+export class RelVarDB extends BaseDBTable{
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     operativo: string
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
@@ -22,10 +22,10 @@ export class RelacVarDB extends BaseDBTable{
     funcion_dato: string
 }
 
-export class RelacVar extends RelacVarDB{
-    static async fetchAll(client:Client): Promise<RelacVar[]>{
+export class RelVar extends RelVarDB{
+    static async fetchAll(client:Client): Promise<RelVar[]>{
         let relacVars = await super.fetchAll(client, 'relac_vars');
-        return relacVars.map(rv => Object.setPrototypeOf(rv, RelacVar.prototype))
+        return relacVars.map(rv => Object.setPrototypeOf(rv, RelVar.prototype))
     }
     
     public getTDsONConditions(queBuscoTD: TablaDatos, rightTD: TablaDatos){

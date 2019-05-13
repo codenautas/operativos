@@ -12,18 +12,30 @@ function relaciones(context:TableContext):TableDefinition{
         fields: [
             { name: "operativo"          , typeName: 'text'    },
             { name: "tabla_datos"        , typeName: 'text'    },
-            { name: "que_busco"          , typeName: 'text'    },
-            { name: "tabla_busqueda"     , typeName: 'text' },
-            { name: "tipo"               , typeName: 'text' },
+            { name: "tiene"              , typeName: 'text'    },
+            { name: "que_es"             , typeName: 'text'    },
+            { name: "misma_pk"           , typeName: 'boolean' },
+            { name: "tabla_relacionada"  , typeName: 'text'    },
+            { name: "a_veces_siempre"    , typeName: 'text'    },
+            { name: "max"                , typeName: 'integer' },
         ],
-        primaryKey: ['operativo', 'tabla_datos','que_busco'],
+        primaryKey: ['operativo', 'tabla_datos','tiene'],
+        constraints:[
+            // a_veces_siempre: para saber si la relación es optativa (para saber si es left join o inner join)
+            {constraintType:'check', consName:'a_veces_siempre valores validos: a_veces, siempre' ,expr:"a_veces_siempre in ('a_veces','siempre')"},
+            {constraintType:'unique', consName:'uk_tabla_relacionada' , fields:['operativo', 'tabla_datos', 'tiene', 'tabla_relacionada']},
+        ],
         foreignKeys: [
-            {references:'operativos'     , fields:['operativo']               },
-            {references:'tabla_datos'    , fields:['operativo','tabla_datos'], alias: 'tddatos'},
-            {references:'tabla_datos'    , fields:['operativo', {source:'tabla_busqueda', target:'tabla_datos'}], alias:'tdbusqueda' },
+            {references:'operativos'      , fields:['operativo']               },
+            {references:'tabla_datos'     , fields:['operativo','tabla_datos'], alias: 'tddatos'},
+            {references:'tabla_datos'     , fields:['operativo', {source:'que_es', target:'tabla_datos'}], alias: 'tdquees'},
+            {references:'tabla_datos'     , fields:['operativo', {source:'tabla_relacionada', target:'tabla_datos'}], alias:'tdtablarelacionada' },
         ],
         detailTables: [
-            { table: 'relac_var', fields: ['operativo', 'tabla_datos', 'que_busco'], abr: 'rv', label: 'relac var' }
-        ]
+            { table: 'rel_var', fields: ['operativo', 'tabla_datos', 'tiene'], abr: 'rv', label: 'rel var' }
+        ],
+        sql:{
+            postCreateSqls:'create trigger rel_tabla_relacionada_setting_trg before insert or update on relaciones for each row execute procedure rel_tabla_relacionada_setting_trg();',
+        }
     }
 }
