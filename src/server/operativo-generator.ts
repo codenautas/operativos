@@ -8,7 +8,7 @@ export class OperativoGenerator{
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     myRels: Relacion[]
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    myRelacVars: RelVar[]
+    myRelVars: RelVar[]
 
     // acá bajo se concatena _agg
     static sufijo_agregacion: string = '_agg';
@@ -32,13 +32,13 @@ export class OperativoGenerator{
         this.myTDs = await TablaDatos.fetchAll(this.client);
         this.myVars = await Variable.fetchAll(this.client);
         this.myRels = await Relacion.fetchAll(this.client);
-        this.myRelacVars = await RelVar.fetchAll(this.client);
+        this.myRelVars = await RelVar.fetchAll(this.client);
 
         if (this.operativo){
             this.myTDs = this.myTDs.filter(td=>td.operativo==this.operativo);
             this.myVars = this.myVars.filter(v=>v.operativo==this.operativo && v.activa);
             this.myRels = this.myRels.filter(v=>v.operativo==this.operativo);
-            this.myRelacVars = this.myRelacVars.filter(v=>v.operativo==this.operativo);
+            this.myRelVars = this.myRelVars.filter(v=>v.operativo==this.operativo);
         }
 
         // OJO los TDs pueden repetirse por operativo y las vars se repiten por TD, entonces 
@@ -62,28 +62,39 @@ export class OperativoGenerator{
         return td;
     }
 
-    protected joinTDs(queBuscoTDName: string, rightTDName: string): string {
+    private joinTDs(leftTDName: string, rightTDName: string): string {
         let rightTD = this.getUniqueTD(rightTDName)
-        return ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.samePKsConditions(queBuscoTDName, rightTDName)}`
+        let relFound = this.myRels.find(r=>r.tabla_datos==leftTDName && r.tiene == rightTDName)
+        if (!relFound) {
+            throw new Error(`No se encontró ningún registro en la tabla relaciones para las TDs ${leftTDName} y ${rightTDName}`)
+        }
+        let cond = relFound.misma_pk ? `USING (${rightTD.getQuotedPKsCSV()})`: `ON ${this.relVarPKsConditions(leftTDName, rightTDName)}`;
+        return ` JOIN ${quoteIdent(rightTD.getTableName())} ${cond}`
     }
 
-    protected samePKsConditions(queBuscoTDName: string, rightTDName: string): string {
-        let queBuscoTD = this.getUniqueTD(queBuscoTDName);
-        let rightTD = this.getUniqueTD(rightTDName)
-        let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos==rightTDName && rv.que_busco==queBuscoTDName)
-
-        return `${relacVars.map(rv=>rv.getTDsONConditions(queBuscoTD, rightTD)).join(' AND ')}`
+    // Could be used for WHERE conditions or also for ON conditions
+    protected relVarPKsConditions(leftTDName: string, rightTDName: string): string {
+        let leftTD = this.getUniqueTD(leftTDName);
+        let rightTD = this.getUniqueTD(rightTDName);
+        let relVars = this.myRelVars.filter(rv => rv.tabla_datos==leftTDName && rv.tiene==rightTDName);
+        if (!relVars.length){
+            throw new Error(`No se encontraron registros en la tabla rel_vars para unir la tabla ${leftTDName} con ${rightTDName}`)
+        }
+        return `${relVars.map(rv=>rv.getTDsONConditions(leftTD, rightTD)).join(' AND ')}`
     }
 
-    protected joinRelation(relation: Relacion): any {
-        let relationName = relation.que_busco;
-        let relacVars = this.myRelacVars.filter(rv => rv.tabla_datos == relation.tabla_datos && rv.que_busco==relationName);
-        let tablaBusqueda = this.getUniqueTD(relation.tabla_busqueda);
+    protected joinOptRelation(relation: Relacion): any {
+        let relationName = relation.tiene;
+        let relVars = this.myRelVars.filter(rv => rv.tabla_datos == relation.tabla_datos && rv.tiene==relationName);
+        if (!relVars.length){
+            throw new Error(`No se encontraron registros en la tabla rel_vars para la relación opcional ${relationName}`)
+        }
+        let tablaRelacionada = this.getUniqueTD(relation.tabla_relacionada);
         let relationTD = this.getUniqueTD(relation.tabla_datos)
         return ` LEFT JOIN (
                     SELECT ${quoteIdent(relationName)}.* 
-                      FROM ${quoteIdent(tablaBusqueda.getTableName())} ${quoteIdent(relationName)}
-                    ) ${quoteIdent(relationName)} ON ${relacVars.map(rv=>rv.getRelationONCondition(relationTD)).join(' AND ')}`;
+                      FROM ${quoteIdent(tablaRelacionada.getTableName())} ${quoteIdent(relationName)}
+                    ) ${quoteIdent(relationName)} ON ${relVars.map(rv=>rv.getRelationONCondition(relationTD)).join(' AND ')}`;
     }
 
     protected buildInsumosTDsFromClausule(orderedTDNames: string[]) {

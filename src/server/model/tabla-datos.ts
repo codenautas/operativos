@@ -6,37 +6,29 @@ export abstract class TablaDatosDB {
     tabla_datos!: string
     tipo!: tiposTablaDato
     generada!: Date
-    pks!: string[]
-    que_busco!: string
 }
 
 export class TablaDatos extends TablaDatosDB {
-
-    init(op:string, td:string, pks:string[], que_busco:string, tipo:tiposTablaDato){
-        this.operativo = op
-        this.tabla_datos = td
-        this.pks = pks
-        this.que_busco = que_busco
-        this.tipo = tipo
-    }
-
+    td_base!: string
+    pks!: string[]
+    
     static buildFromDBJSON(dbJson: TablaDatosDB){
         return  Object.setPrototypeOf(dbJson, TablaDatos.prototype);
     }
 
-    //TODO re-think this query because it was tought for have "que_busco" for variable calculada
+    //TODO re-think because it's complex
     static selectFrom = 
-        `SELECT td.*, r.que_busco, 
+        `SELECT td.*, r.tabla_datos as td_base, 
           (SELECT jsonb_agg(v.variable order by v.es_pk) 
             FROM variables v 
             WHERE td.operativo=v.operativo AND td.tabla_datos=v.tabla_datos AND v.es_pk > 0
           ) as pks
         FROM tabla_datos td 
-          LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tabla_datos AND r.tipo <> 'opcional'`;
-    static groupBy = ` GROUP BY td.operativo, td.tabla_datos, r.que_busco`;
+          LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tiene AND r.misma_pk is TRUE`;
+    static groupBy = ` GROUP BY td.operativo, td.tabla_datos, r.tabla_datos`;
 
     static async fetchAll(client: Client):Promise<TablaDatos[]>{
-        let result = await client.query(TablaDatos.selectFrom+TablaDatos.groupBy+` ORDER BY td.operativo, td.tabla_datos, r.que_busco`, []).fetchAll();
+        let result = await client.query(TablaDatos.selectFrom+TablaDatos.groupBy+` ORDER BY td.operativo, td.tabla_datos, r.tabla_datos`, []).fetchAll();
         return (<TablaDatos[]>result.rows).map(td => TablaDatos.buildFromDBJSON(td));
     }
     
@@ -51,10 +43,6 @@ export class TablaDatos extends TablaDatosDB {
 
     getPKsWitAlias(){
         return this.pks.map(pk=>this.getTableName()+'.'+pk)
-    }
-
-    getPrefixedQueBusco(){
-        return AppOperativos.prefixTableName(this.que_busco, this.operativo);
     }
 
     getTableName(){

@@ -2,16 +2,14 @@ import { BaseDBTable } from "./base-db-table";
 import { Client } from "../types-operativos";
 
 export class RelacionDB extends BaseDBTable {
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    operativo: string
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    tabla_datos: string
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    que_busco: string
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    tabla_busqueda: string
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    tipo: string
+    operativo!: string
+    tabla_datos!: string
+    tiene!: string
+    que_es!: string
+    misma_pk!: boolean
+    tabla_relacionada!: string
+    a_veces_siempre!: string
+    max!: number
 }
 
 export class Relacion extends RelacionDB {

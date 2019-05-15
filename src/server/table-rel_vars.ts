@@ -3,8 +3,8 @@
 import {TableDefinition} from "backend-plus"
 import {TableContext} from "./types-operativos"
 
-export {relac_vars};
-function relac_vars(context:TableContext):TableDefinition{
+export {rel_vars as rel_vars};
+function rel_vars(context:TableContext):TableDefinition{
     var admin = context.user.rol === 'admin';
     return {
         name: 'rel_vars',
@@ -15,6 +15,7 @@ function relac_vars(context:TableContext):TableDefinition{
             { name: "tabla_datos"        , typeName: 'text'    },
             { name: "tiene"              , typeName: 'text'    },
             { name: "orden"               , typeName: 'integer' },
+            // { name: "tabla_relacionada"  , typeName: 'text'    },
             { name: "campo_datos"         , typeName: 'text'    },
             { name: "campo_tiene"         , typeName: 'text'    },
             { name: "dato_fijo"           , typeName: 'text'    },
@@ -24,8 +25,14 @@ function relac_vars(context:TableContext):TableDefinition{
         foreignKeys: [
             {references:'operativos'   , fields:['operativo'] },
             {references:'tabla_datos'  , fields:['operativo','tabla_datos'] },
+            // {references:'relaciones'   , fields:['operativo', 'tabla_datos', 'tiene'], alias: 'rel_fk' },
+            // {references:'relaciones'   , fields:['operativo', 'tabla_datos', 'tiene', 'tabla_relacionada'], alias: 'fk_rel_uk' },
             {references:'variables'    , fields:['operativo', 'tabla_datos', {source:'campo_datos', target:'variable'}], alias:'campo_datos' },
             {references:'variables'    , fields:['operativo', {source:'tabla_relacionada', target:'tabla_datos'}, {source:'campo_tiene', target:'variable'}], alias:'campo_tiene' },
         ],
+        // sql: {
+        //     fields:{},
+        //     postCreateSqls:'create trigger rel_var_tabla_relacionada_setting_trg before insert or update on rel_vars for each row execute procedure rel_var_tabla_relacionada_setting_trg();',
+        // }
     }
 }
