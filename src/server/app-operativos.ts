@@ -4,7 +4,7 @@ import { clasevar } from './table-clasevar';
 import { operativos } from './table-operativos';
 import { parametros } from './table-parametros';
 import { relaciones } from "./table-relaciones";
-import { relac_vars } from "./table-rel_vars";
+import { rel_vars } from "./table-rel_vars";
 import { tabla_datos } from "./table-tabla_datos";
 import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';
@@ -105,7 +105,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                             { menuType: 'table', name: 'variables' },
                             { menuType: 'table', name: 'variables_opciones' },
                             { menuType: 'table', name: 'relaciones' },
-                            { menuType: 'table', name: 'relac_vars' },
+                            { menuType: 'table', name: 'rel_vars' },
                         ]
                     }]
             }
@@ -125,7 +125,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 variables,
                 variables_opciones,
                 relaciones,
-                relac_vars
+                rel_vars
             }
         }
     }
