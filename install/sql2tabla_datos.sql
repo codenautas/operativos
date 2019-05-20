@@ -8,7 +8,7 @@ begin
   insert into tabla_datos(operativo, tabla_datos, tipo) 
     select p_operativo, p_tabla, 'interna'
       where p_tabla not in (select tabla_datos from tabla_datos existentes);
-  insert into variables(operativo, tabla_datos, variable, tipovar, clase, es_pk, orden, activa)
+  insert into variables(operativo, tabla_datos, variable, tipovar, grupo, clase, es_pk, orden, cerrada, activa)
     select p_operativo, p_tabla, c.column_name,
         case c.data_type
           when 'text'     then 'texto'
@@ -19,9 +19,11 @@ begin
           when 'interval' then 'hora'
           when 'boolean'  then 'boolean'
         end,
+        case when kcu.ordinal_position is not null then 'claves' else null end,
         'interna',
         kcu.ordinal_position,
         c.ordinal_position,
+        true,
         true
       from information_schema.columns c 
           LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
