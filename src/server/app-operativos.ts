@@ -10,15 +10,11 @@ import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
-import { AppBackend, Context, MenuInfo, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator, Client } from "./types-operativos";
+import { AppBackend, Context, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator, Client, Constructor, MenuDefinition } from "./types-operativos";
 import { TablaDatos } from "model/tabla-datos";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
-
-export type MenuDefinition = {menu:MenuInfo[]}
-
-export type Constructor<T> = new(...args: any[]) => T;
 
 export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
     return class AppOperativos extends Base{

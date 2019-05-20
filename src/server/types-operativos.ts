@@ -19,6 +19,8 @@ type MenuInfoMapa = {
 
 export type MenuInfo = MenuInfoMapa | backendPlus.MenuInfo;
 
+export type MenuDefinition = {menu:MenuInfo[]}
+
 export interface User extends backendPlus.User{
     usuario:string
     rol:string
@@ -38,3 +40,5 @@ for (let tipoTD in tiposTablaDato) {
 export function hasAlias(text: string) {
     return text.match(/^.+\..+$/);
 }
+
+export type Constructor<T> = new(...args: any[]) => T;
