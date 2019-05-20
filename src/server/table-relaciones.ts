@@ -35,8 +35,7 @@ function relaciones(context:TableContext):TableDefinition{
             { table: 'rel_var', fields: ['operativo', 'tabla_datos', 'tiene'], abr: 'rv', label: 'rel var' }
         ],
         sql: {
-            fields:{},
-            postCreateSqls:'create trigger rel_tabla_relacionada_setting_trg before insert or update on relaciones for each row execute procedure rel_tabla_relacionada_setting_trg();',
+            postCreateSqls:'create trigger rel_tabla_relacionada_setting_trg before insert or update of que_es,tiene,tabla_relacionada on relaciones for each row execute procedure rel_tabla_relacionada_setting_trg();',
         }
     }
 }
