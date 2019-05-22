@@ -17,6 +17,7 @@ export class TablaDatos extends TablaDatosDB {
     }
 
     //TODO re-think because it's complex
+    // OJO que el td_base solo se setea para las TDs calculadas (por la condición del ON (misma_pk is TRUE))
     static selectFrom = 
         `SELECT td.*, r.tabla_datos as td_base, 
           (SELECT jsonb_agg(v.variable order by v.es_pk) 

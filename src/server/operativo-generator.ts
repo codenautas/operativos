@@ -80,6 +80,9 @@ export class OperativoGenerator{
         if (!relVars.length){
             throw new Error(`No se encontraron registros en la tabla rel_vars para unir la tabla ${leftTDName} con ${rightTDName}`)
         }
+        if (relVars.length != leftTD.pks.length){
+            throw new Error(`La cantidad de registros en rel_vars para unir la tabla ${leftTDName} con ${rightTDName} no coincide con la cantidad de pks en la tabla ${leftTDName}`)
+        }
         return `${relVars.map(rv=>rv.getTDsONConditions(leftTD, rightTD)).join(' AND ')}`
     }
 
