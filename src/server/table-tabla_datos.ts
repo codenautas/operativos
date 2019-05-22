@@ -21,7 +21,7 @@ function tabla_datos(context:TableContext):TableDefinition{
         primaryKey:['operativo', 'tabla_datos'],
         foreignKeys:[
             {references:'operativos' , fields:['operativo']},
-            {references:'tabla_datos', fields:['operativo', {source:'consistir_en', target:'tabla_datos'}]},
+            {references:'tabla_datos', fields:['operativo', {source:'consistir_en', target:'tabla_datos'}], alias:'tdd'},
         ],
         detailTables:[
             {table:'variables'       , fields:['operativo','tabla_datos'], abr:'V'},

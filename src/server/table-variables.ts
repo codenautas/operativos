@@ -33,7 +33,7 @@ function variables(context:TableContext):TableDefinition{
         primaryKey: ['operativo', 'tabla_datos','variable'],
         foreignKeys: [
             {references:'operativos'     , fields:['operativo']               },
-            {references:'tabla_datos'    , fields:['operativo','tabla_datos'] },
+            {references:'tabla_datos'    , fields:['operativo','tabla_datos'] , alias:'tdv'},
             {references:'clasevar'       , fields:['clase']                   },
             {references:'tipovar'        , fields:['tipovar']                 },
         ],

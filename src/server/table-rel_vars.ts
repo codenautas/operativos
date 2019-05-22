@@ -24,7 +24,7 @@ function rel_vars(context:TableContext):TableDefinition{
         primaryKey: ['operativo', 'tabla_datos','tiene', 'orden'],
         foreignKeys: [
             {references:'operativos'   , fields:['operativo'] },
-            {references:'tabla_datos'  , fields:['operativo','tabla_datos'] },
+            {references:'tabla_datos'  , fields:['operativo','tabla_datos'], alias:'tdrv' },
             {references:'relaciones'   , fields:['operativo', 'tabla_datos', 'tiene'], alias: 'rel_fk' },
             {references:'relaciones'   , fields:['operativo', 'tabla_datos', 'tiene', 'tabla_relacionada'], alias: 'fk_rel_uk' },
             {references:'variables'    , fields:['operativo', 'tabla_datos', {source:'campo_datos', target:'variable'}], alias:'campo_datos' },
