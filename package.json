@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "repository": "codenautas/operativos",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "install"
   ],
   "dependencies": {
-    "backend-plus": "~0.29.46",
+    "backend-plus": "~0.29.52",
     "pg-triggers": "~0.2.3",
     "best-globals": "~0.10.19"
   },
