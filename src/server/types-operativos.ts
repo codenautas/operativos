@@ -41,4 +41,9 @@ export function hasAlias(text: string) {
     return text.match(/^.+\..+$/);
 }
 
+export function getAlias(text: string) {
+    return text.split('.')[0];
+}
+
+
 export type Constructor<T> = new(...args: any[]) => T;
