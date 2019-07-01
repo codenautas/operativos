@@ -1,14 +1,13 @@
 import { Client, quoteIdent, Relacion, RelVar, TablaDatos, Variable } from "./types-operativos";
 
 export class OperativoGenerator{
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    myTDs: TablaDatos[]
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    myVars: Variable[]
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    myRels: Relacion[]
-    // @ts-ignore https://github.com/codenautas/operativos/issues/4
-    myRelVars: RelVar[]
+    myTDs: TablaDatos[]=[];
+    myVars: Variable[]=[];
+    myRels: Relacion[]=[];
+    myRelVars: RelVar[]=[];
+
+    optionalRelations: Relacion[]=[];
+    validAliases: string[]=[];
 
     // acá bajo se concatena _agg
     static sufijo_agregacion: string = '_agg';
@@ -19,10 +18,6 @@ export class OperativoGenerator{
     static mainTDPK: string;
     static orderedIngresoTDNames: string[];
     static orderedReferencialesTDNames: string[];
-
-    static orderedTDNames(): any {
-        return OperativoGenerator.orderedIngresoTDNames.concat(OperativoGenerator.orderedReferencialesTDNames);
-    }
 
     constructor(public client:Client, public operativo?: string){
         OperativoGenerator.instanceObj = this;
@@ -41,10 +36,22 @@ export class OperativoGenerator{
             this.myRelVars = this.myRelVars.filter(v=>v.operativo==this.operativo);
         }
 
+        this.optionalRelations = this.myRels.filter(rel => !!rel.que_es);
+        this.validAliases = this.getValidAliases();
+
         // OJO los TDs pueden repetirse por operativo y las vars se repiten por TD, entonces 
         // si se hacen objetos indexados tener cuidado de no eliminar repetidos
         // tds.forEach(td=> this.myTDs[td.tabla_datos]=td);
         // vars.forEach(v=> this.myTDs[v.tabla_datos].myVars.push(v));
+    }
+
+    getOptionalRelation(varAlias: string):Relacion|undefined{
+        return this.optionalRelations.find(optRel => optRel.tiene == varAlias);
+    }
+
+    private getValidAliases(): string[]{
+        let validRelationsNames = this.optionalRelations.map(optRel => optRel.tiene)
+        return this.myTDs.map(td => td.tabla_datos).concat(validRelationsNames);
     }
 
     getVars(td:TablaDatos){
@@ -63,13 +70,25 @@ export class OperativoGenerator{
     }
 
     private joinTDs(leftTDName: string, rightTDName: string): string {
+        let joinTxt:string='';
         let rightTD = this.getUniqueTD(rightTDName)
-        let relFound = this.myRels.find(r=>r.tabla_datos==leftTDName && r.tiene == rightTDName)
+        let relFound = this.myRels.find(r=>r.tabla_datos==leftTDName && r.tiene == rightTDName);
         if (!relFound) {
-            throw new Error(`No se encontró ningún registro en la tabla relaciones para las TDs ${leftTDName} y ${rightTDName}`)
+            try {
+                let relationForRightTDAsChild = this.myRels.find(r=> r.tiene == rightTD.tabla_datos);
+                if (!relationForRightTDAsChild){
+                    throw new Error(`se llego al final`)
+                }
+                let parentTDNameOfrightTD = relationForRightTDAsChild.tabla_datos;
+                joinTxt = this.joinTDs(leftTDName, parentTDNameOfrightTD) // recursive call searching in my parent
+                relFound = relationForRightTDAsChild;
+            }catch(err){
+                throw new Error(`No se encontró ningún registro en la tabla relaciones para las TDs ${leftTDName} y ${rightTDName}`)                
+            }
+            
         }
-        let cond = relFound.misma_pk ? `USING (${rightTD.getQuotedPKsCSV()})`: `ON ${this.relVarPKsConditions(leftTDName, rightTDName)}`;
-        return ` JOIN ${quoteIdent(rightTD.getTableName())} ${cond}`
+        let cond = relFound.misma_pk ? `USING (${rightTD.getQuotedPKsCSV()})`: `ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`;
+        return joinTxt + ` JOIN ${quoteIdent(rightTD.getTableName())} ${cond}`
     }
 
     // Could be used for WHERE conditions or also for ON conditions
@@ -102,12 +121,7 @@ export class OperativoGenerator{
 
     protected buildInsumosTDsFromClausule(orderedTDNames: string[]) {
         let clausula_from = 'FROM ' + quoteIdent(this.getUniqueTD(orderedTDNames[0]).getTableName());
-        //starting from 1 instead of 0
-        for (let i = 1; i < orderedTDNames.length; i++) {
-            let leftInsumoAlias = orderedTDNames[i - 1];
-            let rightInsumoAlias = orderedTDNames[i];
-            clausula_from += this.joinTDs(leftInsumoAlias, rightInsumoAlias);
-        }
+        clausula_from += this.joinTDs(orderedTDNames[0], orderedTDNames[orderedTDNames.length-1]);
         return clausula_from;
     }
 }
