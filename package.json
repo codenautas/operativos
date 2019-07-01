@@ -3,6 +3,7 @@
   "description": "Elementos base para operativos estadísticos",
   "version": "0.7.4",
   "author": "Codenautas <codenautas@googlegroups.com>",
+  "contributors": ["Raquel N Salva <raquelzssalva@gmail.com>, Eugenio Arosteguy <eugenio.arosteguy@gmail.com>, Emilio Platzer <emilioplatzer@gmail.com>"],
   "repository": "codenautas/operativos",
   "license": "MIT",
   "main": "dist/server/app-operativos.js",
