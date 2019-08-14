@@ -3,6 +3,9 @@
 import {TableDefinition, TableContext} from "./types-operativos"
 export {relaciones};
 
+//TODO: solucionar redundancia en el manejo de Tablas de datos/relaciones/unidad de analisis/array en server-app.ts
+// Una opción sería construir las relaciones a partir de la tabla_datos tomando campo "consistir_en" como 
+// "tabla_datos" (siendo el campo "tiene" la TD hija); o directamente desde UAs tomando campo "padre"
 function relaciones(context:TableContext):TableDefinition{
     var admin = context.user.rol === 'admin';
     return {
@@ -17,7 +20,7 @@ function relaciones(context:TableContext):TableDefinition{
             { name: "misma_pk"           , typeName: 'boolean' },
             { name: "tabla_relacionada"  , typeName: 'text'    },
             { name: "a_veces_siempre"    , typeName: 'text'    },
-            { name: "max"                , typeName: 'integer' },
+            { name: "aridad"                , typeName: 'integer' },
         ],
         primaryKey: ['operativo', 'tabla_datos','tiene'],
         constraints:[

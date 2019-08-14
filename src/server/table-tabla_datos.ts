@@ -3,6 +3,8 @@
 import {TableDefinition} from "backend-plus"
 import {TableContext, tiposTablaDatoArray} from "./types-operativos"
 
+//TODO: solucionar redundancia en el manejo de Tablas de datos/relaciones/unidad de analisis/array en server-app.ts
+// por ej, acá el campo consistir_en se debería tomar del campo padre de la UAs
 export {tabla_datos};
 function tabla_datos(context:TableContext):TableDefinition{
     var admin=context.user.rol==='admin';
