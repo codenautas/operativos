@@ -74,18 +74,13 @@ export class OperativoGenerator{
         let rightTD = this.getUniqueTD(rightTDName)
         let relFound = this.myRels.find(r=>r.tabla_datos==leftTDName && r.tiene == rightTDName);
         if (!relFound) {
-            try {
-                let relationForRightTDAsChild = this.myRels.find(r=> r.tiene == rightTD.tabla_datos);
-                if (!relationForRightTDAsChild){
-                    throw new Error(`se llego al final`)
-                }
-                let parentTDNameOfrightTD = relationForRightTDAsChild.tabla_datos;
-                joinTxt = this.joinTDs(leftTDName, parentTDNameOfrightTD) // recursive call searching in my parent
-                relFound = relationForRightTDAsChild;
-            }catch(err){
+            let relationForRightTDAsChild = this.myRels.find(r=> r.tiene == rightTD.tabla_datos);
+            if (!relationForRightTDAsChild){
                 throw new Error(`No se encontró ningún registro en la tabla relaciones para las TDs ${leftTDName} y ${rightTDName}`)                
             }
-            
+            let parentTDNameOfrightTD = relationForRightTDAsChild.tabla_datos;
+            joinTxt = this.joinTDs(leftTDName, parentTDNameOfrightTD) // recursive call searching in my parent
+            relFound = relationForRightTDAsChild;
         }
         let cond = relFound.misma_pk ? `USING (${rightTD.getQuotedPKsCSV()})`: `ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`;
         return joinTxt + ` JOIN ${quoteIdent(rightTD.getTableName())} ${cond}`
@@ -121,7 +116,9 @@ export class OperativoGenerator{
 
     protected buildInsumosTDsFromClausule(orderedTDNames: string[]) {
         let clausula_from = 'FROM ' + quoteIdent(this.getUniqueTD(orderedTDNames[0]).getTableName());
-        clausula_from += this.joinTDs(orderedTDNames[0], orderedTDNames[orderedTDNames.length-1]);
+        if (orderedTDNames.length>1){
+            clausula_from += this.joinTDs(orderedTDNames[0], orderedTDNames[orderedTDNames.length-1]);
+        }
         return clausula_from;
     }
 }
