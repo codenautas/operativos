@@ -5,11 +5,12 @@ import {TableContext} from "./types-operativos"
 
 export {variables_opciones};
 function variables_opciones(context:TableContext):TableDefinition{
-    var admin = context.user.rol === 'admin';
+    var isAdmin=context.user.rol==='admin';
+    var isProcesamiento=context.user.rol==='procesamiento' || isAdmin;
     return {
         name: 'variables_opciones',
         elementName: 'opción de variable',
-        editable: admin,
+        editable: isProcesamiento,
         fields: [
             { name: "operativo"           , typeName: 'text'    },
             { name: "tabla_datos"         , typeName: 'text'    },

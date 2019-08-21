@@ -28,6 +28,7 @@ export class TablaDatos extends TablaDatosDB {
           LEFT JOIN relaciones r ON td.operativo=r.operativo AND td.tabla_datos=r.tiene AND r.misma_pk is TRUE`;
     static groupBy = ` GROUP BY td.operativo, td.tabla_datos, r.tabla_datos`;
 
+    //TODO: ordenar las tds por el campo orden
     static async fetchAll(client: Client):Promise<TablaDatos[]>{
         let result = await client.query(TablaDatos.selectFrom+TablaDatos.groupBy+` ORDER BY td.operativo, td.tabla_datos, r.tabla_datos`, []).fetchAll();
         return (<TablaDatos[]>result.rows).map(td => TablaDatos.buildFromDBJSON(td));
