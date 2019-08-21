@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "contributors": [
     "Raquel N Salva <raquelzssalva@gmail.com>",
@@ -17,12 +17,12 @@
     "install"
   ],
   "dependencies": {
-    "backend-plus": "~0.30.17",
+    "backend-plus": "~0.30.29",
     "pg-triggers": "~0.2.3",
-    "best-globals": "~0.10.21"
+    "best-globals": "~0.10.22"
   },
   "devDependencies": {
-    "types.d.ts": "~0.4.7",
+    "types.d.ts": "~0.4.8",
     "mixin-patch": "~0.2.1"
   },
   "engines": {
