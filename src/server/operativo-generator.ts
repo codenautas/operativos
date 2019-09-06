@@ -82,8 +82,7 @@ export class OperativoGenerator{
             joinTxt = this.joinTDs(leftTDName, parentTDNameOfrightTD) // recursive call searching in my parent
             relFound = relationForRightTDAsChild;
         }
-        let cond = relFound.misma_pk ? `USING (${rightTD.getQuotedPKsCSV()})`: `ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`;
-        return joinTxt + ` JOIN ${quoteIdent(rightTD.getTableName())} ${cond}`
+        return joinTxt + ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`
     }
 
     // Could be used for WHERE conditions or also for ON conditions
