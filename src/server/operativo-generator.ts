@@ -113,11 +113,9 @@ export class OperativoGenerator{
                     ) ${quoteIdent(relationName)} ON ${relVars.map(rv=>rv.getRelationONCondition(relationTD)).join(' AND ')}`;
     }
 
-    protected buildInsumosTDsFromClausule(orderedTDNames: string[]) {
-        let clausula_from = 'FROM ' + quoteIdent(this.getUniqueTD(orderedTDNames[0]).getTableName());
-        if (orderedTDNames.length>1){
-            clausula_from += this.joinTDs(orderedTDNames[0], orderedTDNames[orderedTDNames.length-1]);
-        }
-        return clausula_from;
+    protected buildEndToEndJoins(lastTDName:string) {
+        const mainTD = OperativoGenerator.mainTD
+        return quoteIdent(this.getUniqueTD(mainTD).getTableName()) + (lastTDName && lastTDName !=mainTD ? this.joinTDs(mainTD, lastTDName):'');
     }
+
 }
