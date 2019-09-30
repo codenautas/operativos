@@ -1,7 +1,7 @@
 {
   "name": "operativos",
   "description": "Elementos base para operativos estadísticos",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "author": "Codenautas <codenautas@googlegroups.com>",
   "contributors": [
     "Raquel N Salva <raquelzssalva@gmail.com>",
@@ -22,7 +22,7 @@
     "best-globals": "~0.10.22"
   },
   "devDependencies": {
-    "types.d.ts": "~0.4.8",
+    "types.d.ts": "~0.4.9",
     "mixin-patch": "~0.2.1"
   },
   "engines": {
