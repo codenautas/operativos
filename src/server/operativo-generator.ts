@@ -17,7 +17,6 @@ export class OperativoGenerator{
     static mainTD: string;
     static mainTDPK: string;
     static orderedIngresoTDNames: string[];
-    static orderedReferencialesTDNames: string[];
 
     constructor(public client:Client, public operativo?: string){
         OperativoGenerator.instanceObj = this;
