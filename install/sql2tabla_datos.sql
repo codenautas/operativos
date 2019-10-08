@@ -1,3 +1,6 @@
+-- take a table name and:
+-- 1. inserts a row in tabla datos
+-- 2. inserts a row in variables for each table column
 create or replace function sql2tabla_datos(p_esquema text, p_tabla text, p_operativo text) returns text
   language plpgsql
 as
