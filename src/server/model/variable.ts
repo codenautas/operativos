@@ -1,6 +1,7 @@
 
 import { PgKnownTypes, tiposTablaDato, Client } from "../types-operativos";
 import { TipoVarDB } from "./tipo-var";
+import { TablaDatos } from "./tabla-datos";
 
 export interface VariableDB {
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
@@ -65,6 +66,8 @@ export class Variable implements VariableDB, TipoVarDB {
     // @ts-ignore https://github.com/codenautas/operativos/issues/4
     radio: boolean
 
+    tdObj!:TablaDatos
+
     esCalculada(){
         return this.clase == tiposTablaDato.calculada;
     }
@@ -85,8 +88,12 @@ export class Variable implements VariableDB, TipoVarDB {
                 WHERE v.activa
                 ORDER BY tabla_datos, es_pk nulls last, orden nulls last, variable`;
         let resultV = await client.query(query).fetchAll();
-        return (<Variable[]>resultV.rows).map(v => Variable.buildFromDBJSON(v));
+        const tds = await TablaDatos.fetchAll(client);
+        const vars = (<Variable[]>resultV.rows).map(v => Variable.buildFromDBJSON(v));
+        vars.forEach(v=>v.tdObj = <TablaDatos>tds.find(td=>td.tabla_datos==v.tabla_datos));
+        return vars
     }
+
     static buildFromDBJSON(dbJson: Variable) {
         // Using assign instead of setPrototypeOf because we need to have initialized properties
         return Object.assign(new Variable, dbJson);
