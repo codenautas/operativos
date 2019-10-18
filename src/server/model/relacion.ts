@@ -9,7 +9,7 @@ export class RelacionDB extends BaseDBTable {
     misma_pk!: boolean
     tabla_relacionada!: string
     a_veces_siempre!: string
-    aridad!: number
+    max!: number
 }
 
 export class Relacion extends RelacionDB {

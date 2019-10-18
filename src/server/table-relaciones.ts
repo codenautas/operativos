@@ -20,7 +20,7 @@ function relaciones(context:TableContext):TableDefinition{
             { name: "misma_pk"           , typeName: 'boolean' },
             { name: "tabla_relacionada"  , typeName: 'text'    },
             { name: "a_veces_siempre"    , typeName: 'text'    },
-            { name: "aridad"                , typeName: 'integer' },
+            { name: "max"                , typeName: 'integer' },
         ],
         primaryKey: ['operativo', 'tabla_datos','tiene'],
         constraints:[
