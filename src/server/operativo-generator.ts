@@ -11,6 +11,7 @@ export class OperativoGenerator{
 
     // acá bajo se concatena _agg
     static sufijo_agregacion: string = '_agg';
+    static sufijo_complete: string = '_comp';
 
     static instanceObj: OperativoGenerator;
 
