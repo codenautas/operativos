@@ -1,4 +1,5 @@
 import { Client, quoteIdent, Relacion, RelVar, TablaDatos, Variable } from "./types-operativos";
+import { relaciones } from "table-relaciones";
 
 export class OperativoGenerator{
     myTDs: TablaDatos[]=[];
@@ -69,20 +70,31 @@ export class OperativoGenerator{
         return td;
     }
 
-    private joinTDs(leftTDName: string, rightTDName: string): string {
+    private joinTDs(leftTDName: string, rightTDName: string, tdsToJoin: string[]): string {
         let joinTxt:string='';
         let rightTD = this.getUniqueTD(rightTDName)
-        let relFound = this.myRels.find(r=>r.tabla_datos==leftTDName && r.tiene == rightTDName);
+        let relFound = <Relacion>this.myRels.find(r=>r.tabla_datos==leftTDName && r.tiene == rightTDName);
         if (!relFound) {
             let relationForRightTDAsChild = this.myRels.find(r=> r.tiene == rightTD.tabla_datos);
             if (!relationForRightTDAsChild){
                 throw new Error(`No se encontró ningún registro en la tabla relaciones para las TDs ${leftTDName} y ${rightTDName}`)                
             }
             let parentTDNameOfrightTD = relationForRightTDAsChild.tabla_datos;
-            joinTxt = this.joinTDs(leftTDName, parentTDNameOfrightTD) // recursive call searching in my parent
+            joinTxt = this.joinTDs(leftTDName, parentTDNameOfrightTD, tdsToJoin) // recursive call searching in my parent
             relFound = relationForRightTDAsChild;
         }
-        return joinTxt + ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`
+        joinTxt = joinTxt + 
+            this.joinCalculadaIfCorrespond(relFound, tdsToJoin) +
+            `JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`
+        return joinTxt;
+    }
+
+    joinCalculadaIfCorrespond(relFound: Relacion, tdsToJoin:string[]){
+        let leftCalculadaRel = <Relacion>this.myRels.find(r=>r.tabla_datos==relFound.tabla_datos && r.misma_pk);
+        let leftCalculadaTD = this.getUniqueTD(leftCalculadaRel.tiene);
+        return (leftCalculadaRel && tdsToJoin.includes(leftCalculadaTD.tabla_datos))?  
+            `JOIN ${quoteIdent(leftCalculadaTD.getTableName())} ON ${this.relVarPKsConditions(relFound.tabla_datos, leftCalculadaTD.tabla_datos)}`:
+            ''
     }
 
     // Could be used for WHERE conditions or also for ON conditions
@@ -113,9 +125,53 @@ export class OperativoGenerator{
                     ) ${quoteIdent(relationName)} ON ${relVars.map(rv=>rv.getRelationONCondition(relationTD)).join(' AND ')}`;
     }
 
-    protected buildEndToEndJoins(lastTDName:string) {
-        const mainTD = OperativoGenerator.mainTD
-        return quoteIdent(this.getUniqueTD(mainTD).getTableName()) + (lastTDName && lastTDName !=mainTD ? this.joinTDs(mainTD, lastTDName):'');
+    protected buildEndToEndJoins(tdsToJoin:string[]) {
+        if (tdsToJoin.length == 1) return tdsToJoin[0]
+        
+        const mainTDName = this.oldestAncestorIn(tdsToJoin);
+        const lastTDName = this.youngerDescendantIn(tdsToJoin)
+        return quoteIdent(this.getUniqueTD(mainTDName).getTableName()) + this.joinTDs(mainTDName, lastTDName, tdsToJoin);
     }
+
+
+    // get the oldest ancestor from the td list (the one doesn't have any ancestor on the list) 
+    oldestAncestorIn = (tds:string[])=> <string>tds.find(td=>this.hasNoAncestorIn(td,tds))
+    hasNoAncestorIn = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length == 0
+
+    // get the younger descendant from the td list (the one doesn't have any descendant on the list) 
+    youngerDescendantIn = (tds:string[]) => <string>tds.find(td=>this.isDescendantOfAll(td, tds))
+    isDescendantOfAll = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length==tds.length-1
+    
+    getAncestorsIn(tdToCheckAncestors:string, tds:string[]){
+        let relAncestor:Relacion|undefined;
+        let ancestors:string[]=[];
+        let ancestorTD;
+        //search for an ancestor present in list
+        do{
+            relAncestor = this.myRels.find(r=>r.tiene == tdToCheckAncestors)
+            if (relAncestor){
+                ancestorTD = relAncestor.tabla_datos;
+                if (tds.includes(ancestorTD)){
+                    ancestors.push(ancestorTD)
+                }
+                tdToCheckAncestors = ancestorTD
+            }
+        }while (relAncestor);
+
+        return ancestors
+        //return tds.filter(td=>isAncestorOf(td, tdToCheckAncestors))
+    }
+
+    // isAncestorOf(supposedAncestorTD, td){
+    //     let rel = this.myRels.find(r=>r.tabla_datos==supposedAncestorTD && r.tiene==td);
+    //     if (!rel){
+    //         if (supposedAncestorTD == td){
+    //             return false;
+    //         } else {
+    //             return this.isAncestorOf()
+    //         }
+    //     }
+    //     return true;
+    // }
 
 }
