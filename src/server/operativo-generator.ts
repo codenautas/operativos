@@ -1,5 +1,4 @@
 import { Client, quoteIdent, Relacion, RelVar, TablaDatos, Variable } from "./types-operativos";
-import { relaciones } from "table-relaciones";
 
 export class OperativoGenerator{
     myTDs: TablaDatos[]=[];
@@ -18,7 +17,6 @@ export class OperativoGenerator{
 
     static mainTD: string;
     static mainTDPK: string;
-    static orderedIngresoTDNames: string[];
 
     constructor(public client:Client, public operativo?: string){
         OperativoGenerator.instanceObj = this;
@@ -84,16 +82,25 @@ export class OperativoGenerator{
             relFound = relationForRightTDAsChild;
         }
         joinTxt = joinTxt + 
-            this.joinCalculadaIfCorrespond(relFound, tdsToJoin) +
-            `JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`
+            this.joinLeftTDWithItsCalculatedTD(relFound, tdsToJoin) +
+            ` JOIN ${quoteIdent(rightTD.getTableName())} ON ${this.relVarPKsConditions(relFound.tabla_datos, rightTDName)}`
         return joinTxt;
     }
 
-    joinCalculadaIfCorrespond(relFound: Relacion, tdsToJoin:string[]){
+    /**
+     * @param relFound found relation in recursion search to join (only between base tds)
+     * @param tdsToJoin all tds to join which can include calculated tds
+     * Adding join with the calculated td when correspond, with 'using' instead of 'on' because calculated tables has 'misma_pk'
+     */
+    private joinLeftTDWithItsCalculatedTD(relFound: Relacion, tdsToJoin:string[]){
+        // looking for calculated td for left td
         let leftCalculadaRel = <Relacion>this.myRels.find(r=>r.tabla_datos==relFound.tabla_datos && r.misma_pk);
-        let leftCalculadaTD = this.getUniqueTD(leftCalculadaRel.tiene);
-        return (leftCalculadaRel && tdsToJoin.includes(leftCalculadaTD.tabla_datos))?  
-            `JOIN ${quoteIdent(leftCalculadaTD.getTableName())} ON ${this.relVarPKsConditions(relFound.tabla_datos, leftCalculadaTD.tabla_datos)}`:
+        let leftTDCalculada = this.getUniqueTD(leftCalculadaRel.tiene);
+        // only adds the join if the calculated td satifies:
+        // 1. Is not the same than right td
+        // 2. Is included in tdsToJoin
+        return (relFound.tiene != leftTDCalculada.tabla_datos && leftCalculadaRel && tdsToJoin.includes(leftTDCalculada.tabla_datos))?  
+            ` JOIN ${quoteIdent(leftTDCalculada.getTableName())} USING (${leftTDCalculada.getQuotedPKsCSV()})`:
             ''
     }
 
@@ -128,19 +135,18 @@ export class OperativoGenerator{
     protected buildEndToEndJoins(tdsToJoin:string[]) {
         if (tdsToJoin.length == 1) return tdsToJoin[0]
         
-        const mainTDName = this.oldestAncestorIn(tdsToJoin);
+        const mainTDName = this.oldestAncestorIn(tdsToJoin); //OperativoGenerator.mainTD;
         const lastTDName = this.youngerDescendantIn(tdsToJoin)
         return quoteIdent(this.getUniqueTD(mainTDName).getTableName()) + this.joinTDs(mainTDName, lastTDName, tdsToJoin);
     }
 
-
     // get the oldest ancestor from the td list (the one doesn't have any ancestor on the list) 
-    oldestAncestorIn = (tds:string[])=> <string>tds.find(td=>this.hasNoAncestorIn(td,tds))
+    oldestAncestorIn(tds:string[]){ return <string>tds.find(td=>this.hasNoAncestorIn(td,tds))}
     hasNoAncestorIn = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length == 0
 
     // get the younger descendant from the td list (the one doesn't have any descendant on the list) 
-    youngerDescendantIn = (tds:string[]) => <string>tds.find(td=>this.isDescendantOfAll(td, tds))
-    isDescendantOfAll = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length==tds.length-1
+    youngerDescendantIn(tds:string[]){return <string>tds.find(td=>this.isDescendantOfAll(td, tds))}
+    isDescendantOfAll:(td:string, tds:string[])=>boolean = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length==tds.length-1
     
     getAncestorsIn(tdToCheckAncestors:string, tds:string[]){
         let relAncestor:Relacion|undefined;
