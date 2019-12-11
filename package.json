@@ -34,7 +34,7 @@
     "watch:buildS": "(tsc -p tsconfig-server.json --watch || echo \"continue w/error\")",
     "start": "node dist/server/server-operativos.js",
     "git-commit": "git add package.json && git commit -m \"upgrading version\"",
-    "publish-stack": "npm version patch && ncu -u && npm run git-commit && npm publish && git push"
+    "publish-stack": "npm version patch && (ncu -u && npm run git-commit || echo \"ncu failed\") && npm publish && git push"
   },
   "qa-control": {
     "package-version": "0.3.0",
