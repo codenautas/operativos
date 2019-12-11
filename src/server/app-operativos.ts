@@ -12,6 +12,7 @@ import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
 import { AppBackend, Context, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator, Client, Constructor, MenuDefinition } from "./types-operativos";
 import { TablaDatos } from "model/tabla-datos";
+import { OptsClientPage } from "backend-plus";
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
@@ -84,7 +85,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             return this.loadTableDef(this.generateBaseTableDef(tablaDatos));
         }
 
-        clientIncludes(req:Request, hideBEPlusInclusions:boolean){
+        clientIncludes(req:Request, hideBEPlusInclusions:OptsClientPage){
             return super.clientIncludes(req, hideBEPlusInclusions).concat([
                 {type:'js', module: 'operativos', modPath: '../client', file: 'operativos.js', path: 'client_modules'}
             ]);
