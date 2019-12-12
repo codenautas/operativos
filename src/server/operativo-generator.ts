@@ -141,42 +141,54 @@ export class OperativoGenerator{
 
     // get the oldest ancestor from the td list (the one doesn't have any ancestor on the list) 
     oldestAncestorIn(tds:string[]){ return <string>tds.find(td=>this.hasNoAncestorIn(td,tds))}
-    hasNoAncestorIn = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length == 0
+    private hasNoAncestorIn = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length == 0
 
     // get the younger descendant from the td list (the one doesn't have any descendant on the list) 
     youngerDescendantIn(tds:string[]){return <string>tds.find(td=>this.isDescendantOfAll(td, tds))}
-    isDescendantOfAll:(td:string, tds:string[])=>boolean = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length==tds.length-1
+    private isDescendantOfAll:(td:string, tds:string[])=>boolean = (td:string, tds:string[]) => this.getAncestorsIn(td, tds).length==tds.length-1
     
-    getAncestorsIn(tdToCheckAncestors:string, tds:string[]){
-        let relAncestor:Relacion|undefined;
+    /**
+     * Return all ancestors (base TDs as well as their calculated ones) present in the given list 
+     * @param tdToCheckAncestors td to check for ancestor
+     * @param tds list where to check if a given ancestor is present
+     */
+    private getAncestorsIn(tdToCheckAncestors:string, tds:string[]){
         let ancestors:string[]=[];
-        let ancestorTD;
-        //search for an ancestor present in list
-        do{
-            relAncestor = this.myRels.find(r=>r.tiene == tdToCheckAncestors)
-            if (relAncestor){
-                ancestorTD = relAncestor.tabla_datos;
-                if (tds.includes(ancestorTD)){
-                    ancestors.push(ancestorTD)
-                }
-                tdToCheckAncestors = ancestorTD
+        let parentRel:Relacion|undefined;
+        let parentTD:string;
+        //search for all ancestors present in td list
+        do{ 
+            // TODO: what when tdToCheckAncestors have more than one parent? 
+            // -> make recursive call for each parent
+            parentRel = this.myRels.find(r=>r.tiene == tdToCheckAncestors)
+            if (parentRel){
+                parentTD = parentRel.tabla_datos;
+                this.pushIfIsPresent(parentTD, ancestors, tds, tdToCheckAncestors);
+                tdToCheckAncestors = parentTD
             }
-        }while (relAncestor);
+        }while (parentRel);
 
         return ancestors
-        //return tds.filter(td=>isAncestorOf(td, tdToCheckAncestors))
     }
 
-    // isAncestorOf(supposedAncestorTD, td){
-    //     let rel = this.myRels.find(r=>r.tabla_datos==supposedAncestorTD && r.tiene==td);
-    //     if (!rel){
-    //         if (supposedAncestorTD == td){
-    //             return false;
-    //         } else {
-    //             return this.isAncestorOf()
-    //         }
-    //     }
-    //     return true;
-    // }
+    /**
+     * Push the parent td (or his calculated) in ancestor list, if it is present in the td list
+     * @param parentTD parent td to check if is present
+     * @param ancestors list to push in
+     * @param tds list to check if is present
+     */
+    private pushIfIsPresent(parentTD: string, ancestors: string[], tds: string[], childTD:string) {
+        if (tds.includes(parentTD)) {
+            ancestors.push(parentTD);
+        }
+        //check for parent calculated if that is not the same as his children 
+        const parentCalculatedRel = this.myRels.find(r => r.tabla_datos == parentTD && r.misma_pk);
+        if (parentCalculatedRel){
+            const parentCalculatedTDName = parentCalculatedRel.tiene
+            if (parentCalculatedTDName && childTD != parentCalculatedTDName && tds.includes(parentCalculatedTDName)) {
+                ancestors.push(parentCalculatedTDName)
+            }
+        }
+    }
 
 }
