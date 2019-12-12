@@ -133,11 +133,10 @@ export class OperativoGenerator{
     }
 
     protected buildEndToEndJoins(tdsToJoin:string[]) {
-        if (tdsToJoin.length == 1) return tdsToJoin[0]
-        
         const firstTDName = this.oldestAncestorIn(tdsToJoin); //OperativoGenerator.mainTD;
         const lastTDName = this.youngerDescendantIn(tdsToJoin)
-        return quoteIdent(this.getUniqueTD(firstTDName).getTableName()) + this.joinTDs(firstTDName, lastTDName, tdsToJoin);
+        return quoteIdent(this.getUniqueTD(firstTDName).getTableName()) + 
+            ((lastTDName != firstTDName)? this.joinTDs(firstTDName, lastTDName, tdsToJoin) : '');
     }
 
     // get the oldest ancestor from the td list (the one doesn't have any ancestor on the list) 
