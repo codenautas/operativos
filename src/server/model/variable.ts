@@ -86,7 +86,7 @@ export class Variable implements VariableDB, TipoVarDB {
                                 WHERE vo.operativo = v.operativo and vo.tabla_datos = v.tabla_datos and vo.variable = v.variable) as opciones
                 FROM variables v LEFT JOIN tipovar tv USING(tipovar)
                 WHERE v.activa
-                ORDER BY tabla_datos, es_pk nulls last, orden nulls last, variable`;
+                ORDER BY tabla_datos, es_pk nulls last, orden nulls last, variable, funcion_agregacion, tabla_agregada`;
         let resultV = await client.query(query).fetchAll();
         const tds = await TablaDatos.fetchAll(client);
         const vars = (<Variable[]>resultV.rows).map(v => Variable.buildFromDBJSON(v));
