@@ -17,12 +17,12 @@
     "install"
   ],
   "dependencies": {
-    "backend-plus": "~0.31.5",
+    "backend-plus": "~0.31.8",
     "pg-triggers": "~0.2.3"
   },
   "devDependencies": {
     "types.d.ts": "~0.4.10",
-    "mixin-patch": "~0.3.1"
+    "mixin-patch": "~0.3.3"
   },
   "engines": {
     "node": ">= 10.0.0"
