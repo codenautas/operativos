@@ -17,7 +17,7 @@
     "install"
   ],
   "dependencies": {
-    "backend-plus": "~0.31.22",
+    "backend-plus": "~0.31.23",
     "pg-triggers": "~0.2.3"
   },
   "devDependencies": {
