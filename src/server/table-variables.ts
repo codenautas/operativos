@@ -30,6 +30,7 @@ function variables(context:TableContext):TableDefinition{
             { name: "tabla_agregada"     , typeName: 'text'    },
             { name: "grupo"              , typeName: 'text'    },
             { name: "orden"              , typeName: 'integer' },
+            { name: "no_numerica"        , typeName: 'boolean' }
         ],
         primaryKey: ['operativo', 'tabla_datos','variable'],
         foreignKeys: [
@@ -43,6 +44,8 @@ function variables(context:TableContext):TableDefinition{
         ],
         constraints: [
             { constraintType: 'check', expr: "es_nombre_unico = TRUE" },
+            { constraintType: 'check', expr: "no_numerica = TRUE"     },
+            { constraintType: 'unique', fields: ['operativo', 'tabla_datos', 'variable', 'no_numerica']}
         ],
     }
 }

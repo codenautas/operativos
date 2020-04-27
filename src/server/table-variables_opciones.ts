@@ -15,7 +15,7 @@ function variables_opciones(context:TableContext):TableDefinition{
             { name: "operativo"           , typeName: 'text'    },
             { name: "tabla_datos"         , typeName: 'text'    },
             { name: "variable"            , typeName: 'text'    },
-            { name: "opcion"              , typeName: 'integer' },
+            { name: "opcion"              , typeName: 'text'    },
             { name: "nombre"              , typeName: 'text'    },
             { name: "expresion_condicion" , typeName: 'text'    },
             { name: "expresion_valor"     , typeName: 'text'    },
@@ -25,5 +25,8 @@ function variables_opciones(context:TableContext):TableDefinition{
         foreignKeys: [
             {references:'variables'      , fields:['operativo','tabla_datos','variable']      },
         ],
+        constraints: [
+        
+        ]
     }
 }
