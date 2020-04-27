@@ -30,7 +30,7 @@ function variables(context:TableContext):TableDefinition{
             { name: "tabla_agregada"     , typeName: 'text'    },
             { name: "grupo"              , typeName: 'text'    },
             { name: "orden"              , typeName: 'integer' },
-            { name: "no_numerica"        , typeName: 'boolean' }
+            { name: "no_numerica"        , typeName: 'boolean' , generatedAs:`case when tipovar='texto' then true else null end`}
         ],
         primaryKey: ['operativo', 'tabla_datos','variable'],
         foreignKeys: [
