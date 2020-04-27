@@ -20,10 +20,12 @@ function variables_opciones(context:TableContext):TableDefinition{
             { name: "expresion_condicion" , typeName: 'text'    },
             { name: "expresion_valor"     , typeName: 'text'    },
             { name: "orden"               , typeName: 'integer' },
+            { name: "no_numerica"         , typeName: 'boolean' , visible:false, generatedAs:'no_numerica(opcion)'},
         ],
         primaryKey: ['operativo', 'tabla_datos','variable','opcion'],
         foreignKeys: [
             {references:'variables'      , fields:['operativo','tabla_datos','variable']      },
+            {references:'variables'      , fields:['operativo','tabla_datos','variable','no_numerica'], alias:'v', onUpdate:'no action'},
         ],
         constraints: [
         

@@ -10,9 +10,11 @@ import { tipovar } from './table-tipovar';
 import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
-import { AppBackend, Context, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator, Client, Constructor, MenuDefinition } from "./types-operativos";
+import { AppBackend, Context, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator, Client, Constructor, MenuDefinition, DumpOptions } from "./types-operativos";
 import { TablaDatos } from "model/tabla-datos";
 import { OptsClientPage } from "backend-plus";
+import { no_numerica } from "./fun-no_numerica";
+// var { no_numerica } = require('./fun-no_numerica')
 
 // re-export my file of types for external modules
 export * from "./types-operativos";
@@ -132,7 +134,7 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                     from information_schema.columns
                     where table_schema=${be.db.quoteLiteral(be.config.db.schema)}
                       and table_name='variables_opciones'
-                      and column_name in ('opcion', 'es_numerica')
+                      and column_name in ('opcion', 'no_numerica')
                       order by column_name desc;
             `).fetchAll();
             console.log(result.rows);
@@ -140,8 +142,14 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
                 throw new Error(`La columna opcion es de tipo "${result.rows[0].data_type}" y debe ser "text"`);
             }
             if(result.rows.length<2){
-                throw new Error(`Falta la columna variable_opciones.es_numerica`);
+                throw new Error(`Falta la columna variable_opciones.no_numerica`);
             }
+        }
+        async getDbFunctions(opts:DumpOptions){
+            return [
+                ...await super.getDbFunctions(opts),
+                no_numerica
+            ]
         }
     }
 }
