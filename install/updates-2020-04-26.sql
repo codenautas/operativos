@@ -42,3 +42,5 @@ $do$;
 drop view casos_prueba_no_numerica;
 
 alter table variables_opciones add column no_numerica boolean generated always as (no_numerica(opcion)) stored; 
+
+alter table variables add column no_numerica boolean generated always as (case when tipovar='texto' then true else null end) stored; 
