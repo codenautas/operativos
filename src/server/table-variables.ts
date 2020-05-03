@@ -47,5 +47,8 @@ function variables(context:TableContext):TableDefinition{
             { constraintType: 'check', expr: "no_numerica = TRUE"     },
             { constraintType: 'unique', fields: ['operativo', 'tabla_datos', 'variable', 'no_numerica']}
         ],
+        sortColumns: [
+            {column:'operativo'},{column:'tabla_datos'},{column:'orden'},{column:'variable'},
+        ]
     }
 }
