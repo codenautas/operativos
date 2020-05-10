@@ -129,20 +129,16 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
         async checkDatabaseStructure(client:Client){
             var be=this;
             await super.checkDatabaseStructure(client);
-            var result = await client.query(`
-                select * 
-                    from information_schema.columns
-                    where table_schema=${be.db.quoteLiteral(be.config.db.schema)}
-                      and table_name='variables_opciones'
-                      and column_name in ('opcion', 'no_numerica')
-                      order by column_name desc;
-            `).fetchAll();
-            console.log(result.rows);
-            if(result.rows[0].data_type!='text'){
-                throw new Error(`La columna opcion es de tipo "${result.rows[0].data_type}" y debe ser "text"`);
+            var schema=be.config.db.schema;
+            var tipo=((await client.informationSchema.column(schema, 'variables_opciones', 'opcion'))||{}).data_type;
+            if(tipo!='text'){
+                throw new Error(`La columna opcion es de tipo "${tipo}" y debe ser "text"`);
             }
-            if(result.rows.length<2){
+            if(!(await client.informationSchema.column(schema, 'variables_opciones', 'no_numerica'))){
                 throw new Error(`Falta la columna variable_opciones.no_numerica`);
+            }
+            if(!(await client.informationSchema.column(schema, 'tabla_datos', 'table_name'))){
+                throw new Error(`Falta la columna construida tabla_datos.table_name`);
             }
         }
         async getDbFunctions(opts:DumpOptions){

@@ -18,7 +18,8 @@ function tabla_datos(context:TableContext):TableDefinition{
             {name:"tipo"              , typeName:'text', nullable: false},
             {name:"ver_tabla"         , typeName:'bigint' , editable:false, clientSide:'verTabla'},
             {name:'generada'          , typeName:'timestamp'   , editable:false, title:'generada/calculada'},
-            {name:'consistir_en'      , typeName:'text'}
+            {name:'consistir_en'      , typeName:'text'},
+            {name:'table_name'        , typeName:'text'        , visible:false, generatedAs:`case when tipo='interna' then tabla_datos else operativo||'_'||tabla_datos end`}
         ],
         primaryKey:['operativo', 'tabla_datos'],
         foreignKeys:[

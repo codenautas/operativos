@@ -1,3 +1,5 @@
+set role to COMPLETAR;
+
 set search_path = defgen;
 
 alter table variables_opciones alter column opcion type text; 
@@ -44,3 +46,8 @@ drop view casos_prueba_no_numerica;
 alter table variables_opciones add column no_numerica boolean generated always as (no_numerica(opcion)) stored; 
 
 alter table variables add column no_numerica boolean generated always as (case when tipovar='texto' then true else null end) stored; 
+
+-- 2020-05-10
+set search_path = defgen;
+
+alter table tabla_datos add column table_name text generated always as (case when tipo='interna' then tabla_datos else operativo||'_'||tabla_datos end) stored;
