@@ -17,7 +17,7 @@
     "install"
   ],
   "dependencies": {
-    "backend-plus": "^1.3.3",
+    "backend-plus": "^1.4.2",
     "pg-triggers": "~0.2.3"
   },
   "devDependencies": {
@@ -28,10 +28,12 @@
     "node": ">= 10.0.0"
   },
   "scripts": {
+    "//prebuild:force": "(tsc -p src/client & tsc -p src/server || echo \"continue w/error\")",
+    "//build:force": "npm run //prebuild:force && mixin-patch",
     "prepare": "npm run build",
-    "build": "tsc -p tsconfig-client.json && tsc -p tsconfig-server.json & mixin-patch",
-    "build-force": "(tsc -p tsconfig-client.json || echo \"continue w/error\") && (tsc -p tsconfig-server.json  || echo \"continue w/error\")",
-    "watch:buildS": "(tsc -p tsconfig-server.json --watch || echo \"continue w/error\")",
+    "prebuild": "tsc -b src/server src/client",
+    "build": "npm run prebuild && mixin-patch",
+    "watch:build": "npm run prebuild -- --watch",
     "start": "node dist/server/server-operativos.js",
     "clink": "npm prune && npm i && npm run build",
     "git-commit": "git add package.json && (git commit -m \"upgrading version\" || true)",
