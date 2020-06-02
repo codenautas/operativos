@@ -11,7 +11,7 @@ import { usuarios } from './table-usuarios';
 import { variables } from "./table-variables";
 import { variables_opciones } from "./table-variables_opciones";
 import { AppBackend, Context, Request, TableDefinition, TableDefinitionFunction, tiposTablaDato, OperativoGenerator, Client, Constructor, MenuDefinition, DumpOptions } from "./types-operativos";
-import { TablaDatos } from "model/tabla-datos";
+import { TablaDatos } from "./model/tabla-datos";
 import { OptsClientPage } from "backend-plus";
 import { no_numerica } from "./fun-no_numerica";
 // var { no_numerica } = require('./fun-no_numerica')
