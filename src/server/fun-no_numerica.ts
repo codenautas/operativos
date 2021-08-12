@@ -6,7 +6,7 @@ create or replace function no_numerica(p_texto text) returns boolean
   language sql immutable 
 as
 $sql$ 
-  select case when p_texto ~ '^(0|\\d+)$' then null else true end;
+  select case when p_texto ~ '^(0|[1-9]\\d*)$' then null else true end;
 $sql$;
 --`, testFixtures:`
 create or replace view casos_prueba_no_numerica as 
