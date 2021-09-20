@@ -6,7 +6,7 @@ create or replace function no_numerica(p_texto text) returns boolean
   language sql immutable 
 as
 $sql$ 
-  select case when p_texto ~ '^(0|[1-9]\\d*)$' then null else true end;
+  select case when p_texto ~ '^-?(0|[1-9]\\d*)$' then null else true end;
 $sql$;
 --`, testFixtures:`
 create or replace view casos_prueba_no_numerica as 
@@ -16,6 +16,7 @@ create or replace view casos_prueba_no_numerica as
         select null::boolean as valor_esperado, '0' as parametro
           union select null, '1'
           union select null, '980'
+          union select null, '-4'
           union select true, '012' -- no es canónico por el 0
           union select true, '.'  -- no es número
           union select true, ' 12 ' -- no es canónico por los espacios
