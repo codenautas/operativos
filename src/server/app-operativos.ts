@@ -142,10 +142,12 @@ export function emergeAppOperativos<T extends Constructor<AppBackend>>(Base:T){
             }
         }
         async getDbFunctions(opts:DumpOptions){
-            return [
+            //TODO ver si hay una solución mas elegante desde BEPlus
+            return opts.disableDBFunctions? []
+            :[
                 ...await super.getDbFunctions(opts),
                 no_numerica
-            ]
+            ];
         }
     }
 }
