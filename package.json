@@ -35,7 +35,7 @@
     "watch:build": "npm run prebuild -- --watch",
     "start": "node dist/server/server-operativos.js",
     "clink": "npm prune && npm i && npm run build",
-    "git-commit": "git add package.json && (git commit -m \"upgrading version\" || true)",
+    "git-commit": "git add package.json && git add package-lock.json && (git commit -m \"upgrading version\" || true)",
     "push-publish": "npm version patch && ncu -u && npm run git-commit && npm publish && git push"
   },
   "qa-control": {
