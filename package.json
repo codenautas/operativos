@@ -18,11 +18,11 @@
   ],
   "dependencies": {
     "backend-plus": "^2.2.4",
-    "pg-triggers": "^0.3.2"
+    "pg-triggers": "^0.3.3"
   },
   "devDependencies": {
-    "typescript": "^5.1.6",
-    "types.d.ts": "^0.6.15",
+    "typescript": "^5.8.3",
+    "types.d.ts": "^0.6.22",
     "mixin-patch": "^0.4.1"
   },
   "engines": {
