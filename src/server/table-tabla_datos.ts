@@ -31,7 +31,8 @@ function tabla_datos(context:TableContext):TableDefinition{
             {table:'variables'       , fields:['operativo','tabla_datos'], abr:'V'},
         ],
         constraints: [
-            { constraintType: 'check', consName:'valor inválido en tipo' , expr: `tipo IN ('${tiposTablaDatoArray.join("','")}')` },
+            { constraintType: 'check', consName: 'valor inválido en tipo',     expr: `tipo IN ('${tiposTablaDatoArray.join("','")}')` },
+            { constraintType: 'check', consName: 'chk_sin_espacios_en_blanco', expr: `tabla_datos !~ '\s'`}
         ],
     };
 }
