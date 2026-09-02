@@ -15,6 +15,7 @@ export function parametros(context: TableContext): TableDefinition {
         constraints:[
             {consName:'unico registro', constraintType:'check', expr:'unico_registro is true'}
         ],
+        //@ts-ignore no es necesario select
         sql:{
             postCreateSqls:'insert into parametros (unico_registro) values (true);'
         }
